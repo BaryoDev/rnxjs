@@ -1,0 +1,24 @@
+import { createComponent } from '../../utils/createComponent.js';
+
+export function Toast({ header = '', body = '', autohide = true, delay = 5000 }) {
+  const template = () => `
+    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="${delay}">
+      <div class="toast-header">
+        <strong class="me-auto">${header}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        ${body}
+      </div>
+    </div>
+  `;
+
+  const toast = createComponent(template, { header, body, autohide, delay });
+
+  toast.useEffect(() => {
+    const bsToast = bootstrap.Toast.getOrCreateInstance(toast);
+    bsToast.show();
+  });
+
+  return toast;
+}
