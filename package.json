@@ -1,6 +1,6 @@
 {
   "name": "@arnelirobles/rnxjs",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Minimalist Vanilla JS component system that doesn't promise anything.",
   "main": "index.js",
   "type": "module",
