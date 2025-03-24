@@ -19,5 +19,8 @@
     "utils/",
     "framework/",
     "components/"
-  ]
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  }
 }
