@@ -22,5 +22,8 @@
   ],
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
+  },
+  "scripts": {
+    "test": "echo 'No tests yet. Skipping.'"
   }
 }
