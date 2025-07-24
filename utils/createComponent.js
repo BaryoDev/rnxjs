@@ -26,12 +26,13 @@ export function createComponent(templateFn, initialState = {}, styles = '') {
   
     component = render();
   
-    component.setState = (newState) => {
-      currentState = { ...currentState, ...newState };
-      const newComp = render();
-      component.replaceWith(newComp);
-      component = newComp;
-    };
+  component.setState = (newState) => {
+    const oldComp = component;
+    currentState = { ...currentState, ...newState };
+    const newComp = render();
+    oldComp.replaceWith(newComp);
+    component = newComp;
+  };
   
     component.useEffect = (fn) => {
       effectFn = fn;
