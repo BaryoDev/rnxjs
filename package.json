@@ -1,6 +1,6 @@
 {
   "name": "@arnelirobles/rnxjs",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Minimalist Vanilla JS component system that doesn't promise anything.",
   "main": "index.js",
   "type": "module",
@@ -18,12 +18,20 @@
     "index.js",
     "utils/",
     "framework/",
-    "components/"
+    "components/",
+    "dist/",
+    "examples/"
   ],
+  "unpkg": "dist/rnx.global.js",
+  "jsdelivr": "dist/rnx.global.js",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "test": "echo 'No tests yet. Skipping.'"
+    "test": "echo 'No tests yet. Skipping.'",
+    "build": "node build.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.27.0"
   }
 }

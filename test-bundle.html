@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rnxJS Bundle Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="p-5">
+    <div class="container">
+        <h1>rnxJS Bundle Test</h1>
+        <p>If you see components below, the bundle is working.</p>
+
+        <Card class="mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Test Card</h5>
+                <p class="card-text">This is a card component.</p>
+                <Button label="Click Me" variant="primary" onclick="alert('Clicked!')"></Button>
+            </div>
+        </Card>
+
+        <hr>
+
+        <h3>Focus Test</h3>
+        <p>Type in the input below. If focus is lost after typing, the test fails.</p>
+        <div id="app"></div>
+    </div>
+
+    <script src="dist/rnx.global.js"></script>
+    <script>
+        // Initialize rnx
+        rnx.autoRegisterComponents();
+        rnx.loadComponents();
+
+        // Manual Component for Focus Test
+        function FocusTestInput(props) {
+            const [val, setVal] = this.useState('value', '');
+            
+            return rnx.createComponent(() => `
+                <div class="mb-3">
+                    <label class="form-label">Type here: ${val()}</label>
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        data-ref="input" 
+                        value="${val()}"
+                        oninput="this.dispatchEvent(new CustomEvent('update', { detail: this.value }))"
+                    >
+                </div>
+            `, props);
+        }
+
+        // We need to manually register and mount this one to test state updates
+        // But wait, the library is designed for HTML-first usage.
+        // Let's just use a standard Input component if it supports state?
+        // The standard Input component doesn't seem to have internal state that triggers re-renders on every keystroke in the default implementation.
+        // So I'll just rely on the fact that if I can type in it, it's fine.
+        // But to test the FIX, I need a component that re-renders on input.
+        
+        // Let's register a test component
+        rnx.registerComponent('FocusTest', function(props) {
+            const comp = rnx.createComponent((state) => `
+                <div>
+                    <p>Value: ${state.text || ''}</p>
+                    <input type="text" class="form-control" data-ref="myInput" value="${state.text || ''}">
+                </div>
+            `, props);
+
+            comp.useEffect(() => {
+                const input = comp.refs.myInput;
+                input.oninput = (e) => {
+                    comp.setState({ text: e.target.value });
+                };
+            });
+
+            return comp;
+        });
+
+        // Add to DOM
+        const container = document.getElementById('app');
+        const testComp = document.createElement('FocusTest');
+        container.appendChild(testComp);
+        rnx.loadComponents(container);
+
+    </script>
+</body>
+</html>
