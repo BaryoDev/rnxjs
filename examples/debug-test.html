@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Simple Debug Test</title>
+</head>
+
+<body>
+    <h1>Debug Test</h1>
+    <div id="debug"></div>
+
+    <!-- Simple HTML component -->
+    <Container>
+        <p>Test content inside Container</p>
+    </Container>
+
+    <script src="../dist/rnx.global.js"></script>
+    <script>
+        const debug = document.getElementById('debug');
+
+        try {
+            debug.innerHTML += '<p>1. rnx exists: ' + (typeof rnx !== 'undefined') + '</p>';
+            debug.innerHTML += '<p>2. rnx exports: ' + Object.keys(rnx).join(', ') + '</p>';
+
+            debug.innerHTML += '<p>3. Container in rnx:' + (typeof rnx.Container) + '</p>';
+
+            // Call autoRegisterComponents
+            debug.innerHTML += '<p>4. Calling autoRegisterComponents...</p>';
+            rnx.autoRegisterComponents();
+            debug.innerHTML += '<p>5. autoRegisterComponents completed</p>';
+
+            // Manually register Container to test
+            debug.innerHTML += '<p>6. Manually registering Container...</p>';
+            if (rnx.Container) {
+                rnx.registerComponent('Container', rnx.Container);
+                debug.innerHTML += '<p>7. Manually registered Container</p>';
+            } else {
+                debug.innerHTML += '<p style="color:red;">7. Container component not found in rnx!</p>';
+            }
+
+            //Check registry
+            debug.innerHTML += '<p>8. Calling loadComponents...</p>';
+            rnx.loadComponents();
+            debug.innerHTML += '<p>9. loadComponents completed</p>';
+
+        } catch (e) {
+            debug.innerHTML += '<p style="color:red;">ERROR: ' + e.message + '</p>';
+            console.error(e);
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Bundle Test</title>
+</head>
+
+<body>
+    <h1>Testing rnx.global.js Bundle</h1>
+    <div id="output"></div>
+
+    <script src="../dist/rnx.global.js"></script>
+    <script>
+        const output = document.getElementById('output');
+
+        // Test if rnx exists
+        if (typeof rnx === 'undefined') {
+            output.innerHTML = '<p style="color:red;">ERROR: rnx is undefined! Bundle not loaded correctly.</p>';
+        } else {
+            output.innerHTML = '<p style="color:green;">SUCCESS: rnx object exists!</p>';
+            output.innerHTML += '<p>Available methods: ' + Object.keys(rnx).join(', ') + '</p>';
+
+            // Test if new exports exist
+            if (typeof rnx.createReactiveState === 'undefined') {
+                output.innerHTML += '<p style="color:orange;">WARNING: createReactiveState not found</p>';
+            } else {
+                output.innerHTML += '<p style="color:green;">createReactiveState exists!</p>';
+            }
+
+            if (typeof rnx.bindData === 'undefined') {
+                output.innerHTML += '<p style="color:orange;">WARNING: bindData not found</p>';
+            } else {
+                output.innerHTML += '<p style="color:green;">bindData exists!</p>';
+            }
+        }
+    </script>
+</body>
+
+</html>
