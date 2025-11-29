@@ -284,7 +284,15 @@ registerComponent('MyButton', MyButton);
 
 ## 📋 Changelog
 
-### Version 0.1.7 (Current) - November 2025
+### Version 0.1.8 (Current) - November 2025
+
+**🐛 Bug Fixes**
+
+- Fixed a `TypeError` in `createReactiveState` when using array spread syntax (e.g., `[...state.array]`) or other Symbol-based operations.
+
+---
+
+### Version 0.1.7 - November 2025
 
 **✨ New Features**
 
