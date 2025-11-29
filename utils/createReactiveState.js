@@ -76,6 +76,12 @@ export function createReactiveState(initialState = {}) {
         const handler = {
             get(obj, prop) {
                 const value = obj[prop];
+
+                // FIX: Skip path construction for Symbols
+                if (typeof prop !== 'string') {
+                    return value;
+                }
+
                 const currentPath = basePath ? `${basePath}.${prop}` : prop;
 
                 // Return nested proxy for objects
@@ -87,6 +93,12 @@ export function createReactiveState(initialState = {}) {
             },
 
             set(obj, prop, value) {
+                // FIX: Skip path construction for Symbols
+                if (typeof prop !== 'string') {
+                    obj[prop] = value;
+                    return true;
+                }
+
                 const oldValue = obj[prop];
                 const currentPath = basePath ? `${basePath}.${prop}` : prop;
 
