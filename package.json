@@ -1,6 +1,6 @@
 {
   "name": "@arnelirobles/rnxjs",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "Minimalist Vanilla JS component system with reactive data binding.",
   "main": "index.js",
   "type": "module",
