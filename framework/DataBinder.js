@@ -79,6 +79,74 @@ function coerceValueToType(element, value) {
 }
 
 /**
+ * Validate a value against a set of rules
+ * @param {*} value - Value to validate
+ * @param {string} rules - Pipe-separated rules (e.g., "required|email|min:3")
+ * @returns {string|null} - Error message or null if valid
+ */
+function validateField(value, rules) {
+    if (!rules) return null;
+
+    const ruleList = rules.split('|');
+
+    for (const rule of ruleList) {
+        const [name, param] = rule.split(':');
+
+        if (name === 'required') {
+            if (value === null || value === undefined || value === '') {
+                return 'This field is required';
+            }
+        }
+
+        if (name === 'email') {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (value && !emailRegex.test(String(value))) {
+                return 'Invalid email address';
+            }
+        }
+
+        if (name === 'numeric') {
+            if (value && isNaN(Number(value))) {
+                return 'Must be a number';
+            }
+        }
+
+        if (name === 'min') {
+            const min = parseFloat(param);
+            if (typeof value === 'string' && value.length < min) {
+                return `Must be at least ${min} characters`;
+            }
+            if (typeof value === 'number' && value < min) {
+                return `Must be at least ${min}`;
+            }
+        }
+
+        if (name === 'max') {
+            const max = parseFloat(param);
+            if (typeof value === 'string' && value.length > max) {
+                return `Must be no more than ${max} characters`;
+            }
+            if (typeof value === 'number' && value > max) {
+                return `Must be no more than ${max}`;
+            }
+        }
+
+        if (name === 'pattern') {
+            try {
+                const regex = new RegExp(param);
+                if (value && !regex.test(String(value))) {
+                    return 'Invalid format';
+                }
+            } catch (e) {
+                console.warn('[rnxJS] Invalid regex pattern in validation rule:', param);
+            }
+        }
+    }
+
+    return null;
+}
+
+/**
  * Bind data-bind attributes to reactive state
  * Sets up two-way binding for inputs and one-way binding for display elements
  * @param {HTMLElement} rootElement - Root element to search for data-bind attributes
@@ -99,6 +167,16 @@ export function bindData(rootElement = document, state = null) {
     if (typeof state.subscribe !== 'function') {
         console.error('[rnxJS] bindData: state must be a reactive state object with subscribe method');
         return;
+    }
+
+    // Initialize errors object in state if it doesn't exist
+    if (!state.errors) {
+        try {
+            state.errors = {};
+        } catch (e) {
+            // State might be sealed or not extensible, proceed without validation support if so
+            console.warn('[rnxJS] Could not initialize state.errors. Validation may not work.');
+        }
     }
 
     // Track subscriptions for this root element
@@ -178,11 +256,17 @@ export function unbindData(rootElement) {
  */
 function setupTwoWayBinding(element, state, path) {
     const inputType = element.type;
+    const rules = element.getAttribute('data-rule');
 
     // Initialize element value from state
     const initialValue = getNestedValue(state, path);
     if (initialValue !== undefined) {
         updateInputValue(element, initialValue, inputType);
+        // Initial validation
+        if (rules && state.errors) {
+            const error = validateField(initialValue, rules);
+            setNestedValue(state.errors, path, error || '');
+        }
     }
 
     // Listen for user input
@@ -194,6 +278,12 @@ function setupTwoWayBinding(element, state, path) {
             // Apply type coercion
             value = coerceValueToType(e.target, value);
             setNestedValue(state, path, value);
+
+            // Validation
+            if (rules && state.errors) {
+                const error = validateField(value, rules);
+                setNestedValue(state.errors, path, error || '');
+            }
         } catch (error) {
             console.error(`[rnxJS] Error handling input for path "${path}":`, error);
         }
@@ -208,6 +298,12 @@ function setupTwoWayBinding(element, state, path) {
             const currentValue = getInputValue(element);
             if (currentValue !== newValue) {
                 updateInputValue(element, newValue, inputType);
+
+                // Re-validate on external state change
+                if (rules && state.errors) {
+                    const error = validateField(newValue, rules);
+                    setNestedValue(state.errors, path, error || '');
+                }
             }
         } catch (error) {
             console.error(`[rnxJS] Error updating input for path "${path}":`, error);
