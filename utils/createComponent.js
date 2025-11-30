@@ -3,64 +3,127 @@ export function createComponent(templateFn, initialState = {}, styles = '') {
   const el = document.createElement('div');
   let currentState = { ...initialState };
   let effectFn = null;
+  let effectCleanup = null;
+  let unmountCleanup = null;
   const children = currentState.children || null;
 
   function render() {
-    el.innerHTML = templateFn(currentState).trim();
-    component = el.firstElementChild;
+    try {
+      el.innerHTML = templateFn(currentState).trim();
+      component = el.firstElementChild;
 
-    if (children && component.querySelector('[data-slot]')) {
-      const slot = component.querySelector('[data-slot]');
-      Array.isArray(children) ? children.forEach(c => slot.appendChild(c)) : slot.appendChild(children);
+      if (!component) {
+        console.error('[rnxJS] createComponent: templateFn must return valid HTML with a root element');
+        const errorDiv = document.createElement('div');
+        errorDiv.textContent = 'Component rendering error';
+        errorDiv.style.color = 'red';
+        errorDiv.style.padding = '10px';
+        errorDiv.style.border = '1px solid red';
+        return errorDiv;
+      }
+
+      if (children && component.querySelector('[data-slot]')) {
+        const slot = component.querySelector('[data-slot]');
+        Array.isArray(children) ? children.forEach(c => slot.appendChild(c)) : slot.appendChild(children);
+      }
+
+      component.refs = {};
+      component.querySelectorAll('[data-ref]').forEach(el => {
+        const name = el.getAttribute('data-ref');
+        if (name) {
+          component.refs[name] = el;
+        }
+      });
+
+      if (effectFn) {
+        setTimeout(() => {
+          try {
+            // Run cleanup from previous effect if exists
+            if (effectCleanup && typeof effectCleanup === 'function') {
+              effectCleanup();
+            }
+            // Run effect and store cleanup function if returned
+            const cleanup = effectFn(component);
+            if (cleanup && typeof cleanup === 'function') {
+              effectCleanup = cleanup;
+            }
+          } catch (error) {
+            console.error('[rnxJS] Error in useEffect:', error);
+          }
+        }, 0);
+      }
+
+      return component;
+    } catch (error) {
+      console.error('[rnxJS] Error rendering component:', error);
+      const errorDiv = document.createElement('div');
+      errorDiv.textContent = `Component error: ${error.message}`;
+      errorDiv.style.color = 'red';
+      errorDiv.style.padding = '10px';
+      errorDiv.style.border = '1px solid red';
+      return errorDiv;
     }
-
-    component.refs = {};
-    component.querySelectorAll('[data-ref]').forEach(el => {
-      const name = el.getAttribute('data-ref');
-      component.refs[name] = el;
-    });
-
-    if (effectFn) setTimeout(() => effectFn(component), 0);
-    return component;
   }
 
   component = render();
 
   component.setState = (newState) => {
-    const oldComp = component;
-    currentState = { ...currentState, ...newState };
+    try {
+      const oldComp = component;
+      currentState = { ...currentState, ...newState };
 
-    // Focus preservation logic
-    const activeEl = document.activeElement;
-    let focusRef = null;
-    let selectionStart = 0;
-    let selectionEnd = 0;
+      // Focus preservation logic
+      const activeEl = document.activeElement;
+      let focusRef = null;
+      let selectionStart = 0;
+      let selectionEnd = 0;
 
-    if (activeEl && oldComp.contains(activeEl)) {
-      focusRef = activeEl.getAttribute('data-ref');
-      // Save cursor position if it's an input/textarea
-      if (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA') {
-        selectionStart = activeEl.selectionStart;
-        selectionEnd = activeEl.selectionEnd;
+      if (activeEl && oldComp.contains(activeEl)) {
+        focusRef = activeEl.getAttribute('data-ref');
+        // Save cursor position if it's an input/textarea
+        if (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA') {
+          selectionStart = activeEl.selectionStart || 0;
+          selectionEnd = activeEl.selectionEnd || 0;
+        }
       }
-    }
 
-    const newComp = render();
-    oldComp.replaceWith(newComp);
-    component = newComp;
+      const newComp = render();
+      oldComp.replaceWith(newComp);
+      component = newComp;
 
-    // Restore focus
-    if (focusRef && component.refs[focusRef]) {
-      const elToFocus = component.refs[focusRef];
-      elToFocus.focus();
-      if (elToFocus.tagName === 'INPUT' || elToFocus.tagName === 'TEXTAREA') {
-        elToFocus.setSelectionRange(selectionStart, selectionEnd);
+      // Restore focus
+      if (focusRef && component.refs && component.refs[focusRef]) {
+        const elToFocus = component.refs[focusRef];
+        requestAnimationFrame(() => {
+          elToFocus.focus();
+          if (elToFocus.tagName === 'INPUT' || elToFocus.tagName === 'TEXTAREA') {
+            try {
+              elToFocus.setSelectionRange(selectionStart, selectionEnd);
+            } catch (e) {
+              // Silently fail if setSelectionRange is not supported
+            }
+          }
+        });
       }
+    } catch (error) {
+      console.error('[rnxJS] Error in setState:', error);
     }
   };
 
   component.useEffect = (fn) => {
+    if (typeof fn !== 'function') {
+      console.warn('[rnxJS] useEffect: argument must be a function');
+      return;
+    }
     effectFn = fn;
+  };
+
+  component.onUnmount = (fn) => {
+    if (typeof fn !== 'function') {
+      console.warn('[rnxJS] onUnmount: argument must be a function');
+      return;
+    }
+    unmountCleanup = fn;
   };
 
   component.getState = () => currentState;
@@ -70,6 +133,28 @@ export function createComponent(templateFn, initialState = {}, styles = '') {
     const get = () => currentState[key];
     const set = (val) => component.setState({ [key]: val });
     return [get, set];
+  };
+
+  component.destroy = () => {
+    try {
+      // Run effect cleanup
+      if (effectCleanup && typeof effectCleanup === 'function') {
+        effectCleanup();
+      }
+      // Run unmount cleanup
+      if (unmountCleanup && typeof unmountCleanup === 'function') {
+        unmountCleanup();
+      }
+      // Clear references
+      effectCleanup = null;
+      unmountCleanup = null;
+      effectFn = null;
+      if (component.refs) {
+        component.refs = {};
+      }
+    } catch (error) {
+      console.error('[rnxJS] Error in destroy:', error);
+    }
   };
 
   return component;

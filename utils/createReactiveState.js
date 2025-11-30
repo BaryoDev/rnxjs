@@ -5,7 +5,15 @@
  * @returns {Proxy} - Reactive state proxy with subscribe/unsubscribe methods
  */
 export function createReactiveState(initialState = {}) {
+    // Input validation
+    if (typeof initialState !== 'object' || initialState === null) {
+        throw new TypeError('[rnxJS] createReactiveState: initialState must be an object');
+    }
+
     const subscribers = new Map();
+    const proxyCache = new WeakMap(); // Cache proxies to avoid recreating them
+    const visitedObjects = new WeakSet(); // Prevent circular reference infinite loops
+    const unsubscribeFunctions = new Set(); // Track all unsubscribe functions for cleanup
 
     /**
      * Subscribe to changes on a specific property path
@@ -14,18 +22,50 @@ export function createReactiveState(initialState = {}) {
      * @returns {Function} - Unsubscribe function
      */
     function subscribe(path, callback) {
+        if (typeof path !== 'string' || !path) {
+            console.warn('[rnxJS] subscribe: path must be a non-empty string');
+            return () => { };
+        }
+        if (typeof callback !== 'function') {
+            console.warn('[rnxJS] subscribe: callback must be a function');
+            return () => { };
+        }
+
         if (!subscribers.has(path)) {
             subscribers.set(path, new Set());
         }
         subscribers.get(path).add(callback);
 
         // Return unsubscribe function
-        return () => {
+        const unsubscribe = () => {
             const pathSubscribers = subscribers.get(path);
             if (pathSubscribers) {
                 pathSubscribers.delete(callback);
+                if (pathSubscribers.size === 0) {
+                    subscribers.delete(path);
+                }
             }
+            unsubscribeFunctions.delete(unsubscribe);
         };
+
+        unsubscribeFunctions.add(unsubscribe);
+        return unsubscribe;
+    }
+
+    /**
+     * Unsubscribe all listeners
+     */
+    function unsubscribeAll() {
+        subscribers.clear();
+        unsubscribeFunctions.clear();
+    }
+
+    /**
+     * Destroy the reactive state and cleanup all resources
+     */
+    function destroy() {
+        unsubscribeAll();
+        proxyCache.clear?.(); // Clear cache if supported
     }
 
     /**
@@ -34,19 +74,35 @@ export function createReactiveState(initialState = {}) {
      * @param {*} value - New value
      */
     function notify(path, value) {
-        // Notify exact path subscribers
-        if (subscribers.has(path)) {
-            subscribers.get(path).forEach(callback => callback(value));
-        }
-
-        // Notify parent path subscribers (e.g., 'user' when 'user.email' changes)
-        const parts = path.split('.');
-        for (let i = parts.length - 1; i > 0; i--) {
-            const parentPath = parts.slice(0, i).join('.');
-            if (subscribers.has(parentPath)) {
-                const parentValue = getNestedValue(state, parentPath);
-                subscribers.get(parentPath).forEach(callback => callback(parentValue));
+        try {
+            // Notify exact path subscribers
+            if (subscribers.has(path)) {
+                subscribers.get(path).forEach(callback => {
+                    try {
+                        callback(value);
+                    } catch (error) {
+                        console.error(`[rnxJS] Error in subscriber for path "${path}":`, error);
+                    }
+                });
             }
+
+            // Notify parent path subscribers (e.g., 'user' when 'user.email' changes)
+            const parts = path.split('.');
+            for (let i = parts.length - 1; i > 0; i--) {
+                const parentPath = parts.slice(0, i).join('.');
+                if (subscribers.has(parentPath)) {
+                    const parentValue = getNestedValue(state, parentPath);
+                    subscribers.get(parentPath).forEach(callback => {
+                        try {
+                            callback(parentValue);
+                        } catch (error) {
+                            console.error(`[rnxJS] Error in subscriber for path "${parentPath}":`, error);
+                        }
+                    });
+                }
+            }
+        } catch (error) {
+            console.error(`[rnxJS] Error notifying subscribers for path "${path}":`, error);
         }
     }
 
@@ -57,11 +113,21 @@ export function createReactiveState(initialState = {}) {
      * @returns {*} - Property value or undefined
      */
     function getNestedValue(obj, path) {
-        return path.split('.').reduce((current, key) => current?.[key], obj);
+        try {
+            return path.split('.').reduce((current, key) => current?.[key], obj);
+        } catch (error) {
+            console.error(`[rnxJS] Error getting nested value for path "${path}":`, error);
+            return undefined;
+        }
     }
 
     /**
-     * Create reactive proxy for nested objects
+     * Array methods that mutate the array - need to trigger reactivity
+     */
+    const arrayMutatorMethods = ['push', 'pop', 'shift', 'unshift', 'splice', 'sort', 'reverse'];
+
+    /**
+     * Create reactive proxy for nested objects and arrays
      * @param {Object} target - Object to make reactive
      * @param {string} basePath - Current path prefix
      * @returns {Proxy} - Reactive proxy
@@ -72,19 +138,44 @@ export function createReactiveState(initialState = {}) {
             return target;
         }
 
+        // Check if we've already created a proxy for this object (performance optimization)
+        if (proxyCache.has(target)) {
+            return proxyCache.get(target);
+        }
+
+        // Prevent circular reference infinite loops
+        if (visitedObjects.has(target)) {
+            console.warn(`[rnxJS] Circular reference detected at path "${basePath}". Skipping proxy creation.`);
+            return target;
+        }
+        visitedObjects.add(target);
+
+        // Special handling for arrays
+        const isArray = Array.isArray(target);
+
         // Recursively wrap nested objects
         const handler = {
             get(obj, prop) {
                 const value = obj[prop];
 
-                // FIX: Skip path construction for Symbols
+                // Skip for Symbols and built-in properties
                 if (typeof prop !== 'string') {
                     return value;
                 }
 
                 const currentPath = basePath ? `${basePath}.${prop}` : prop;
 
-                // Return nested proxy for objects
+                // Wrap array mutator methods to trigger reactivity
+                if (isArray && arrayMutatorMethods.includes(prop)) {
+                    return function (...args) {
+                        const result = Array.prototype[prop].apply(obj, args);
+                        // Notify subscribers that the array changed
+                        notify(basePath, obj);
+                        return result;
+                    };
+                }
+
+                // Return nested proxy for objects and arrays
                 if (typeof value === 'object' && value !== null) {
                     return createReactiveProxy(value, currentPath);
                 }
@@ -93,7 +184,7 @@ export function createReactiveState(initialState = {}) {
             },
 
             set(obj, prop, value) {
-                // FIX: Skip path construction for Symbols
+                // Skip for Symbols
                 if (typeof prop !== 'string') {
                     obj[prop] = value;
                     return true;
@@ -112,7 +203,10 @@ export function createReactiveState(initialState = {}) {
             }
         };
 
-        return new Proxy(target, handler);
+        const proxy = new Proxy(target, handler);
+        proxyCache.set(target, proxy);
+
+        return proxy;
     }
 
     // Create the reactive state
@@ -122,13 +216,29 @@ export function createReactiveState(initialState = {}) {
     Object.defineProperty(state, 'subscribe', {
         value: subscribe,
         enumerable: false,
-        writable: false
+        writable: false,
+        configurable: false
     });
 
     Object.defineProperty(state, 'getNestedValue', {
         value: getNestedValue,
         enumerable: false,
-        writable: false
+        writable: false,
+        configurable: false
+    });
+
+    Object.defineProperty(state, '$unsubscribeAll', {
+        value: unsubscribeAll,
+        enumerable: false,
+        writable: false,
+        configurable: false
+    });
+
+    Object.defineProperty(state, '$destroy', {
+        value: destroy,
+        enumerable: false,
+        writable: false,
+        configurable: false
     });
 
     return state;
