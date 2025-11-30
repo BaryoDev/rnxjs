@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - rnxJS Demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .login-card {
+            max-width: 400px;
+            width: 100%;
+            margin: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+    <Card class="login-card shadow-sm">
+        <div class="text-center mb-4">
+            <h1 class="h3">Welcome Back</h1>
+            <p class="text-muted">Please sign in to your dashboard</p>
+        </div>
+
+        <form onsubmit="return false">
+            <FormGroup class="mb-3">
+                <label>Email address</label>
+                <Input type="email" data-bind="email" data-rule="required|email" placeholder="name@example.com" />
+                <div class="text-danger small mt-1" data-bind="errors.email"></div>
+            </FormGroup>
+
+            <FormGroup class="mb-3">
+                <label>Password</label>
+                <Input type="password" data-bind="password" data-rule="required|min:6" placeholder="Enter password" />
+                <div class="text-danger small mt-1" data-bind="errors.password"></div>
+            </FormGroup>
+
+            <FormGroup class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="remember" data-bind="remember">
+                <label class="form-check-label" for="remember">Remember me</label>
+            </FormGroup>
+
+            <Button id="submitBtn" class="w-100 mb-3" variant="primary" onclick="handleLogin()">
+                <span id="btnTextLoading" class="d-none">
+                    <Spinner size="sm" variant="light" /> Signing in...
+                </span>
+                <span id="btnTextSign">Sign In</span>
+            </Button>
+        </form>
+
+        <Alert id="loginErrorAlert" variant="danger" className="mt-3 d-none">
+            <span data-bind="loginError"></span>
+        </Alert>
+
+    </Card>
+
+    <script src="../dist/rnx.global.js"></script>
+    <script>
+        const { createReactiveState, autoRegisterComponents, loadComponents } = rnx;
+
+        const state = createReactiveState({
+            email: '',
+            password: '',
+            // isSubmitting: false, // Removed reactive flag usage for view
+            loginError: '',
+            errors: { email: '', password: '' }
+        });
+
+        autoRegisterComponents();
+        loadComponents(document, state);
+
+        state.subscribe('loginError', (msg) => {
+            const el = document.getElementById('loginErrorAlert');
+            if (el) {
+                if (msg) el.classList.remove('d-none');
+                else el.classList.add('d-none');
+            }
+        });
+
+        window.handleLogin = () => {
+            console.log('HANDLE LOGIN CALLED');
+            // Simple validation check
+            if (!state.email || !state.password || state.errors.email || state.errors.password) {
+                if (!state.email) state.errors.email = 'Email required';
+                state.loginError = "Please fix the errors above.";
+                return;
+            }
+
+            // Manual toggle for button
+            document.getElementById('btnTextSign').classList.add('d-none');
+            document.getElementById('btnTextLoading').classList.remove('d-none');
+            // state.isSubmitting = true; // Not needed for view
+            state.loginError = '';
+
+            // Simulate API call
+            setTimeout(() => {
+                // state.isSubmitting = false;
+                if (state.email === 'admin@demo.com' && state.password === 'secret123') {
+                    window.location.href = 'dashboard.html';
+                } else {
+                    state.loginError = 'Invalid credentials. Try admin@demo.com / secret123';
+                    // Reset button
+                    document.getElementById('btnTextSign').classList.remove('d-none');
+                    document.getElementById('btnTextLoading').classList.add('d-none');
+                }
+            }, 1000);
+        };
+    </script>
+</body>
+
+</html>

@@ -1,6 +1,6 @@
 import { createComponent } from '../../utils/createComponent.js';
 
-export function Col({ size = '', children = '', alignSelf = '' }) {
+export function Column({ size = '', children = '', alignSelf = '' }) {
   const template = () => `
     <div class="col${size ? '-' + size : ''} ${alignSelf ? 'align-self-' + alignSelf : ''}" data-slot></div>
   `;
