@@ -35,9 +35,46 @@ Perfect for:
 - ✅ Recursive rendering of custom components
 - ✅ Conditional rendering via `data-if`
 - ✅ **Reactive data binding with `data-bind`** 🆕
+- ✅ **Built-in Form Validation with `data-rule`** 🆕
 - ✅ Lightweight: No virtual DOM, no bundler required
 - ✅ Works with Bootstrap styles by default
-- ✅ **Production-ready with 61 passing tests** 🎯
+- ✅ **Production-ready with 69 passing tests** 🎯
+
+---
+
+## 🛡️ Form Validation
+
+rnxJS includes a built-in validation system. Just add `data-rule` attributes to your inputs!
+
+```html
+<form>
+  <div class="mb-3">
+    <label>Email address</label>
+    <input type="email" class="form-control" 
+           data-bind="user.email" 
+           data-rule="required|email">
+    <div class="text-danger" data-bind="errors.user.email"></div>
+  </div>
+  
+  <div class="mb-3">
+    <label>Age</label>
+    <input type="number" class="form-control" 
+           data-bind="user.age" 
+           data-rule="required|numeric|min:18">
+    <div class="text-danger" data-bind="errors.user.age"></div>
+  </div>
+</form>
+```
+
+**Supported Rules:**
+- `required`: Field cannot be empty
+- `email`: Must be a valid email format
+- `numeric`: Must be a number
+- `min:n`: Minimum length (string) or value (number)
+- `max:n`: Maximum length (string) or value (number)
+- `pattern:regex`: Custom regex pattern
+
+Validation errors are automatically written to `state.errors[path]`.
 
 ---
 
@@ -352,7 +389,36 @@ registerComponent('MyButton', MyButton);
 
 ## 📋 Changelog
 
-### Version 0.1.9 (Current) - December 2025
+### Version 0.2.0 (Feature Release) - December 2025
+
+**✨ New Features**
+
+- **Built-in Form Validation**: Add validation rules directly to your inputs!
+  ```html
+  <input data-bind="user.email" data-rule="required|email" />
+  <span data-bind="errors.user.email"></span>
+  ```
+  - Supported rules: `required`, `email`, `numeric`, `min:n`, `max:n`, `pattern:regex`
+  - Errors automatically populate `state.errors`
+
+- **Global IntelliSense**: Full VS Code autocompletion support for CDN users via `global.d.ts`.
+  - Just add `/// <reference types="@arnelirobles/rnxjs" />` or rely on automatic detection.
+
+**⚠️ Breaking Changes**
+
+- **Reserved State Property**: The validation system now reserves `state.errors` for validation messages. If you were using `errors` for other purposes in your state root, please rename it.
+
+---
+
+### Version 0.1.10 - December 2025
+
+**🐛 Bug Fixes**
+
+- Fixed race condition in `useEffect` cleanup during rapid state updates.
+
+---
+
+### Version 0.1.9 - December 2025
 
 **🎉 Major Stability Release - Production Ready!**
 
