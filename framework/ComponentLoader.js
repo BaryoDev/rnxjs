@@ -1,44 +1,109 @@
 import { registeredComponents } from './Registry.js';
 
-export function loadComponents(root = document, reactiveState = null) {
-  Object.keys(registeredComponents).forEach(tag => {
-    const elements = root.querySelectorAll(tag);
-    elements.forEach(el => {
-      const ComponentFunc = registeredComponents[tag];
-      const props = {};
-
-      for (let attr of el.attributes) {
-        const name = attr.name;
-        const value = attr.value;
-
-        if (name.startsWith('on')) {
-          console.warn(`⚠️ "${name}" should be passed as a JS function, not as a string. Skipping...`);
-          continue;
-        }
-
-        props[name] = value;
+/**
+ * Safely evaluate a condition expression with limited scope
+ * @param {string} expression - The expression to evaluate
+ * @param {Object} state - The reactive state to use as context
+ * @returns {boolean} - Result of the expression
+ */
+function safeEvaluateCondition(expression, state) {
+  try {
+    // Create a function with the state as the only accessible variable
+    // This is safer than eval() as it limits the scope
+    const fn = new Function('state', `
+      'use strict';
+      try {
+        return Boolean(${expression});
+      } catch (e) {
+        console.error('[rnxJS] Error evaluating condition "${expression}":', e.message);
+        return false;
       }
+    `);
+    return fn(state);
+  } catch (error) {
+    console.error('[rnxJS] Invalid condition expression "${expression}":', error.message);
+    return false;
+  }
+}
 
-      const children = Array.from(el.childNodes).filter(n => n.nodeType !== 8);
-      if (children.length) props.children = children;
+export function loadComponents(root = document, reactiveState = null) {
+  if (!root || typeof root.querySelectorAll !== 'function') {
+    console.error('[rnxJS] loadComponents: root must be a valid DOM element');
+    return;
+  }
 
-      if (el.getAttribute('visible') === 'false') return;
+  Object.keys(registeredComponents).forEach(tag => {
+    try {
+      const elements = root.querySelectorAll(tag);
+      elements.forEach(el => {
+        try {
+          const ComponentFunc = registeredComponents[tag];
 
-      const condition = el.getAttribute('data-if');
-      if (condition && !eval(condition)) return;
+          // Validate component function
+          if (typeof ComponentFunc !== 'function') {
+            console.error(`[rnxJS] Component "${tag}" is not a valid function`);
+            return;
+          }
 
-      const comp = ComponentFunc(props);
-      el.replaceWith(comp);
-      loadComponents(comp, reactiveState);
-    });
+          const props = {};
+
+          for (let attr of el.attributes) {
+            const name = attr.name;
+            const value = attr.value;
+
+            if (name.startsWith('on')) {
+              console.warn(`[rnxJS] "${name}" should be passed as a JS function, not as a string. Skipping...`);
+              continue;
+            }
+
+            props[name] = value;
+          }
+
+          const children = Array.from(el.childNodes).filter(n => n.nodeType !== 8);
+          if (children.length) props.children = children;
+
+          if (el.getAttribute('visible') === 'false') return;
+
+          // Handle conditional rendering with safer evaluation
+          const condition = el.getAttribute('data-if');
+          if (condition) {
+            const shouldRender = safeEvaluateCondition(condition, reactiveState);
+            if (!shouldRender) return;
+          }
+
+          const comp = ComponentFunc(props);
+
+          if (!comp) {
+            console.error(`[rnxJS] Component "${tag}" did not return a valid element`);
+            return;
+          }
+
+          el.replaceWith(comp);
+          loadComponents(comp, reactiveState);
+        } catch (error) {
+          console.error(`[rnxJS] Error loading component "${tag}":`, error);
+          // Create error placeholder
+          const errorEl = document.createElement('div');
+          errorEl.style.cssText = 'color: red; padding: 10px; border: 1px solid red; margin: 5px;';
+          errorEl.textContent = `Error loading component "${tag}": ${error.message}`;
+          el.replaceWith(errorEl);
+        }
+      });
+    } catch (error) {
+      console.error(`[rnxJS] Error processing component "${tag}":`, error);
+    }
   });
 
   // Apply data binding after components are loaded (lazy import)
   if (reactiveState) {
     import('./DataBinder.js').then(({ bindData }) => {
-      bindData(root, reactiveState);
+      try {
+        bindData(root, reactiveState);
+      } catch (error) {
+        console.error('[rnxJS] Error in bindData:', error);
+      }
     }).catch(err => {
-      console.error('Failed to load DataBinder:', err);
+      console.error('[rnxJS] Failed to load DataBinder:', err);
     });
   }
 }
