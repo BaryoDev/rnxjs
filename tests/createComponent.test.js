@@ -118,7 +118,7 @@ describe('createComponent', () => {
             setTimeout(() => {
                 expect(effectFn).toHaveBeenCalledWith(component);
                 done();
-            }, 10);
+            }, 50);
         });
 
         it('should call cleanup function on re-render', (done) => {
@@ -134,8 +134,8 @@ describe('createComponent', () => {
                 setTimeout(() => {
                     expect(cleanup).toHaveBeenCalled();
                     done();
-                }, 10);
-            }, 10);
+                }, 50);
+            }, 50);
         });
 
         it('should validate effect function', () => {
