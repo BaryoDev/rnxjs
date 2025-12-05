@@ -51,11 +51,16 @@ export function loadComponents(root = document, reactiveState = null) {
             const name = attr.name;
             const value = attr.value;
 
-            if (name.startsWith('on')) {
-              console.warn(`[rnxJS] "${name}" should be passed as a JS function, not as a string. Skipping...`);
-              continue;
-            }
+            // Allow string event handlers (e.g. onclick="foo()") to pass through
+            // The component implementation handles whether to use them as attributes or listeners
+            if (name.startsWith('on') && typeof value !== 'string') {
+              // Only warn if it's somehow NOT a string (which is rare for attributes) but we want to allow strings
+              // Actually key point: HTML attributes are always strings.
+              // So we should just remove the check entirely or only warn if we strictly wanted function Refs (which bindData does, but loadComponents parses HTML)
 
+              // Decision: Just allow it. Remove the warning block.
+            }
+            // Removed blocking check for 'on' prefix strings
             props[name] = value;
           }
 

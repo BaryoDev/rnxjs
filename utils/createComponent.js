@@ -22,9 +22,15 @@ export function createComponent(templateFn, initialState = {}, styles = '') {
         return errorDiv;
       }
 
-      if (children && component.querySelector('[data-slot]')) {
-        const slot = component.querySelector('[data-slot]');
-        Array.isArray(children) ? children.forEach(c => slot.appendChild(c)) : slot.appendChild(children);
+      if (children) {
+        let slot = component.querySelector('[data-slot]');
+        if (!slot && component.hasAttribute('data-slot')) {
+          slot = component;
+        }
+
+        if (slot) {
+          Array.isArray(children) ? children.forEach(c => slot.appendChild(c)) : slot.appendChild(children);
+        }
       }
 
       component.refs = {};
@@ -35,8 +41,8 @@ export function createComponent(templateFn, initialState = {}, styles = '') {
         }
       });
 
-      if (effectFn) {
-        setTimeout(() => {
+      setTimeout(() => {
+        if (effectFn) {
           try {
             // Run cleanup from previous effect if exists
             if (effectCleanup && typeof effectCleanup === 'function') {
@@ -50,8 +56,8 @@ export function createComponent(templateFn, initialState = {}, styles = '') {
           } catch (error) {
             console.error('[rnxJS] Error in useEffect:', error);
           }
-        }, 0);
-      }
+        }
+      }, 0);
 
       return component;
     } catch (error) {

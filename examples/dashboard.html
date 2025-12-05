@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - rnxJS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+        }
+
+        .sidebar .nav-link {
+            color: #333;
+        }
+
+        .sidebar .nav-link.active {
+            color: #0d6efd;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <div class="d-flex flex-column flex-shrink-0 p-3 bg-light sidebar" style="width: 280px;">
+            <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+                <span class="fs-4">🚀 rnxAdmin</span>
+            </a>
+            <hr>
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active" onclick="navigate('home')">
+                        <i class="bi bi-house me-2"></i> Home
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" onclick="navigate('users')">
+                        <i class="bi bi-people me-2"></i> Users
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" onclick="navigate('settings')">
+                        <i class="bi bi-gear me-2"></i> Settings
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-grow-1 p-4">
+
+            <!-- Navbar -->
+            <nav class="navbar navbar-light bg-light mb-4 rounded shadow-sm">
+                <div class="container-fluid">
+                    <span class="navbar-brand mb-0 h1">Dashboard</span>
+                    <Button variant="outline-danger" size="sm" onclick="logout()">Logout</Button>
+                </div>
+            </nav>
+
+            <!-- Stats Row -->
+            <Row class="mb-4">
+                <Column size="3">
+                    <Card title="Total Users" subtitle="Increase in 30 Days">
+                        <h2 class="my-2" data-bind="stats.users">0</h2>
+                        <span class="text-success small fw-bold"><i class="bi bi-arrow-up"></i> 12%</span>
+                    </Card>
+                </Column>
+                <Column size="3">
+                    <Card title="Revenue" subtitle="Monthly Revenue">
+                        <h2 class="my-2" data-bind="stats.revenue">$0</h2>
+                        <span class="text-success small fw-bold"><i class="bi bi-arrow-up"></i> 8%</span>
+                    </Card>
+                </Column>
+                <Column size="3">
+                    <Card title="System Errors" subtitle="Last 24 Hours">
+                        <h2 class="my-2 text-danger" data-bind="stats.errors">0</h2>
+                        <span class="text-danger small fw-bold"><i class="bi bi-arrow-down"></i> 2%</span>
+                    </Card>
+                </Column>
+                <Column size="3">
+                    <Card title="Active Sessions" subtitle="Currently Online">
+                        <h2 class="my-2">84</h2>
+                        <span class="text-muted small">Stable</span>
+                    </Card>
+                </Column>
+            </Row>
+
+            <!-- User Table -->
+            <Card title="User Management">
+                <div class="d-flex justify-content-end mb-3">
+                    <Button variant="primary" onclick="openAddUserModal()">
+                        <i class="bi bi-plus-lg"></i> Add User
+                    </Button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userTableBody">
+                            <!-- Populated via JS for now (v-for equivalent coming soon?) -->
+                        </tbody>
+                    </table>
+                </div>
+            </Card>
+
+            <!-- Add User Modal -->
+            <Modal id="addUserModal" title="Add New User">
+                <FormGroup class="mb-3">
+                    <label>Full Name</label>
+                    <Input data-bind="newUser.name" />
+                </FormGroup>
+                <FormGroup class="mb-3">
+                    <label>Email</label>
+                    <Input type="email" data-bind="newUser.email" />
+                </FormGroup>
+                <div slot="footer">
+                    <Button variant="secondary" data-bs-dismiss="modal">Cancel</Button>
+                    <Button variant="primary" onclick="saveUser()">Save User</Button>
+                </div>
+            </Modal>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../dist/rnx.global.js"></script>
+
+    <script>
+        const { createReactiveState, autoRegisterComponents, loadComponents } = rnx;
+
+        const state = createReactiveState({
+            stats: { users: 154, revenue: '12k', errors: 2 },
+            users: [
+                { id: 1, name: 'John Doe', email: 'john@example.com', status: 'Active' },
+                { id: 2, name: 'Jane Smith', email: 'jane@test.com', status: 'Pending' }
+            ],
+            newUser: { name: '', email: '' }
+        });
+
+        // Setup Reactivity
+        autoRegisterComponents();
+        loadComponents(document, state);
+
+        // -- Logic --
+
+        function renderUsers() {
+            const tbody = document.getElementById('userTableBody');
+            tbody.innerHTML = state.users.map(u => `
+                <tr>
+                    <td>${u.name}</td>
+                    <td>${u.email}</td>
+                    <td><span class="badge bg-${u.status === 'Active' ? 'success' : 'warning'}">${u.status}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary">Edit</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Initial Render
+        renderUsers();
+        state.subscribe('users', renderUsers);
+
+        // Modal Logic
+        window.openAddUserModal = () => {
+            state.newUser.name = '';
+            state.newUser.email = '';
+            // New Feature: Programmatic Modal Control
+            const modalEl = document.getElementById('addUserModal');
+            if (modalEl && modalEl.show) {
+                modalEl.show();
+            } else {
+                // Fallback for non-JS bootstrap
+                const bsModal = new bootstrap.Modal(modalEl);
+                bsModal.show();
+            }
+        };
+
+        window.saveUser = () => {
+            if (state.newUser.name) {
+                state.users.push({
+                    id: Date.now(),
+                    name: state.newUser.name,
+                    email: state.newUser.email,
+                    status: 'Active'
+                });
+                // Close Modal
+                const modalEl = document.getElementById('addUserModal');
+                if (modalEl && modalEl.hide) {
+                    modalEl.hide();
+                }
+
+                // Update stats
+                state.stats.users++;
+            }
+        };
+
+        window.logout = () => window.location.href = 'login.html';
+    </script>
+</body>
+
+</html>

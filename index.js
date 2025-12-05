@@ -15,7 +15,7 @@ export { Alert } from './components/Alert/Alert.js';
 export { Badge } from './components/Badge/Badge.js';
 export { Card } from './components/Card/Card.js';
 export { Checkbox } from './components/Checkbox/Checkbox.js';
-export { Col } from './components/Col/Col.js';
+export { Column } from './components/Column/Column.js';
 export { Container } from './components/Container/Container.js';
 export { FormGroup } from './components/FormGroup/FormGroup.js';
 export { Modal } from './components/Modal/Modal.js';

@@ -347,6 +347,21 @@ registerComponent('MyButton', MyButton);
 
 ## 📋 Changelog
 
+### Version 0.2.1 (Maintenance Release) - December 2025
+
+**🐛 Bug Fixes & Improvements**
+
+- **Component Rename**: `<Col>` renamed to `<Column>` to avoid conflict with native HTML `<col>` void element.
+- **Validation**: Fixed `onclick` and string-based event attribute validation warnings.
+- **Framework**: `createComponent` now correctly identifies root-level slots.
+- **Input**: `Input` component now passes through all unknown attributes (enabling `data-bind` support).
+
+**⚠️ Breaking Changes**
+
+- **`<Col>` is now `<Column>`**: Please update your layouts to use `<Column>` instead of `<Col>`.
+
+---
+
 ### Version 0.2.0 (Feature Release) - December 2025
 
 **✨ New Features**
@@ -538,7 +553,7 @@ This release focuses on **framework stabilization**, fixing 13 identified bugs, 
 **📦 Components Available**
 
 - Form: `Button`, `Input`, `Checkbox`, `Radio`, `Select`, `Textarea`, `FormGroup`
-- Layout: `Container`, `Row`, `Col`
+- Layout: `Container`, `Row`, `Column`
 - UI: `Alert`, `Badge`, `Card`, `Modal`, `Spinner`, `Toast`, `Pagination`
 - Advanced: `Tabs`, `Accordion`
 

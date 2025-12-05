@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Table Demo - rnxJS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="p-4 bg-light">
+
+    <Container>
+        <Card title="Interactive Data Table">
+            <Row class="mb-3">
+                <Column class="col-md-6">
+                    <Input placeholder="Search users..." data-bind="search" />
+                </Column>
+                <Column class="col-md-6 text-end">
+                    <span class="text-muted">Showing <strong data-bind="filteredCount">0</strong> users</span>
+                </Column>
+            </Row>
+
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th onclick="sortBy('id')" style="cursor: pointer">ID ↕</th>
+                            <th onclick="sortBy('name')" style="cursor: pointer">Name ↕</th>
+                            <th onclick="sortBy('role')" style="cursor: pointer">Role ↕</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+
+            <div class="alert alert-info" data-if="filteredCount === 0">
+                No users found matching "<span data-bind="search"></span>"
+            </div>
+        </Card>
+    </Container>
+
+    <script src="../dist/rnx.global.js"></script>
+    <script>
+        const { createReactiveState, autoRegisterComponents, loadComponents } = rnx;
+
+        const users = [
+            { id: 1, name: 'Alice Johnson', role: 'Admin', status: 'Active' },
+            { id: 2, name: 'Bob Smith', role: 'Editor', status: 'Active' },
+            { id: 3, name: 'Charlie Brown', role: 'Viewer', status: 'Inactive' },
+            { id: 4, name: 'David Lee', role: 'Admin', status: 'Active' },
+            { id: 5, name: 'Eve Wilson', role: 'Editor', status: 'Pending' }
+        ];
+
+        const state = createReactiveState({
+            search: '',
+            filteredCount: users.length,
+            sortKey: 'id',
+            sortAsc: true
+        });
+
+        autoRegisterComponents();
+        loadComponents(document, state);
+
+        function renderTable() {
+            let filtered = users.filter(u =>
+                u.name.toLowerCase().includes(state.search.toLowerCase()) ||
+                u.role.toLowerCase().includes(state.search.toLowerCase())
+            );
+
+            // Sort
+            filtered.sort((a, b) => {
+                if (a[state.sortKey] < b[state.sortKey]) return state.sortAsc ? -1 : 1;
+                if (a[state.sortKey] > b[state.sortKey]) return state.sortAsc ? 1 : -1;
+                return 0;
+            });
+
+            state.filteredCount = filtered.length;
+
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = filtered.map(u => `
+                <tr>
+                    <td>${u.id}</td>
+                    <td>${u.name}</td>
+                    <td>${u.role}</td>
+                    <td><span class="badge bg-primary">${u.status}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        state.subscribe('search', renderTable);
+        state.subscribe('sortKey', renderTable);
+        state.subscribe('sortAsc', renderTable);
+
+        window.sortBy = (key) => {
+            if (state.sortKey === key) {
+                state.sortAsc = !state.sortAsc;
+            } else {
+                state.sortKey = key;
+                state.sortAsc = true;
+            }
+        };
+
+        renderTable();
+    </script>
+</body>
+
+</html>
