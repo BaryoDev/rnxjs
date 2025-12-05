@@ -347,6 +347,13 @@ registerComponent('MyButton', MyButton);
 
 ## 📋 Changelog
 
+### Version 0.2.2 (NPM Release) - December 2025
+
+- **Release Bump**: Version bump to retry NPM publication.
+- **Includes**: All fixes from v0.2.1 (Col rename, validation fixes).
+
+---
+
 ### Version 0.2.1 (Maintenance Release) - December 2025
 
 **🐛 Bug Fixes & Improvements**
