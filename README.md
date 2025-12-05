@@ -5,151 +5,109 @@
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/@arnelirobles/rnxjs)](https://bundlephobia.com/package/@arnelirobles/rnxjs)
 [![License](https://img.shields.io/npm/l/@arnelirobles/rnxjs)](https://github.com/arnelirobles/rnxjs/blob/main/LICENSE)
 [![Tests](https://img.shields.io/badge/tests-61%20passing-brightgreen)](https://github.com/arnelirobles/rnxjs)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/arnelirobles/rnxjs/blob/main/CONTRIBUTING.md)
 
-Minimalist Vanilla JS component system that doesn't promise anything — just works.
+**The Bootstrap-Native Framework for Production Apps.**
 
-> Designed by [@arnelirobles](https://www.npmjs.com/~arnelirobles)  
-> Built to be Bootstrap-compatible and framework-free.
-
----
-
-## 💼 Use Cases
-
-Perfect for:
-- ✅ Small to medium SPAs without build complexity
-- ✅ Progressive enhancement of existing sites
-- ✅ Rapid prototyping and MVPs
-- ✅ Learning reactive programming concepts
-- ✅ Projects requiring zero dependencies
-- ✅ Bootstrap-based applications
-- ✅ CDN-only projects (no npm/build step needed)
+> Build Reactive Bootstrap Apps without a Build Step.
+> Designed for Backend Developers (Django, Rails, Laravel) and Internal Tools.
 
 ---
 
-## ✨ Features
+## 🚀 Why rnxJS?
 
-- ✅ Use components like `<Button>`, `<Input>`, `<Card>` in pure HTML
-- ✅ Automatically maps attributes to props
-- ✅ Supports `<slot>` content and nesting
-- ✅ Recursive rendering of custom components
-- ✅ Conditional rendering via `data-if`
-- ✅ **Reactive data binding with `data-bind`** 🆕
-- ✅ **Built-in Form Validation with `data-rule`** 🆕
-- ✅ Lightweight: No virtual DOM, no bundler required
-- ✅ Works with Bootstrap styles by default
-- ✅ **Production-ready with 69 passing tests** 🎯
+You love **Bootstrap**. You want **Reactivity**. But you hate complex build steps, `npm install`, and configuring Webpack just to add a modal to your Admin Dashboard.
 
----
+**rnxJS** is the missing link. It gives you a full reactive component system that works natively with Bootstrap classes, directly in the browser.
 
-## 🛡️ Form Validation
-
-rnxJS includes a built-in validation system. Just add `data-rule` attributes to your inputs!
-
-```html
-<form>
-  <div class="mb-3">
-    <label>Email address</label>
-    <input type="email" class="form-control" 
-           data-bind="user.email" 
-           data-rule="required|email">
-    <div class="text-danger" data-bind="errors.user.email"></div>
-  </div>
-  
-  <div class="mb-3">
-    <label>Age</label>
-    <input type="number" class="form-control" 
-           data-bind="user.age" 
-           data-rule="required|numeric|min:18">
-    <div class="text-danger" data-bind="errors.user.age"></div>
-  </div>
-</form>
-```
-
-**Supported Rules:**
-- `required`: Field cannot be empty
-- `email`: Must be a valid email format
-- `numeric`: Must be a number
-- `min:n`: Minimum length (string) or value (number)
-- `max:n`: Maximum length (string) or value (number)
-- `pattern:regex`: Custom regex pattern
-
-Validation errors are automatically written to `state.errors[path]`.
+| Feature         | rnxJS                 | Alpine.js          | React           |
+| --------------- | --------------------- | ------------------ | --------------- |
+| **Build Step**  | **No**                | No                 | Yes             |
+| **Start Time**  | **Instant**           | Instant            | Slow            |
+| **Included UI** | **✅ (Bootstrap)**     | ❌                  | ❌               |
+| **State**       | **✅ Reactive**        | ✅ Reactive         | ✅ Reactive      |
+| **Best For**    | **Dashboards / MVPs** | Micro-interactions | Enterprise SPAs |
 
 ---
 
-## 📊 When to Use rnxJS
+## 💼 Perfect for Backend Developers
 
-| Feature | rnxJS | React | Vue | Alpine.js |
-|---------|-------|-------|-----|-----------|
-| Bundle Size | ~10KB | ~40KB | ~30KB | ~15KB |
-| Build Required | No | Yes | Optional | No |
-| Learning Curve | Low | Medium | Medium | Low |
-| Reactive Data | ✅ | ✅ | ✅ | ✅ |
-| Component System | ✅ | ✅ | ✅ | ❌ |
-| Bootstrap Integration | ✅ | Via libs | Via libs | ❌ |
-| TypeScript | Definitions | ✅ | ✅ | ❌ |
-| Production Ready | ✅ | ✅ | ✅ | ✅ |
+Stop fighting with frontend tooling. `rnxJS` allows you to sprinkle powerful interactive UI into your server-rendered templates (Django, Laravel, ASP.NET, Rails) with zero friction.
 
-**Choose rnxJS when**: You want reactive components without build complexity, need Bootstrap integration, or value simplicity over ecosystem size.
+- ✅ **No Build Step:** Just add a script tag.
+- ✅ **Bootstrap Native:** Uses standard Bootstrap 5 classes.
+- ✅ **Server-Friendly:** Pass server data directly to components.
 
-**Consider alternatives when**: Building large enterprise apps (React/Vue), need extensive TypeScript support, or require a vast plugin ecosystem.
-
----
-
-## 🚀 Getting Started
-
-### 📦 Install
-
-```bash
-npm install @arnelirobles/rnxjs
-```
-
-### 🌐 CDN / Script Tag (No Build Tools)
-
-Simply download `dist/rnx.global.js` or use a CDN (once published) and include it:
-
-```html
-<script src="dist/rnx.global.js"></script>
-<script>
-  // Access everything via the global 'rnx' object
-  rnx.autoRegisterComponents();
-  rnx.loadComponents();
-</script>
+```javascript
+// In your Django/Laravel template:
+const state = rnx.createReactiveState({
+  user: {{ user_json|safe }}, // Inject server data directly
+  isLoading: false
+});
 ```
 
 ---
 
-### 🧪 Example Usage
+## ✨ Features at a Glance
+
+- **Batteries Included:** Comes with `<Button>`, `<Modal>`, `<Card>`, `<Input>` out of the box.
+- **Reactive Data Binding:** `data-bind="user.email"` auto-syncs with your state.
+- **Form Validation:** Built-in validation logic (`required`, `email`, `min`).
+- **Zero Dependencies:** No hidden costs. 10KB gzipped.
+
+---
+
+## 🚀 Quick Start
+
+### 1. The "No Build" Way (Recommended for Backend/Legacy)
+
+Add the script and start writing code.
 
 ```html
 <!DOCTYPE html>
 <html>
   <head>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css" rel="stylesheet" />
   </head>
   <body>
-    <Button label="Click Me" variant="primary" />
+    <!-- Use rnxJS Components immediately -->
+    <Container class="mt-5">
+        <Card>
+            <h1 data-bind="title"></h1>
+            <Input data-bind="user.name" placeholder="Enter your name" />
+            <div class="mt-3">
+                Hello, <strong data-bind="user.name">Guest</strong>!
+            </div>
+        </Card>
+    </Container>
 
-    <script type="module" src="/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@arnelirobles/rnxjs/dist/rnx.global.js"></script>
+    <script>
+      // 1. Initialize State
+      const state = rnx.createReactiveState({
+        title: 'Welcome to rnxJS',
+        user: { name: '' }
+      });
+
+      // 2. Load the App
+      rnx.autoRegisterComponents();
+      rnx.loadComponents(document, state);
+    </script>
   </body>
 </html>
 ```
 
+### 2. The NPM Way (For Modern Stacks)
+
+```bash
+npm install @arnelirobles/rnxjs
+```
+
 ```js
-// main.js (ES Module approach)
-import {
-  autoRegisterComponents,
-  loadComponents
-} from '@arnelirobles/rnxjs';
+import { createReactiveState, autoRegisterComponents, loadComponents } from '@arnelirobles/rnxjs';
 
 autoRegisterComponents();
 loadComponents();
 ```
-
 **Or using the global bundle:**
 
 ```html
