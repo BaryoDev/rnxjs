@@ -28,7 +28,7 @@ export function Chips({ items = [], type = 'filter', onselect }) {
     const component = createComponent(template, { items, type });
 
     component.useEffect(() => {
-        items.forEach((item, idx) => {
+        parsedItems.forEach((item, idx) => {
             const el = component.refs[`chip-${idx}`];
             if (el) {
                 el.addEventListener('click', () => {
