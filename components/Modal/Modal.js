@@ -1,7 +1,30 @@
 import { createComponent } from '../../utils/createComponent.js';
 import { bs } from '../../utils/bootstrap.js';
 
-export function Modal({ id = '', title = '', dismissable = true, children = '', footer = '' }) {
+export function Modal({ id = '', title = '', dismissable = true, children = [], footer = '' }) {
+  // Extract footer from children if not provided as prop
+  let mainContent = children;
+  let footerContent = footer;
+
+
+
+  if (Array.isArray(children)) {
+    // Find index of element with slot="footer"
+    const footerSlotIndex = children.findIndex(c =>
+      c && c.nodeType === 1 && c.getAttribute && c.getAttribute('slot') === 'footer'
+    );
+
+    if (footerSlotIndex !== -1) {
+      const footerSlotNode = children[footerSlotIndex];
+      // Use innerHTML if present, or just the content if it's a wrapper
+      footerContent = footerSlotNode.innerHTML;
+
+      // Remove valid footer slot from mainContent
+      // crucial: filter using the exact index found
+      mainContent = children.filter((_, i) => i !== footerSlotIndex);
+    }
+  }
+
   const template = () => `
     <div class="modal fade" id="${id}" tabindex="-1" aria-labelledby="${id}-label" aria-hidden="true" data-ref="modalRoot">
       <div class="modal-dialog">
@@ -16,9 +39,9 @@ export function Modal({ id = '', title = '', dismissable = true, children = '', 
 
           <div class="modal-body" data-slot></div>
 
-          ${footer ? `
+          ${footerContent ? `
           <div class="modal-footer">
-            ${footer}
+            ${footerContent}
           </div>
           ` : ''}
 
@@ -27,7 +50,8 @@ export function Modal({ id = '', title = '', dismissable = true, children = '', 
     </div>
   `;
 
-  const component = createComponent(template, { id, title, children, footer });
+  // We need to pass mainContent as children to createComponent to render it in default slot
+  const component = createComponent(template, { id, title, children: mainContent, footer: footerContent });
 
   component.useEffect((el) => {
     // Check if Bootstrap JS is available

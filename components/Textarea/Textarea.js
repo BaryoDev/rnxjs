@@ -1,9 +1,15 @@
 import { createComponent } from '../../utils/createComponent.js';
 
-export function Textarea({ name = '', value = '', rows = 4, placeholder = '', required = false, disabled = false, onchange }) {
+export function Textarea({ name = '', value = '', rows = 4, placeholder = '', required = false, disabled = false, onchange, id, className = '', ...rest }) {
+  const attrs = Object.entries(rest).map(([k, v]) => {
+    if (k === 'class' || k === 'className') return '';
+    if (typeof v === 'string') return `${k}="${v}"`;
+    return '';
+  }).join(' ');
+
   const template = () => `
     <textarea
-      class="form-control"
+      class="form-control ${className || rest.class || ''}"
       name="${name}"
       rows="${rows}"
       placeholder="${placeholder}"
@@ -11,6 +17,7 @@ export function Textarea({ name = '', value = '', rows = 4, placeholder = '', re
       ${disabled ? 'disabled' : ''}
       data-ref="textarea"
       data-rnx-ignore="true"
+      ${attrs}
     >${value}</textarea>
   `;
 
