@@ -2,8 +2,9 @@ import * as moduleExports from '../components/index.js';
 import { registerComponent } from './Registry.js';
 
 export function autoRegisterComponents() {
-  // In global bundle (IIFE), use window.rnx, otherwise use module exports
-  const exports = (typeof window !== 'undefined' && window.rnx) || moduleExports;
+  // Direct usage of imported modules is safer for bundlers
+  // In global bundle (IIFE), we might rely on window, but moduleExports is reliable here if imported
+  const exports = moduleExports;
 
   Object.entries(exports).forEach(([name, comp]) => {
     if (typeof comp === 'function' && /^[A-Z]/.test(name)) {
