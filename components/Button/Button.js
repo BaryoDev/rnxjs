@@ -3,7 +3,7 @@ import { createComponent } from '../../utils/createComponent.js';
 export function Button({ label = '', variant = 'primary', size = '', block = false, onclick, children }) {
   const template = () => `
     <button 
-      class="btn btn-${variant} ${size ? 'btn-' + size : ''} ${block === 'true' ? 'w-100' : ''}" 
+      class="btn btn-${variant} ${size ? 'btn-' + size : ''} ${block === 'true' ? 'w-100' : ''}\" 
       type="button"
       data-ref="btn"
     >
@@ -15,7 +15,17 @@ export function Button({ label = '', variant = 'primary', size = '', block = fal
   const btn = createComponent(template, { label, variant, size, block, children });
 
   btn.useEffect(() => {
-    if (onclick) btn.refs.btn.addEventListener('click', onclick);
+    if (onclick && btn.refs && btn.refs.btn) {
+      const handler = onclick;
+      btn.refs.btn.addEventListener('click', handler);
+
+      // Return cleanup function to remove event listener
+      return () => {
+        if (btn.refs && btn.refs.btn) {
+          btn.refs.btn.removeEventListener('click', handler);
+        }
+      };
+    }
   });
 
   return btn;

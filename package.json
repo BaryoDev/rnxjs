@@ -1,21 +1,52 @@
 {
   "name": "@arnelirobles/rnxjs",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Minimalist Vanilla JS component system with reactive data binding.",
   "main": "index.js",
   "type": "module",
+  "types": "index.d.ts",
   "keywords": [
-    "vanilla",
+    "vanilla-js",
     "javascript",
     "framework",
+    "reactive",
     "components",
     "bootstrap",
-    "rnxjs"
+    "rnxjs",
+    "data-binding",
+    "two-way-binding",
+    "reactive-state",
+    "state-management",
+    "web-components",
+    "ui-framework",
+    "no-build",
+    "cdn",
+    "lightweight",
+    "minimal-framework",
+    "spa",
+    "single-page-app",
+    "dom-manipulation",
+    "event-driven",
+    "proxy-based",
+    "zero-dependencies"
   ],
   "author": "Arnel Isiderio Robles",
   "license": "MPL-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arnelirobles/rnxjs"
+  },
+  "homepage": "https://github.com/arnelirobles/rnxjs#readme",
+  "bugs": {
+    "url": "https://github.com/arnelirobles/rnxjs/issues"
+  },
+  "funding": {
+    "type": "ko-fi",
+    "url": "https://ko-fi.com/arnelirobles"
+  },
   "files": [
     "index.js",
+    "index.d.ts",
     "utils/",
     "framework/",
     "components/",
@@ -28,10 +59,17 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "test": "echo 'No tests yet. Skipping.'",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
     "build": "node build.js"
   },
   "devDependencies": {
-    "esbuild": "^0.27.0"
+    "esbuild": "^0.27.0",
+    "vitest": "^1.0.4",
+    "@vitest/ui": "^1.0.4",
+    "@vitest/coverage-v8": "^1.0.4",
+    "happy-dom": "^12.10.3"
   }
 }
