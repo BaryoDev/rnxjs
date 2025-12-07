@@ -4,14 +4,14 @@ export function Pagination({ pages = '[]', onpageclick }) {
   let parsedPages = [];
   try {
     parsedPages = typeof pages === 'string' ? JSON.parse(pages) : pages;
-  } catch {}
+  } catch { }
 
   const template = () => `
     <nav>
       <ul class="pagination">
         ${parsedPages.map(p => `
           <li class="page-item${p.active ? ' active' : ''}">
-            <a class="page-link" href="#" data-page="${p.value}">${p.label}</a>
+            <a class="page-link" href="#" data-page="${p.value}" data-rnx-ignore="true">${p.label}</a>
           </li>
         `).join('')}
       </ul>

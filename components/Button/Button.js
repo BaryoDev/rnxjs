@@ -32,7 +32,7 @@ export function Button({ label = '', variant = 'filled', size = '', icon = '', b
       ${clickAttr}
       ${restAttrs}
     >
-      ${icon ? `<span class="material-symbols-outlined">${icon}</span>` : ''}
+      ${icon ? `<i class="bi bi-${icon} me-2"></i>` : ''}
       ${label}
       <span data-slot></span>
     </button>

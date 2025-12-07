@@ -19,9 +19,10 @@ export function SegmentedButton({ options = [], selected = '', onchange }) {
     return `
           <button type="button" class="btn btn-outline-secondary border-0 ${isSelected ? 'active bg-secondary-subtle text-secondary-emphasis' : ''}" 
                   data-value="${opt.value}"
+                  data-rnx-ignore="true"
                   data-ref="btn-${opt.value}"
                   style="border-right: 1px solid var(--md-sys-color-outline-variant) !important; border-radius: 0;">
-            ${isSelected ? '<span class="material-symbols-outlined fs-6 me-1">check</span>' : (opt.icon ? `<span class="material-symbols-outlined fs-6 me-1">${opt.icon}</span>` : '')}
+            ${isSelected ? '<i class="bi bi-check fs-6 me-1"></i>' : (opt.icon ? `<i class="bi bi-${opt.icon} fs-6 me-1"></i>` : '')}
             ${opt.label}
           </button>
         `;

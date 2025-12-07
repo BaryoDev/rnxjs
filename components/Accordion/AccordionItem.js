@@ -7,7 +7,7 @@ export function AccordionItem({ parent = 'accordion', title = '', index = '0', s
   const template = () => `
     <div class="accordion-item">
       <h2 class="accordion-header" id="${headingId}">
-        <button class="accordion-button ${!show ? 'collapsed' : ''}" type="button" data-bs-toggle="collapse" data-bs-target="#${collapseId}" aria-expanded="${show}" aria-controls="${collapseId}">
+        <button class="accordion-button ${!show ? 'collapsed' : ''}" type="button" data-bs-toggle="collapse" data-bs-target="#${collapseId}" aria-expanded="${show}" aria-controls="${collapseId}" data-rnx-ignore="true">
           ${title}
         </button>
       </h2>

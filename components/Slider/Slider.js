@@ -7,6 +7,7 @@ export function Slider({ value = 0, min = 0, max = 100, step = 1, oninput }) {
       <input type="range" class="form-range" 
              min="${min}" max="${max}" step="${step}" value="${value}" 
              data-ref="range"
+             data-rnx-ignore="true"
              style="accent-color: var(--md-sys-color-primary);">
     </div>
   `;

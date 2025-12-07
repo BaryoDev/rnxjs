@@ -1,9 +1,9 @@
 import { createComponent } from '../../utils/createComponent.js';
 
 export function List({ items = [] }) {
-    // items: [{ headline, supportingText, leadingIcon, trailingIcon, onclick }]
+  // items: [{ headline, supportingText, leadingIcon, trailingIcon, onclick }]
 
-    const template = ({ items }) => `
+  const template = ({ items }) => `
     <ul class="list-group list-group-flush">
       ${items.map((item, idx) => `
         <li class="list-group-item d-flex align-items-center border-0 px-3 py-2 ${item.onclick ? 'list-group-item-action' : ''}" 
@@ -13,7 +13,7 @@ export function List({ items = [] }) {
             
            ${item.leadingIcon ? `
              <div class="me-3 text-secondary">
-               <span class="material-symbols-outlined">${item.leadingIcon}</span>
+               <i class="bi bi-${item.leadingIcon}"></i>
              </div>
            ` : ''}
            
@@ -24,7 +24,7 @@ export function List({ items = [] }) {
            
            ${item.trailingIcon ? `
              <div class="ms-3 text-secondary">
-               <span class="material-symbols-outlined">${item.trailingIcon}</span>
+               <i class="bi bi-${item.trailingIcon}"></i>
              </div>
            ` : ''}
         </li>
@@ -32,16 +32,16 @@ export function List({ items = [] }) {
     </ul>
   `;
 
-    const component = createComponent(template, { items });
+  const component = createComponent(template, { items });
 
-    component.useEffect(() => {
-        items.forEach((item, idx) => {
-            const el = component.refs[`item-${idx}`];
-            if (el && item.onclick) {
-                el.addEventListener('click', item.onclick);
-            }
-        });
+  component.useEffect(() => {
+    items.forEach((item, idx) => {
+      const el = component.refs[`item-${idx}`];
+      if (el && item.onclick) {
+        el.addEventListener('click', item.onclick);
+      }
     });
+  });
 
-    return component;
+  return component;
 }

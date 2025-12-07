@@ -17,7 +17,10 @@ export function Tabs({ children = '' }) {
     const content = tabs.refs.content;
 
     tabElements.forEach((el, i) => {
-      const tabId = `tab-${i}`;
+      // Use existing ID if provided, otherwise generate one
+      const existingId = el.getAttribute('id');
+      const tabId = existingId || `tab-${i}`;
+
       const title = el.getAttribute('title') || `Tab ${i + 1}`;
       const active = i === 0;
 

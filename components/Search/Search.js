@@ -5,16 +5,17 @@ export function Search({ placeholder = 'Search...', value = '', onsearch }) {
   const template = ({ value }) => `
     <div class="input-group" style="background-color: var(--md-sys-color-surface-variant); border-radius: 28px; padding: 4px 16px;">
       <span class="input-group-text bg-transparent border-0 p-0 me-2">
-        <span class="material-symbols-outlined">search</span>
+        <i class="bi bi-search"></i>
       </span>
       <input type="text" class="form-control bg-transparent border-0 shadow-none p-0" 
              placeholder="${placeholder}" 
              value="${value}" 
              data-ref="input"
+             data-rnx-ignore="true"
              style="height: 40px;">
       ${value ? `
-        <button class="btn btn-link text-muted p-0 ms-2" data-ref="clear">
-          <span class="material-symbols-outlined">close</span>
+        <button class="btn btn-link text-muted p-0 ms-2" data-ref="clear" data-rnx-ignore="true">
+          <i class="bi bi-x-lg"></i>
         </button>
       ` : ''}
     </div>
