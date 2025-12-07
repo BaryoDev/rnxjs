@@ -1,0 +1,11 @@
+node_modules
+.git
+.ds_store
+dist
+!dist/rnx.global.js
+!dist/rnx.esm.js
+!dist/rnx.global.js.map
+!dist/rnx.esm.js.map
+examples/**/node_modules
+examples/**/dist
+examples/showcase
