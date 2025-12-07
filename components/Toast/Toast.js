@@ -1,4 +1,5 @@
 import { createComponent } from '../../utils/createComponent.js';
+import { bs } from '../../utils/bootstrap.js';
 
 export function Toast({ header = '', body = '', autohide = true, delay = 5000 }) {
   const template = () => `
@@ -15,9 +16,22 @@ export function Toast({ header = '', body = '', autohide = true, delay = 5000 })
 
   const toast = createComponent(template, { header, body, autohide, delay });
 
-  toast.useEffect(() => {
-    const bsToast = bootstrap.Toast.getOrCreateInstance(toast);
+  toast.useEffect((el) => {
+    if (!bs.isAvailable() || !bs.Toast) return;
+
+    // Use getOrCreateInstance if available (BS5), otherwise new
+    const bsToast = bs.Toast.getOrCreateInstance
+      ? bs.Toast.getOrCreateInstance(el)
+      : new bs.Toast(el);
+
     bsToast.show();
+
+    // Expose methods
+    el.show = () => bsToast.show();
+    el.hide = () => bsToast.hide();
+    el.dispose = () => bsToast.dispose();
+
+    return () => bsToast.dispose();
   });
 
   return toast;

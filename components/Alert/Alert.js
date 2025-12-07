@@ -1,13 +1,11 @@
 import { createComponent } from '../../utils/createComponent.js';
 
-export function Alert({ message = '', variant = 'primary', dismissible = false }) {
+export function Alert({ variant = 'primary', dismissible = false, children = '', className = '', id = '' }) {
   const template = () => `
-    <div class="alert alert-${variant} ${dismissible ? 'alert-dismissible fade show' : ''}" role="alert" data-ref="alert">
-      ${message}
-      <span data-slot></span>
-      ${dismissible ? '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' : ''}
+    <div id="${id}" class="alert alert-${variant} ${dismissible === 'true' ? 'alert-dismissible fade show' : ''} ${className}" role="alert" data-slot>
+      ${dismissible === 'true' ? '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' : ''}
     </div>
   `;
 
-  return createComponent(template, { message, variant, dismissible });
+  return createComponent(template, { variant, dismissible, children, className, id });
 }
