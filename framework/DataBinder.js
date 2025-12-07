@@ -274,6 +274,9 @@ function setupTwoWayBinding(element, state, path) {
 
     const inputHandler = (e) => {
         try {
+            // Flag element as updating to prevent recursive loop from state subscription
+            element._isUpdating = true;
+
             let value = getInputValue(e.target);
             // Apply type coercion
             value = coerceValueToType(e.target, value);
@@ -286,6 +289,8 @@ function setupTwoWayBinding(element, state, path) {
             }
         } catch (error) {
             console.error(`[rnxJS] Error handling input for path "${path}":`, error);
+        } finally {
+            element._isUpdating = false;
         }
     };
 
@@ -294,9 +299,9 @@ function setupTwoWayBinding(element, state, path) {
     // Subscribe to state changes
     const unsubscribe = state.subscribe(path, (newValue) => {
         try {
-            // Only update if value is different to avoid infinite loops
+            // Only update if value is different AND element is not currently updating itself
             const currentValue = getInputValue(element);
-            if (currentValue !== newValue) {
+            if (!element._isUpdating && currentValue !== newValue) {
                 updateInputValue(element, newValue, inputType);
 
                 // Re-validate on external state change
