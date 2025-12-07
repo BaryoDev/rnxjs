@@ -440,7 +440,32 @@ registerComponent('MyButton', MyButton);
 
 ---
 
+## ❓ Troubleshooting
+
+### My `<FAB>` or custom component isn't rendering
+- Ensure you have called `rnx.autoRegisterComponents()` or manually registered it via `rnx.registerComponent('FAB', FAB)`.
+- Check if you have the Material Symbols font included if icons are missing: `<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />`
+- If using `data-if`, ensure the condition evaluates to true.
+
+### Data Binding isn't working on some elements
+- As of **v0.3.4**, `data-bind` is synchronous. Ensure `loadComponents(document, state)` is called **after** the DOM is ready (e.g., at the end of `<body>` or inside `DOMContentLoaded`).
+- Check your browser console for warnings like `[rnxJS] Invalid data-bind path`.
+- Ensure your state object was created with `createReactiveState`.
+
+### "Bootstrap is not defined" error
+- Use `setBootstrap(window.bootstrap)` if you are using a bundler and Bootstrap isn't attached to the global window object.
+
+---
+
 ## 📋 Changelog
+
+### Version 0.3.4 (Hotfix Release) - December 2025
+
+**🐛 Bug Fixes**
+- **Data Binding Synchronization**: Fixed a race condition where `data-bind` on vanilla HTML elements (like `<h1>`, `<p>`) would sometimes fail to populate or remain empty. Data binding is now synchronous and guaranteed to run immediately after component loading.
+- **FAB Rendering**: Fixed `<FAB>` component not rendering correctly in certain environments. It now correctly uses the reactive state and renders as a button with the `.m3-fab` class. 
+
+---
 
 ### Version 0.3.3 (Critical Fixes) - December 2025
 

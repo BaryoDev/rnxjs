@@ -1,4 +1,5 @@
 import { registeredComponents } from './Registry.js';
+import { bindData } from './DataBinder.js';
 
 /**
  * Safely evaluate a condition expression with limited scope
@@ -99,16 +100,12 @@ export function loadComponents(root = document, reactiveState = null) {
     }
   });
 
-  // Apply data binding after components are loaded (lazy import)
+  // Apply data binding after components are loaded
   if (reactiveState) {
-    import('./DataBinder.js').then(({ bindData }) => {
-      try {
-        bindData(root, reactiveState);
-      } catch (error) {
-        console.error('[rnxJS] Error in bindData:', error);
-      }
-    }).catch(err => {
-      console.error('[rnxJS] Failed to load DataBinder:', err);
-    });
+    try {
+      bindData(root, reactiveState);
+    } catch (error) {
+      console.error('[rnxJS] Error in bindData:', error);
+    }
   }
 }
