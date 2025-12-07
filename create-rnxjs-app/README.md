@@ -31,6 +31,7 @@ pnpm create @arnelirobles/rnxjs-app
 - **Vite**: Blazing fast dev server and bundler.
 - **Bootstrap 5**: Pre-loaded for styling.
 - **rnxJS**: The minimalist component system.
+- **Intellisense**: Pre-configured `jsconfig.json` for excellent VS Code support.
 - **Example Component**: A working Counter component to get you started.
 
 ## 📦 Project Structure
@@ -40,8 +41,9 @@ my-app/
 ├── src/
 │   └── main.js       # Entry point with component registration
 ├── index.html        # Main HTML file
+├── jsconfig.json     # Intellisense configuration
 ├── package.json
-└── ...
+└── README.md         # Project documentation
 ```
 
 ## 📄 License

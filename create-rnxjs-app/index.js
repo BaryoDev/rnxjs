@@ -9,16 +9,19 @@ import { red, green, bold } from 'kolorist';
 async function init() {
     console.log(bold(green('\n🚀 Welcome to create-rnxjs-app!\n')));
 
-    const response = await prompts([
-        {
-            type: 'text',
-            name: 'projectName',
-            message: 'Project name:',
-            initial: 'my-rnx-app'
-        }
-    ]);
+    let projectName = process.argv[2];
 
-    const { projectName } = response;
+    if (!projectName) {
+        const response = await prompts([
+            {
+                type: 'text',
+                name: 'projectName',
+                message: 'Project name:',
+                initial: 'my-rnx-app'
+            }
+        ]);
+        projectName = response.projectName;
+    }
 
     if (!projectName) {
         console.log(red('✖ Operation cancelled'));

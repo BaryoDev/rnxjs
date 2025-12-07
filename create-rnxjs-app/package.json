@@ -1,6 +1,6 @@
 {
     "name": "@arnelirobles/create-rnxjs-app",
-    "version": "1.0.1",
+    "version": "1.1.0",
     "description": "Scaffolding tool for rnxJS applications",
     "main": "index.js",
     "bin": {
