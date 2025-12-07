@@ -1,6 +1,6 @@
 import { registeredComponents } from './Registry.js';
 
-export function loadComponents(root = document) {
+export function loadComponents(root = document, reactiveState = null) {
   Object.keys(registeredComponents).forEach(tag => {
     const elements = root.querySelectorAll(tag);
     elements.forEach(el => {
@@ -29,7 +29,16 @@ export function loadComponents(root = document) {
 
       const comp = ComponentFunc(props);
       el.replaceWith(comp);
-      loadComponents(comp);
+      loadComponents(comp, reactiveState);
     });
   });
+
+  // Apply data binding after components are loaded (lazy import)
+  if (reactiveState) {
+    import('./DataBinder.js').then(({ bindData }) => {
+      bindData(root, reactiveState);
+    }).catch(err => {
+      console.error('Failed to load DataBinder:', err);
+    });
+  }
 }
