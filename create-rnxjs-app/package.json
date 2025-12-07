@@ -1,0 +1,26 @@
+{
+    "name": "@arnelirobles/create-rnxjs-app",
+    "version": "1.0.1",
+    "description": "Scaffolding tool for rnxJS applications",
+    "main": "index.js",
+    "bin": {
+        "create-rnxjs-app": "./index.js"
+    },
+    "type": "module",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "rnxjs",
+        "cli",
+        "scaffold",
+        "create-app"
+    ],
+    "author": "Arnel Isiderio Robles",
+    "license": "MPL-2.0",
+    "dependencies": {
+        "fs-extra": "^11.2.0",
+        "kolorist": "^1.8.0",
+        "prompts": "^2.4.2"
+    }
+}

@@ -27,6 +27,19 @@ Minimalist Vanilla JS component system that doesn’t promise anything — just 
 npm install @arnelirobles/rnxjs
 ```
 
+### 🌐 CDN / Script Tag (No Build Tools)
+
+Simply download `dist/rnx.global.js` or use a CDN (once published) and include it:
+
+```html
+<script src="dist/rnx.global.js"></script>
+<script>
+  // Access everything via the global 'rnx' object
+  rnx.autoRegisterComponents();
+  rnx.loadComponents();
+</script>
+```
+
 ---
 
 ### 🧪 Example Usage
@@ -49,7 +62,7 @@ npm install @arnelirobles/rnxjs
 ```
 
 ```js
-// main.js
+// main.js (ES Module approach)
 import {
   autoRegisterComponents,
   loadComponents
@@ -57,6 +70,21 @@ import {
 
 autoRegisterComponents();
 loadComponents();
+```
+
+**Or using the global bundle:**
+
+```html
+<!-- index.html -->
+<body>
+  <Button label="Click Me" variant="primary" />
+  
+  <script src="dist/rnx.global.js"></script>
+  <script>
+    rnx.autoRegisterComponents();
+    rnx.loadComponents();
+  </script>
+</body>
 ```
 
 ---
