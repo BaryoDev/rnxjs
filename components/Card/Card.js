@@ -1,8 +1,9 @@
 import { createComponent } from '../../utils/createComponent.js';
 
-export function Card({ title = '', subtitle = '', footer = '', children = '' }) {
+export function Card({ title = '', subtitle = '', footer = '', variant = 'outlined', children = '' }) {
+  // variants: outlined (default), elevated, filled
   const template = () => `
-    <div class="card">
+    <div class="card ${variant}">
       ${title || subtitle ? `
         <div class="card-header">
           ${title ? `<h5 class="card-title mb-0">${title}</h5>` : ''}
@@ -13,5 +14,5 @@ export function Card({ title = '', subtitle = '', footer = '', children = '' }) 
     </div>
   `;
 
-  return createComponent(template, { title, subtitle, footer, children });
+  return createComponent(template, { title, subtitle, footer, variant, children });
 }

@@ -34,6 +34,9 @@ export function createComponent(templateFn, initialState = {}, styles = '') {
       }
 
       component.refs = {};
+      if (component.hasAttribute('data-ref')) {
+        component.refs[component.getAttribute('data-ref')] = component;
+      }
       component.querySelectorAll('[data-ref]').forEach(el => {
         const name = el.getAttribute('data-ref');
         if (name) {
@@ -71,9 +74,16 @@ export function createComponent(templateFn, initialState = {}, styles = '') {
     }
   }
 
-  component = render();
+  function attachMethods(comp) {
+    comp.setState = setState;
+    comp.useEffect = useEffect;
+    comp.onUnmount = onUnmount;
+    comp.getState = getState;
+    comp.useState = useState;
+    comp.destroy = destroy;
+  }
 
-  component.setState = (newState) => {
+  const setState = (newState) => {
     try {
       const oldComp = component;
       currentState = { ...currentState, ...newState };
@@ -94,7 +104,12 @@ export function createComponent(templateFn, initialState = {}, styles = '') {
       }
 
       const newComp = render();
-      oldComp.replaceWith(newComp);
+      // Re-attach methods to the new component
+      attachMethods(newComp);
+
+      if (oldComp.parentNode) {
+        oldComp.replaceWith(newComp);
+      }
       component = newComp;
 
       // Restore focus
@@ -116,7 +131,7 @@ export function createComponent(templateFn, initialState = {}, styles = '') {
     }
   };
 
-  component.useEffect = (fn) => {
+  const useEffect = (fn) => {
     if (typeof fn !== 'function') {
       console.warn('[rnxJS] useEffect: argument must be a function');
       return;
@@ -124,7 +139,7 @@ export function createComponent(templateFn, initialState = {}, styles = '') {
     effectFn = fn;
   };
 
-  component.onUnmount = (fn) => {
+  const onUnmount = (fn) => {
     if (typeof fn !== 'function') {
       console.warn('[rnxJS] onUnmount: argument must be a function');
       return;
@@ -132,16 +147,16 @@ export function createComponent(templateFn, initialState = {}, styles = '') {
     unmountCleanup = fn;
   };
 
-  component.getState = () => currentState;
+  const getState = () => currentState;
 
-  component.useState = (key, initialValue) => {
+  const useState = (key, initialValue) => {
     if (currentState[key] === undefined) currentState[key] = initialValue;
     const get = () => currentState[key];
-    const set = (val) => component.setState({ [key]: val });
+    const set = (val) => setState({ [key]: val });
     return [get, set];
   };
 
-  component.destroy = () => {
+  const destroy = () => {
     try {
       // Run effect cleanup
       if (effectCleanup && typeof effectCleanup === 'function') {
@@ -162,6 +177,9 @@ export function createComponent(templateFn, initialState = {}, styles = '') {
       console.error('[rnxJS] Error in destroy:', error);
     }
   };
+
+  component = render();
+  attachMethods(component);
 
   return component;
 }

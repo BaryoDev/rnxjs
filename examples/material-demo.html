@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Material Design 3 - rnxJS</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom M3 Theme -->
+    <link href="../css/bootstrap-m3-theme.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: var(--md-sys-color-background);
+        }
+
+        .component-section {
+            padding: 24px 0;
+            border-bottom: 1px solid var(--md-sys-color-outline-variant);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../dist/rnx.global.js"></script>
+
+    <script type="module">
+        const { createReactiveState, autoRegisterComponents, loadComponents, createComponent } = rnx;
+
+        // Import components manually since auto-loader might need help with new structure or just use global
+        // For this demo, we assume rnx.global.js exposes them if we exported them, 
+        // BUT current repo structure imports from file. We'll simulate the module usage or bundling.
+        // LIMITATION: rnx.global.js only has what's in index.js. We added new files but didn't export them in index.js yet.
+        // We need to fix index.js to export new components, OR import them relatively here.
+        // Since this is a vanilla HTML file, standard imports work if served.
+
+        import { Button } from '../components/Button/Button.js';
+        import { Card } from '../components/Card/Card.js';
+        import { Input } from '../components/Input/Input.js';
+        import { Select } from '../components/Select/Select.js';
+        import { FAB } from '../components/FAB/FAB.js';
+        import { NavigationDrawer } from '../components/NavigationDrawer/NavigationDrawer.js';
+        import { TopAppBar } from '../components/TopAppBar/TopAppBar.js';
+        import { Switch } from '../components/Switch/Switch.js';
+        import { Chips } from '../components/Chips/Chips.js';
+        import { List } from '../components/List/List.js';
+        import { Slider } from '../components/Slider/Slider.js';
+        import { Search } from '../components/Search/Search.js';
+        import { SegmentedButton } from '../components/SegmentedButton/SegmentedButton.js';
+        import { NavigationBar } from '../components/NavigationBar/NavigationBar.js';
+
+        // State
+        const state = createReactiveState({
+            drawerOpen: false,
+            activeTab: 'home',
+            wifiEnabled: true,
+            bluetoothEnabled: false,
+            volume: 50,
+            searchQuery: '',
+            selectedFilter: 'All',
+            activeNav: 0
+        });
+
+        // App Component
+        function App() {
+            const template = () => `
+                <div>
+                    <!-- Top App Bar -->
+                    <div id="top-bar-container"></div>
+                    
+                    <!-- Drawer -->
+                    <div id="drawer-container"></div>
+
+                    <div class="container pb-5" style="padding-top: 16px;">
+                        
+                        <!-- Search & Chips -->
+                        <div class="component-section">
+                            <h6 class="text-muted mb-3">Search & Filter</h6>
+                            <div class="row g-3">
+                                <div class="col-md-6" id="search-container"></div>
+                                <div class="col-md-6 d-flex align-items-center" id="chips-container"></div>
+                            </div>
+                        </div>
+
+                        <!-- Cards & Buttons -->
+                        <div class="component-section">
+                             <h6 class="text-muted mb-3">Cards & Actions</h6>
+                             <div class="row">
+                                 <div class="col-md-4">
+                                     <!-- Elevated Card -->
+                                     <div id="card-elevated"></div>
+                                 </div>
+                                 <div class="col-md-4">
+                                     <!-- Filled Card -->
+                                     <div id="card-filled"></div>
+                                 </div>
+                                 <div class="col-md-4">
+                                     <!-- Outlined Card -->
+                                     <div id="card-outlined"></div>
+                                 </div>
+                             </div>
+                             <div class="mt-3 d-flex gap-2 flex-wrap" id="buttons-container">
+                                 <!-- Buttons injected here -->
+                             </div>
+                        </div>
+
+                        <!-- Lists & Controls -->
+                        <div class="component-section">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="text-muted mb-3">Settings List</h6>
+                                    <div id="list-container"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="text-muted mb-3">Interactions</h6>
+                                    <div class="d-flex flex-column gap-3">
+                                        <div id="switch-wifi"></div>
+                                        <div id="switch-bt"></div>
+                                        <label>Volume</label>
+                                        <div id="slider-volume"></div>
+                                        <label>View Mode</label>
+                                        <div id="segmented-btn"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <!-- FAB -->
+                    <div id="fab-container"></div>
+
+                    <!-- Bottom Nav (Mobile View simulation) -->
+                    <div class="d-md-none fixed-bottom" id="bottom-nav"></div>
+                </div>
+             `;
+
+            const app = createComponent(template, {});
+
+            app.useEffect(() => {
+                // Mount Top Bar
+                const topBar = TopAppBar({
+                    title: 'Material Dashboard',
+                    leadingIcon: 'menu',
+                    onLeadingClick: () => state.drawerOpen = true
+                });
+                app.querySelector('#top-bar-container').appendChild(topBar);
+
+                // Mount Drawer
+                const drawer = NavigationDrawer({
+                    isOpen: state.drawerOpen,
+                    links: [
+                        { label: 'Home', icon: 'home', href: '#', active: true },
+                        { label: 'Favorites', icon: 'favorite', href: '#' },
+                        { label: 'Settings', icon: 'settings', href: '#' },
+                    ],
+                    onClose: () => {
+                        state.drawerOpen = false;
+                        // Force re-render of drawer prop if component doesn't auto-bind (simplification)
+                        drawer.setState({ isOpen: false });
+                    }
+                });
+                // Subscribe state to drawer
+                state.subscribe('drawerOpen', (val) => drawer.setState({ isOpen: val }));
+                app.querySelector('#drawer-container').appendChild(drawer);
+
+                // Search
+                app.querySelector('#search-container').appendChild(Search({
+                    placeholder: 'Search items...',
+                    onsearch: (val) => console.log('Search:', val)
+                }));
+
+                // Chips
+                app.querySelector('#chips-container').appendChild(Chips({
+                    items: [
+                        { label: 'All', selected: state.selectedFilter === 'All' },
+                        { label: 'Work', icon: 'work', selected: state.selectedFilter === 'Work' },
+                        { label: 'Home', icon: 'home', selected: state.selectedFilter === 'Home' }
+                    ],
+                    onselect: (item, idx) => {
+                        console.log('Selected chip:', item.label);
+                        state.selectedFilter = item.label;
+                        // Since Chips component is inside a non-bound parent in this snippet (we appendChild manually), 
+                        // we need to re-render the chips or use a reactive wrapper.
+                        // But 'state' changes trigger subscribers.
+                        // Let's manually replace the chips for this demo or use the framework's power if properly set up.
+                        // For simplicity in this "blackbox" usage:
+                        const container = app.querySelector('#chips-container');
+                        container.innerHTML = '';
+                        container.appendChild(Chips({
+                            items: [
+                                { label: 'All', selected: state.selectedFilter === 'All' },
+                                { label: 'Work', icon: 'work', selected: state.selectedFilter === 'Work' },
+                                { label: 'Home', icon: 'home', selected: state.selectedFilter === 'Home' }
+                            ],
+                            onselect: (i, id) => {
+                                state.selectedFilter = i.label;
+                                // Recursion for the demo re-render logic (simplified)
+                                app.querySelector('#chips-container').innerHTML = '';
+                                app.querySelector('#chips-container').appendChild(Chips({
+                                    items: [
+                                        { label: 'All', selected: state.selectedFilter === 'All' },
+                                        { label: 'Work', icon: 'work', selected: state.selectedFilter === 'Work' },
+                                        { label: 'Home', icon: 'home', selected: state.selectedFilter === 'Home' }
+                                    ],
+                                    onselect: arguments.callee // Re-bind self
+                                }));
+                            }
+                        }));
+                    }
+                }));
+                // Better approach: Subscribe to state.selectedFilter
+                state.subscribe('selectedFilter', (val) => {
+                    const container = app.querySelector('#chips-container');
+                    if (container) {
+                        container.innerHTML = '';
+                        container.appendChild(Chips({
+                            items: [
+                                { label: 'All', selected: val === 'All' },
+                                { label: 'Work', icon: 'work', selected: val === 'Work' },
+                                { label: 'Home', icon: 'home', selected: val === 'Home' }
+                            ],
+                            onselect: (item) => state.selectedFilter = item.label
+                        }));
+                    }
+                });
+
+                // Cards
+                app.querySelector('#card-elevated').appendChild(Card({
+                    title: 'Elevated', subtitle: 'Shadow effect', variant: 'elevated',
+                    children: document.createTextNode('Content inside elevated card.')
+                }));
+                app.querySelector('#card-filled').appendChild(Card({
+                    title: 'Filled', subtitle: 'Surface variant', variant: 'filled',
+                    children: document.createTextNode('Content inside filled card.')
+                }));
+                app.querySelector('#card-outlined').appendChild(Card({
+                    title: 'Outlined', subtitle: 'Border effect', variant: 'outlined',
+                    children: document.createTextNode('Content inside outlined card.')
+                }));
+
+                // Buttons
+                const btnCont = app.querySelector('#buttons-container');
+                btnCont.appendChild(Button({ label: 'Filled', variant: 'filled', icon: 'add' }));
+                btnCont.appendChild(Button({ label: 'Tonal', variant: 'tonal', icon: 'edit' }));
+                btnCont.appendChild(Button({ label: 'Outlined', variant: 'outlined' }));
+                btnCont.appendChild(Button({ label: 'Text', variant: 'text' }));
+
+                // List
+                app.querySelector('#list-container').appendChild(List({
+                    items: [
+                        { headline: 'Wi-Fi', supportingText: 'Connected to Home-5G', leadingIcon: 'wifi' },
+                        { headline: 'Bluetooth', supportingText: 'Off', leadingIcon: 'bluetooth' },
+                        { headline: 'Display', supportingText: 'Adaptive Brightness', leadingIcon: 'brightness_6' }
+                    ]
+                }));
+
+                // Switches
+                app.querySelector('#switch-wifi').appendChild(Switch({ label: 'Wi-Fi', checked: true }));
+                app.querySelector('#switch-bt').appendChild(Switch({ label: 'Bluetooth', checked: false }));
+
+                // Slider
+                app.querySelector('#slider-volume').appendChild(Slider({ value: 50 }));
+
+                // Segmented
+                app.querySelector('#segmented-btn').appendChild(SegmentedButton({
+                    selected: 'grid',
+                    options: [
+                        { value: 'grid', icon: 'grid_view', label: 'Grid' },
+                        { value: 'list', icon: 'view_list', label: 'List' }
+                    ]
+                }));
+
+                // FAB
+                app.querySelector('#fab-container').appendChild(FAB({
+                    icon: 'edit', variant: 'large', onclick: () => alert('FAB Clicked')
+                }));
+
+                // Bottom Nav
+                app.querySelector('#bottom-nav').appendChild(NavigationBar({
+                    items: [
+                        { label: 'Home', icon: 'home' },
+                        { label: 'Explore', icon: 'explore' },
+                        { label: 'Saved', icon: 'bookmark' }
+                    ]
+                }));
+
+            });
+
+            return app;
+        }
+
+        document.getElementById('app').appendChild(App());
+
+    </script>
+</body>
+
+</html>
