@@ -1,0 +1,356 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0');
+/* Bootstrap Icons (assuming installed in node_modules or available via CDN in usage) */
+/* Ideally we'd import from node_modules if using a bundler, but for simple use we can suggest CDN or rely on user including it. 
+   However, since user asked to install it, let's try to reference it if we support it. 
+   If this is a no-build raw import system, node_modules import might fail in browser without a server handling it.
+   But I will add a comment or try to use a relative path if plausible. 
+   For now, just keeping CDN backup in mind. */
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css");
+
+/* M3 Design Tokens */
+:root {
+  /* Colors (Google Material 3 - Baseline Blue) */
+  --md-sys-color-primary: #0B57D0;
+  --md-sys-color-on-primary: #FFFFFF;
+  --md-sys-color-primary-container: #D3E3FD;
+  --md-sys-color-on-primary-container: #041E49;
+
+  --md-sys-color-secondary: #00639B;
+  --md-sys-color-on-secondary: #FFFFFF;
+  --md-sys-color-secondary-container: #C2E7FF;
+  --md-sys-color-on-secondary-container: #001D35;
+
+  --md-sys-color-tertiary: #52634f;
+  --md-sys-color-on-tertiary: #FFFFFF;
+  --md-sys-color-tertiary-container: #D5E8D0;
+  --md-sys-color-on-tertiary-container: #101F0F;
+
+  --md-sys-color-error: #B3261E;
+  --md-sys-color-on-error: #FFFFFF;
+  --md-sys-color-error-container: #F9DEDC;
+  --md-sys-color-on-error-container: #410E0B;
+
+  --md-sys-color-background: #F8F9FA;
+  /* Google App Background */
+  --md-sys-color-on-background: #1C1B1F;
+  --md-sys-color-surface: #FFFFFF;
+  /* Cards are white */
+  --md-sys-color-on-surface: #1C1B1F;
+  --md-sys-color-surface-variant: #E1E3E1;
+  /* Neutral variant for dividers/outlines */
+  --md-sys-color-on-surface-variant: #444746;
+  --md-sys-color-outline: #747775;
+  --md-sys-color-outline-variant: #C4C7C5;
+
+  /* Typography */
+  --md-sys-typescale-body-large-font: 'Roboto', sans-serif;
+  --md-sys-typescale-body-large-size: 16px;
+  --md-sys-typescale-body-large-weight: 400;
+
+  /* Elevation */
+  --md-sys-elevation-1: 0px 1px 3px 1px rgba(0, 0, 0, 0.15), 0px 1px 2px 0px rgba(0, 0, 0, 0.3);
+  --md-sys-elevation-2: 0px 2px 6px 2px rgba(0, 0, 0, 0.15), 0px 1px 2px 0px rgba(0, 0, 0, 0.3);
+  --md-sys-elevation-3: 0px 4px 8px 3px rgba(0, 0, 0, 0.15), 0px 1px 3px 0px rgba(0, 0, 0, 0.3);
+
+  /* Shape */
+  --md-sys-shape-corner-extra-small: 4px;
+  --md-sys-shape-corner-small: 8px;
+  --md-sys-shape-corner-medium: 12px;
+  --md-sys-shape-corner-large: 16px;
+  --md-sys-shape-corner-extra-large: 28px;
+  --md-sys-shape-corner-full: 9999px;
+
+  /* Bootstrap Overrides */
+  --bs-primary: var(--md-sys-color-primary);
+  --bs-secondary: var(--md-sys-color-secondary);
+  --bs-success: #468e6f;
+  /* Custom mapped */
+  --bs-danger: var(--md-sys-color-error);
+  --bs-body-font-family: var(--md-sys-typescale-body-large-font);
+  --bs-body-bg: var(--md-sys-color-background);
+  --bs-body-color: var(--md-sys-color-on-background);
+  --bs-border-radius: var(--md-sys-shape-corner-small);
+  --bs-border-radius-lg: var(--md-sys-shape-corner-medium);
+  --bs-border-radius-sm: var(--md-sys-shape-corner-extra-small);
+  --bs-border-color: var(--md-sys-color-outline-variant);
+}
+
+/* Button Refinements (M3) */
+.btn {
+  border-radius: var(--md-sys-shape-corner-full);
+  /* M3 Buttons are pill-shaped */
+  font-weight: 500;
+  letter-spacing: 0.1px;
+  text-transform: capitalize;
+  padding: 10px 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background-color: var(--md-sys-color-primary);
+  border-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+}
+
+.btn-primary:hover {
+  background-color: color-mix(in srgb, var(--md-sys-color-primary), black 8%);
+  border-color: color-mix(in srgb, var(--md-sys-color-primary), black 8%);
+  box-shadow: var(--md-sys-elevation-1);
+}
+
+.btn-outline-primary {
+  color: var(--md-sys-color-primary);
+  border-color: var(--md-sys-color-outline);
+}
+
+.btn-outline-primary:hover {
+  background-color: color-mix(in srgb, var(--md-sys-color-primary), transparent 92%);
+  color: var(--md-sys-color-primary);
+  border-color: var(--md-sys-color-primary);
+}
+
+.btn-link {
+  color: var(--md-sys-color-primary);
+  text-decoration: none;
+}
+
+.btn-link:hover {
+  background-color: color-mix(in srgb, var(--md-sys-color-primary), transparent 92%);
+}
+
+/* Card Refinements (M3) */
+.card {
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-sys-shape-corner-medium);
+  background-color: var(--md-sys-color-surface);
+  box-shadow: none;
+  /* Outlined card default */
+}
+
+/* M3 Card Variants */
+.card.elevated {
+  border: none;
+  background-color: var(--md-sys-color-surface);
+  box-shadow: var(--md-sys-elevation-1);
+}
+
+.card.filled {
+  border: none;
+  background-color: var(--md-sys-color-surface-variant);
+}
+
+.card-header {
+  background-color: transparent;
+  border-bottom: none;
+  padding: 16px 16px 0 16px;
+}
+
+.card-body {
+  padding: 16px;
+}
+
+.card-footer {
+  background-color: transparent;
+  border-top: none;
+  padding: 0 16px 16px 16px;
+}
+
+/* Inputs (M3 Styled) */
+.form-control {
+  border-radius: 4px 4px 0 0;
+  border: 1px solid var(--md-sys-color-outline);
+  background-color: var(--md-sys-color-surface);
+  border-bottom-width: 1px;
+}
+
+.form-control:focus {
+  border-color: var(--md-sys-color-primary);
+  box-shadow: none;
+  border-bottom-width: 2px;
+  background-color: color-mix(in srgb, var(--md-sys-color-surface-variant), transparent 50%);
+}
+
+/* Icon Support */
+.material-symbols-outlined {
+  font-size: 20px;
+  vertical-align: middle;
+}
+
+/* Navigation Drawer */
+.m3-navigation-drawer {
+  width: 300px;
+  /* Standard width */
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: var(--md-sys-color-surface);
+  border-right: 1px solid var(--md-sys-color-surface-variant);
+  /* For standard modal, or just surface color */
+  border-top-right-radius: var(--md-sys-shape-corner-large);
+  border-bottom-right-radius: var(--md-sys-shape-corner-large);
+  padding: 12px;
+  z-index: 1045;
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.2, 0.0, 0, 1.0);
+}
+
+.m3-navigation-drawer.open {
+  transform: translateX(0);
+}
+
+.m3-drawer-link {
+  display: flex;
+  align-items: center;
+  height: 56px;
+  padding: 0 24px;
+  border-radius: var(--md-sys-shape-corner-full);
+  color: var(--md-sys-color-on-surface-variant);
+  text-decoration: none;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.m3-drawer-link:hover {
+  background-color: color-mix(in srgb, var(--md-sys-color-on-surface), transparent 92%);
+  color: var(--md-sys-color-on-surface);
+}
+
+.m3-drawer-link.active {
+  background-color: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+}
+
+.m3-drawer-link i {
+  margin-right: 12px;
+}
+
+/* FAB */
+.m3-fab {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  border-radius: var(--md-sys-shape-corner-large);
+  background-color: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+  box-shadow: var(--md-sys-elevation-3);
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  z-index: 1050;
+  transition: all 0.2s;
+}
+
+.m3-fab:hover {
+  box-shadow: 0px 6px 10px 0px rgba(0, 0, 0, 0.14), 0px 1px 18px 0px rgba(0, 0, 0, 0.12), 0px 3px 5px -1px rgba(0, 0, 0, 0.20);
+}
+
+.m3-fab.small {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+}
+
+.m3-fab.large {
+  width: 96px;
+  height: 96px;
+  border-radius: 28px;
+}
+
+.m3-fab.extended {
+  width: auto;
+  padding-left: 16px;
+  padding-right: 20px;
+  border-radius: 16px;
+}
+
+.m3-fab.extendedspan {
+  margin-left: 8px;
+  font-weight: 500;
+}
+
+/* Switch */
+.form-check-input.m3-switch {
+  width: 52px;
+  height: 32px;
+  background-color: var(--md-sys-color-surface-variant);
+  border-color: var(--md-sys-color-outline);
+  background-image: none;
+  /* Handle via pseudo-element */
+  position: relative;
+  border-radius: 100px;
+  border: 2px solid var(--md-sys-color-outline);
+}
+
+.form-check-input.m3-switch:checked {
+  background-color: var(--md-sys-color-primary);
+  border-color: var(--md-sys-color-primary);
+}
+
+/* Thumb */
+.form-check-input.m3-switch::after {
+  content: "";
+  width: 16px;
+  height: 16px;
+  background-color: var(--md-sys-color-outline);
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 6px;
+  transform: translateY(-50%);
+  transition: all 0.2s;
+}
+
+.form-check-input.m3-switch:checked::after {
+  background-color: var(--md-sys-color-on-primary);
+  left: calc(100% - 24px);
+  width: 24px;
+  height: 24px;
+}
+
+/* Top App Bar */
+.m3-top-app-bar {
+  background-color: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+  height: 64px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.m3-top-app-bar.center-aligned {
+  justify-content: center;
+}
+
+/* Chips */
+.m3-chip {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--md-sys-color-outline);
+  border-radius: 8px;
+  padding: 6px 16px;
+  background-color: transparent;
+  color: var(--md-sys-color-on-surface);
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.m3-chip.selected {
+  background-color: var(--md-sys-color-secondary-container);
+  border-color: transparent;
+  color: var(--md-sys-color-on-secondary-container);
+}
+
+.m3-chip i {
+  font-size: 18px;
+  margin-right: 8px;
+}

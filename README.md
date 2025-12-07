@@ -52,7 +52,96 @@ const state = rnx.createReactiveState({
 - **Batteries Included:** Comes with `<Button>`, `<Modal>`, `<Card>`, `<Input>` out of the box.
 - **Reactive Data Binding:** `data-bind="user.email"` auto-syncs with your state.
 - **Form Validation:** Built-in validation logic (`required`, `email`, `min`).
+- **Material Design 3:** Full M3 styling support with a custom theme and 10+ new components.
 - **Zero Dependencies:** No hidden costs. 10KB gzipped.
+- **Robust Testing:** 80% Unit Test Coverage (Vitest) + End-to-End Tests (Playwright).
+
+---
+
+## 🎨 Material Design 3 Support
+
+rnxJS now supports **Material Design 3 (M3)** styling on top of Bootstrap!
+
+### Setup
+
+1. Include the M3 Theme and Icon fonts:
+```html
+<link rel="stylesheet" href="css/bootstrap-m3-theme.css">
+<!-- Optional: Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+```
+
+2. Use M3 Components:
+
+```js
+import { FAB, NavigationDrawer, Switch, Chips, Slider, Icon } from '@arnelirobles/rnxjs';
+```
+
+### New Components
+
+| Component            | Description                                                     |
+| :------------------- | :-------------------------------------------------------------- |
+| `<FAB>`              | Floating Action Button (Elevated, Large, Small)                 |
+| `<NavigationDrawer>` | Modal or Standard Side Navigation Sheet                         |
+| `<Switch>`           | Material Toggle Switch                                          |
+| `<Chips>`            | Filter, Input, and Assist Chips                                 |
+| `<Slider>`           | Range Slider with M3 styling                                    |
+| `<TopAppBar>`        | Standard, Center-aligned, or Small headers                      |
+| `<NavigationBar>`    | Bottom Navigation Bar                                           |
+| `<List>`             | List Items with start/end slots and avatars                     |
+| `<Search>`           | Search Bar with clear action                                    |
+| `<SegmentedButton>`  | Toggle button groups (Single/Multi select)                      |
+| `<Icon>`             | Helper for Bootstrap Icons (e.g., `<Icon name="heart-fill" />`) |
+
+### Example
+
+```html
+<NavigationDrawer isOpen="true">
+    <div class="p-3">
+        <h3>Menu</h3>
+        <List>
+             <ListItem headline="Home" leadingIcon="home" />
+             <ListItem headline="Profile" leadingIcon="person" />
+        </List>
+    </div>
+</NavigationDrawer>
+
+<div class="main-content">
+    <TopAppBar title="Dashboard" />
+    <Container class="mt-4">
+        <div class="d-flex gap-2 mb-3">
+            <Chips items="[{label: 'All', selected: true}, {label: 'Unread'}]" />
+        </div>
+        
+        <Card variant="elevated">
+            <h4>Welcome!</h4>
+            <div class="d-flex justify-content-between align-items-center">
+                <span>Enable Notifications</span>
+                <Switch checked="true" />
+            </div>
+        </Card>
+    </Container>
+    
+    <FAB icon="add" variant="primary" class="position-fixed bottom-0 end-0 m-4" />
+</div>
+```
+
+---
+
+## 🧪 Testing
+
+We take stability seriously. rnxJS is tested with:
+- **Vitest**: For unit testing logic and component rendering (HappyDOM).
+- **Playwright**: For End-to-End (E2E) browser testing.
+
+Run tests locally:
+```bash
+# Unit Tests
+npm test
+
+# E2E Tests
+npx playwright test
+```
 
 ---
 
@@ -346,6 +435,20 @@ registerComponent('MyButton', MyButton);
 ---
 
 ## 📋 Changelog
+
+### Version 0.3.0 (Material Design 3) - December 2025
+
+**🎨 Material Design 3 & New Components**
+- **Theme**: Added `bootstrap-m3-theme.css` for M3 styling overrides.
+- **New Components**: `FAB`, `NavigationDrawer`, `Switch`, `Chips`, `Slider`, `TopAppBar`, `NavigationBar`, `List`, `Search`, `SegmentedButton`, `Icon`.
+- **Updates**: `Button` (M3 variants: filled, tonal, elevated, text), `Card` (M3 variants), `Input` (floating labels).
+- **Icons**: Added `Icon` component and support for Bootstrap Icons.
+
+**🧪 Testing & Stability**
+- **Tests**: Added full Vitest suite for new components and Playwright E2E tests for the M3 Demo.
+- **Framework Fix**: Fixed critical issue in `createComponent` where state updates detached event listeners in re-rendered DOM nodes.
+
+---
 
 ### Version 0.2.2 (NPM Release) - December 2025
 
