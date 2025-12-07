@@ -12,6 +12,7 @@ export function Checkbox({ label = '', name = '', value = '', checked = false, d
         ${disabled ? 'disabled' : ''}
         ${required ? 'required' : ''}
         data-ref="checkbox"
+        data-rnx-ignore="true"
       />
       <label class="form-check-label">
         ${label}

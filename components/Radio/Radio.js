@@ -12,6 +12,7 @@ export function Radio({ label = '', name = '', value = '', checked = false, disa
         ${disabled ? 'disabled' : ''}
         ${required ? 'required' : ''}
         data-ref="radio"
+        data-rnx-ignore="true"
       />
       <label class="form-check-label">
         ${label}
