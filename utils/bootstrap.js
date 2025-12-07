@@ -1,17 +1,19 @@
 
+import { getBootstrap } from './config.js';
+
 /**
  * Safe wrapper for the global bootstrap object.
  * Handles cases where bootstrap.js might not be loaded.
  */
 export const bs = {
-    get Modal() { return window.bootstrap?.Modal; },
-    get Toast() { return window.bootstrap?.Toast; },
-    get Tooltip() { return window.bootstrap?.Tooltip; },
-    get Popover() { return window.bootstrap?.Popover; },
+    get Modal() { return getBootstrap()?.Modal; },
+    get Toast() { return getBootstrap()?.Toast; },
+    get Tooltip() { return getBootstrap()?.Tooltip; },
+    get Popover() { return getBootstrap()?.Popover; },
 
     /**
      * Checks if Bootstrap JS is available
      * @returns {boolean}
      */
-    isAvailable: () => typeof window.bootstrap !== 'undefined'
+    isAvailable: () => typeof getBootstrap() !== 'undefined'
 };

@@ -1,6 +1,6 @@
 {
   "name": "@arnelirobles/rnxjs",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "The Bootstrap-Native Framework for Production Apps. Zero build step, reactive components for Backend Devs & Internal Tools.",
   "main": "index.js",
   "type": "module",
@@ -9,7 +9,8 @@
       "import": "./dist/rnx.esm.js",
       "require": "./index.js"
     },
-    "./dist/*": "./dist/*"
+    "./dist/*": "./dist/*",
+    "./css/*": "./css/*"
   },
   "types": "index.d.ts",
   "keywords": [

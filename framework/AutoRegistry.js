@@ -1,4 +1,4 @@
-import * as moduleExports from '../index.js';
+import * as moduleExports from '../components/index.js';
 import { registerComponent } from './Registry.js';
 
 export function autoRegisterComponents() {
