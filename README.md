@@ -14,6 +14,19 @@
 
 ---
 
+## 🛡️ Production Readiness
+
+rnxJS is tested and production-ready.
+
+- **Test Coverage**: 90+ tests covering core reactivity, components, and edge cases.
+- **Stability**: Verified against rapid state updates, race conditions, and memory leaks.
+- **Browser Support**: Compatible with all modern browsers (Chrome, Firefox, Safari, Edge).
+- **Zero Dependencies**: usage with CDN version (only requires Bootstrap CSS).
+
+> **Disclaimer**: While production ready, rnxJS is designed as a lightweight, no-build alternative to React/Vue for backend-driven apps and internal tools. For massive, complex Single Page Applications, a full framework might be more appropriate.
+
+---
+
 ## ⚡ Quick Start (CLI)
 
 The fastest way to start is using our CLI tool:
@@ -345,22 +358,34 @@ When using the `icon` prop in components like `Button`, `FAB`, `Icon`, etc., sim
 <Icon name="check-circle" color="text-success" />
 ```
 
-### My `<FAB>` or custom component isn't rendering
+## ❓ Troubleshooting & FAQ
+
+### 1. My `<FAB>` or custom component isn't rendering
 - Ensure you have called `rnx.autoRegisterComponents()` or manually registered it via `rnx.registerComponent('FAB', FAB)`.
 - Check if you have the Material Symbols font included if icons are missing: `<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />`
 - If using `data-if`, ensure the condition evaluates to true.
 
-### Data Binding isn't working on some elements
+### 2. Data Binding isn't working on some elements
 - As of **v0.3.4**, `data-bind` is synchronous. Ensure `loadComponents(document, state)` is called **after** the DOM is ready (e.g., at the end of `<body>` or inside `DOMContentLoaded`).
 - Check your browser console for warnings like `[rnxJS] Invalid data-bind path`.
 - Ensure your state object was created with `createReactiveState`.
 
-### "Bootstrap is not defined" error
+### 3. "Bootstrap is not defined" error
 - Use `setBootstrap(window.bootstrap)` if you are using a bundler and Bootstrap isn't attached to the global window object.
+
+### 4. How to contribute?
+- We welcome contributions! Please verify potential changes with existing tests: `npm test`.
 
 ---
 
 ## 📋 Changelog
+
+### Version 0.3.16 (Release) - December 2025
+
+- **Stability**: Added comprehensive stability tests for race conditions and rapid updates.
+- **Docs**: Added "Production Readiness", "Disclaimer", and improved "Troubleshooting" sections.
+
+---
 
 ### Version 0.3.5 (Stability Hardening) - December 2025
 
