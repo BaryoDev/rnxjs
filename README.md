@@ -62,7 +62,13 @@ const state = rnx.createReactiveState({
 
 rnxJS now supports **Material Design 3 (M3)** styling on top of Bootstrap!
 
-### Setup
+### Dependencies
+
+To use M3 components (especially `FAB`, `Icon`, etc.), you **must** include the Google Material Symbols font:
+
+```html
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+```
 
 1. Include the M3 Theme and Icon fonts:
 ```html
@@ -435,6 +441,19 @@ registerComponent('MyButton', MyButton);
 ---
 
 ## 📋 Changelog
+
+### Version 0.3.3 (Critical Fixes) - December 2025
+
+**🐛 Critical Bug Fixes & Improvements**
+
+- **Circular Dependency**: Fixed circular dependency in `AutoRegistry` by refactoring internal exports.
+- **Bootstrap Config**: Added `setBootstrap()` and `getBootstrap()` to manually configure Bootstrap instance (fixing issues in bundlers where `window.bootstrap` is missing).
+- **CSS Exports**: `package.json` now correctly exports `./css/*` for M3 theme imports.
+- **Button Props**: `Button` component now correctly passes data attributes (e.g., `data-bs-toggle`) to the DOM element.
+- **M3 Colors**: Adjusted M3 Secondary colors to be more neutral/gray to fit standard expectations.
+- **Docs**: Clarified `Material Symbols` dependency in README.
+
+---
 
 ### Version 0.3.0 (Material Design 3) - December 2025
 

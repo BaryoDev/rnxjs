@@ -1,6 +1,6 @@
 import { createComponent } from '../../utils/createComponent.js';
 
-export function Button({ label = '', variant = 'filled', size = '', icon = '', block = false, onclick, children }) {
+export function Button({ label = '', variant = 'filled', size = '', icon = '', block = false, onclick, children, ...rest }) {
   // variants: filled (default), outlined, text, elevated, tonal
 
   let btnClass = 'btn';
@@ -20,12 +20,16 @@ export function Button({ label = '', variant = 'filled', size = '', icon = '', b
 
   const clickAttr = (typeof onclick === 'string') ? `onclick="${onclick}"` : '';
 
+  // Create attribute string from rest props
+  const restAttrs = Object.entries(rest).map(([key, value]) => `${key}="${value}"`).join(' ');
+
   const template = () => `
     <button 
       class="${btnClass}" 
       type="button"
       data-ref="btn"
       ${clickAttr}
+      ${restAttrs}
     >
       ${icon ? `<span class="material-symbols-outlined">${icon}</span>` : ''}
       ${label}
@@ -33,7 +37,7 @@ export function Button({ label = '', variant = 'filled', size = '', icon = '', b
     </button>
   `;
 
-  const btn = createComponent(template, { label, variant, size, icon, block, children });
+  const btn = createComponent(template, { label, variant, size, icon, block, children, ...rest });
 
   btn.useEffect(() => {
     if (typeof onclick === 'function' && btn.refs && btn.refs.btn) {

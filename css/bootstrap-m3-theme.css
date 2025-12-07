@@ -16,10 +16,11 @@
   --md-sys-color-primary-container: #D3E3FD;
   --md-sys-color-on-primary-container: #041E49;
 
-  --md-sys-color-secondary: #00639B;
-  --md-sys-color-on-secondary: #FFFFFF;
-  --md-sys-color-secondary-container: #C2E7FF;
-  --md-sys-color-on-secondary-container: #001D35;
+  /* Neutral Secondary (Gray-ish) */
+  --md-sys-color-secondary: #5e6c75;
+  --md-sys-color-on-secondary: #ffffff;
+  --md-sys-color-secondary-container: #dfe8ed;
+  --md-sys-color-on-secondary-container: #1b1d1f;
 
   --md-sys-color-tertiary: #52634f;
   --md-sys-color-on-tertiary: #FFFFFF;
