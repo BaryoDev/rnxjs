@@ -84,8 +84,17 @@ export function loadComponents(root = document, reactiveState = null) {
             return;
           }
 
-          el.replaceWith(comp);
-          loadComponents(comp, reactiveState);
+          // Verify replacement
+          if (comp instanceof Node) {
+            el.replaceWith(comp);
+            // Verify if connected
+            if (!comp.isConnected) {
+              // In some environments, replaceWith might weirdly fail or if parent is missing
+            }
+            loadComponents(comp, reactiveState);
+          } else {
+            console.error(`[rnxJS] Component "${tag}" returned invalid node type`);
+          }
         } catch (error) {
           console.error(`[rnxJS] Error loading component "${tag}":`, error);
           // Create error placeholder

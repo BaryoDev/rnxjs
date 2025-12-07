@@ -459,6 +459,15 @@ registerComponent('MyButton', MyButton);
 
 ## 📋 Changelog
 
+### Version 0.3.5 (Stability Hardening) - December 2025
+
+**🛡️ Critical Stability Updates**
+- **Infinite Loop Prevention**: Implemented a recursion guard in `DataBinder`. Input elements are now flagged during updates to prevent state changes from re-triggering the input listener, fixing potential browser crashes.
+- **Component Hydration**: Added validation checks in `loadComponents` to ensure replacement nodes are valid before attempting to mount, preventing silent failures.
+- **Testing**: Added specialized regression tests for DataBinder stability and FAB rendering.
+
+---
+
 ### Version 0.3.4 (Hotfix Release) - December 2025
 
 **🐛 Bug Fixes**
