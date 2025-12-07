@@ -41,6 +41,8 @@ export function loadComponents(root = document, reactiveState = null) {
       const elements = root.querySelectorAll(selector);
       elements.forEach(el => {
         try {
+          if (el._rnxHydrated) return;
+
           const ComponentFunc = registeredComponents[tag];
 
           // Validate component function
@@ -58,13 +60,8 @@ export function loadComponents(root = document, reactiveState = null) {
             // Allow string event handlers (e.g. onclick="foo()") to pass through
             // The component implementation handles whether to use them as attributes or listeners
             if (name.startsWith('on') && typeof value !== 'string') {
-              // Only warn if it's somehow NOT a string (which is rare for attributes) but we want to allow strings
-              // Actually key point: HTML attributes are always strings.
-              // So we should just remove the check entirely or only warn if we strictly wanted function Refs (which bindData does, but loadComponents parses HTML)
-
-              // Decision: Just allow it. Remove the warning block.
+              // no-op
             }
-            // Removed blocking check for 'on' prefix strings
             props[name] = value;
           }
 
@@ -89,7 +86,10 @@ export function loadComponents(root = document, reactiveState = null) {
 
           // Verify replacement
           if (comp instanceof Node) {
+            // Mark new component as hydrated to prevent re-hydration (infinite loop for recursive tags like Input -> input)
+            comp._rnxHydrated = true;
             el.replaceWith(comp);
+
             // Verify if connected
             if (!comp.isConnected) {
               // In some environments, replaceWith might weirdly fail or if parent is missing
