@@ -35,7 +35,10 @@ export function loadComponents(root = document, reactiveState = null) {
 
   Object.keys(registeredComponents).forEach(tag => {
     try {
-      const elements = root.querySelectorAll(tag);
+      // Robust selector: match "FAB" or "fab"
+      // HTML parser often lowercases custom tags in DOM, but registry has "FAB"
+      const selector = (tag === tag.toLowerCase()) ? tag : `${tag}, ${tag.toLowerCase()}`;
+      const elements = root.querySelectorAll(selector);
       elements.forEach(el => {
         try {
           const ComponentFunc = registeredComponents[tag];

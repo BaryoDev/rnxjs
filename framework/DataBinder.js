@@ -6,6 +6,9 @@
 // Track subscriptions for cleanup
 const bindingSubscriptions = new WeakMap();
 
+// Track bound elements to prevent duplicate bindings
+const boundElements = new WeakSet();
+
 /**
  * Get nested property value from object
  * @param {Object} obj - Source object
@@ -186,9 +189,13 @@ export function bindData(rootElement = document, state = null) {
     const subscriptions = bindingSubscriptions.get(rootElement);
 
     // Find all elements with data-bind attribute
-    const boundElements = rootElement.querySelectorAll('[data-bind]');
+    const elements = rootElement.querySelectorAll('[data-bind]');
 
-    boundElements.forEach(element => {
+    elements.forEach(element => {
+        // Prevent duplicate binding
+        if (boundElements.has(element)) return;
+        boundElements.add(element);
+
         const path = element.getAttribute('data-bind');
 
         if (!path || typeof path !== 'string') {
