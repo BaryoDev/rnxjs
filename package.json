@@ -1,0 +1,23 @@
+{
+  "name": "@arnelirobles/rnxjs",
+  "version": "0.1.3",
+  "description": "Minimalist Vanilla JS component system that doesn't promise anything.",
+  "main": "index.js",
+  "type": "module",
+  "keywords": [
+    "vanilla",
+    "javascript",
+    "framework",
+    "components",
+    "bootstrap",
+    "rnxjs"
+  ],
+  "author": "Arnel Isiderio Robles",
+  "license": "MPL-2.0",
+  "files": [
+    "index.js",
+    "utils/",
+    "framework/",
+    "components/"
+  ]
+}
