@@ -71,5 +71,8 @@
     "esbuild": "^0.27.0",
     "happy-dom": "^12.10.3",
     "vitest": "^1.0.4"
+  },
+  "dependencies": {
+    "bootstrap-icons": "^1.13.1"
   }
 }
