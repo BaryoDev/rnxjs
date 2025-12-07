@@ -41,7 +41,7 @@ export function loadComponents(root = document, reactiveState = null) {
       const elements = root.querySelectorAll(selector);
       elements.forEach(el => {
         try {
-          if (el._rnxHydrated) return;
+          if (el._rnxHydrated || el.hasAttribute('data-rnx-ignore')) return;
 
           const ComponentFunc = registeredComponents[tag];
 

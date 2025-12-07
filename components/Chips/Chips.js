@@ -2,10 +2,19 @@ import { createComponent } from '../../utils/createComponent.js';
 
 export function Chips({ items = [], type = 'filter', onselect }) {
     // items: [{ label, icon, selected, value }]
+    let parsedItems = items;
+    if (typeof items === 'string') {
+        try {
+            parsedItems = JSON.parse(items.replace(/'/g, '"').replace(/([a-zA-Z0-9]+):/g, '"$1":')); // Relaxed JSON parse
+        } catch (e) {
+            console.warn('[rnxJS] Chips: invalid items format', items);
+            parsedItems = [];
+        }
+    }
 
     const template = ({ items }) => `
     <div class="d-flex flex-wrap gap-2">
-      ${items.map((item, idx) => `
+      ${parsedItems.map((item, idx) => `
          <span class="m3-chip ${item.selected ? 'selected' : ''}" 
                data-index="${idx}" 
                data-ref="chip-${idx}">

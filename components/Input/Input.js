@@ -22,6 +22,7 @@ export function Input({ type = 'text', label = '', name = '', value = '', placeh
         ${required ? 'required' : ''}
         ${disabled ? 'disabled' : ''}
         data-ref="input"
+        data-rnx-ignore="true"
         ${attrs}
       >
       ${label ? `<label for="${id}">${label}</label>` : ''}

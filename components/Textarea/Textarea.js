@@ -10,6 +10,7 @@ export function Textarea({ name = '', value = '', rows = 4, placeholder = '', re
       ${required ? 'required' : ''}
       ${disabled ? 'disabled' : ''}
       data-ref="textarea"
+      data-rnx-ignore="true"
     >${value}</textarea>
   `;
 
