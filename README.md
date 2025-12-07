@@ -14,6 +14,22 @@
 
 ---
 
+## ⚡ Quick Start (CLI)
+
+The fastest way to start is using our CLI tool:
+[https://www.npmjs.com/package/@arnelirobles/create-rnxjs-app](https://www.npmjs.com/package/@arnelirobles/create-rnxjs-app)
+
+```bash
+npx @arnelirobles/create-rnxjs-app@latest
+```
+
+## 📂 Samples
+
+You can find working examples and samples here:
+[https://github.com/BaryoDev/rnxJS_samples](https://github.com/BaryoDev/rnxJS_samples)
+
+---
+
 ## 🚀 Zero to Hero: Build Your First App
 
 Welcome to rnxJS! In this 5-minute tutorial, we'll build a reactive **Employee Directory** with a search filter. No Webpack, no Bundlers, just HTML and JS.
@@ -352,6 +368,12 @@ When using the `icon` prop in components like `Button`, `FAB`, `Icon`, etc., sim
 - **Infinite Loop Prevention**: Implemented a recursion guard in `DataBinder`. Input elements are now flagged during updates to prevent state changes from re-triggering the input listener, fixing potential browser crashes.
 - **Component Hydration**: Added validation checks in `loadComponents` to ensure replacement nodes are valid before attempting to mount, preventing silent failures.
 - **Testing**: Added specialized regression tests for DataBinder stability and FAB rendering.
+
+---
+
+### Version 0.3.15 (Documentation Update) - December 2025
+
+- **Docs**: Added "Quick Start" key and "Samples" links to README for better onboarding.
 
 ---
 
