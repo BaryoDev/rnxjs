@@ -15,8 +15,9 @@ export function NavigationDrawer({ links = [], isOpen = false, onClose }) {
                   class="m3-drawer-link ${link.active ? 'active' : ''}"
                   data-index="${idx}"
                   data-ref="link-${idx}"
+                  data-rnx-ignore="true"
                >
-                  ${link.icon ? `<i class="material-symbols-outlined">${link.icon}</i>` : ''}
+                  ${link.icon ? `<i class="bi bi-${link.icon} me-2"></i>` : ''}
                   ${link.label}
                </a>
              `).join('')}

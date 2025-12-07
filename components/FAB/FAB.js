@@ -8,7 +8,7 @@ export function FAB({ icon = 'add', label = '', variant = 'standard', onclick = 
     if (variant !== 'standard') classes += ` ${variant}`;
 
     return `
-    <button class="${classes}" data-ref="btn">
+    <button class="${classes}" data-ref="btn" data-rnx-ignore="true">
       <i class="bi bi-${icon}"></i>
       ${label ? `<span class="extendedspan">${label}</span>` : ''}
     </button>

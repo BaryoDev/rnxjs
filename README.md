@@ -314,6 +314,20 @@ Use `unpkg` or `jsdelivr`.
 
 ---
 
+## Icons
+
+rnxJS now uses **Bootstrap Icons** by default. Ensure you include the Bootstrap Icons stylesheet in your project:
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+```
+
+When using the `icon` prop in components like `Button`, `FAB`, `Icon`, etc., simply provide the icon name (e.g., `moon-stars`, `check-circle`). The library automatically applies the `bi bi-[name]` classes.
+
+```html
+<Button icon="moon-stars" label="Theme" />
+<Icon name="check-circle" color="text-success" />
+```
 
 ### My `<FAB>` or custom component isn't rendering
 - Ensure you have called `rnx.autoRegisterComponents()` or manually registered it via `rnx.registerComponent('FAB', FAB)`.

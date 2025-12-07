@@ -6,7 +6,7 @@ export function Toast({ header = '', body = '', autohide = true, delay = 5000 })
     <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="${delay}">
       <div class="toast-header">
         <strong class="me-auto">${header}</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" data-rnx-ignore="true"></button>
       </div>
       <div class="toast-body">
         ${body}
