@@ -49,6 +49,7 @@
     "utils/",
     "framework/",
     "components/",
+    "css/",
     "dist/",
     "examples/"
   ],
