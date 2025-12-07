@@ -19,6 +19,7 @@ export function Select({ name = '', label = '', options = '', value = '', requir
         ${required ? 'required' : ''} 
         ${disabled ? 'disabled' : ''} 
         data-ref="select"
+        data-rnx-ignore="true"
       >
         ${parsedOptions.map(opt => `
           <option value="${opt.value}" ${opt.value === value ? 'selected' : ''}>

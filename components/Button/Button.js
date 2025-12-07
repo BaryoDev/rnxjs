@@ -28,6 +28,7 @@ export function Button({ label = '', variant = 'filled', size = '', icon = '', b
       class="${btnClass}" 
       type="button"
       data-ref="btn"
+      data-rnx-ignore="true"
       ${clickAttr}
       ${restAttrs}
     >
