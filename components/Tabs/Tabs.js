@@ -33,7 +33,8 @@ export function Tabs({ children = '' }) {
       nav.appendChild(navItem);
 
       // Content
-      el.classList.add('tab-pane', 'fade', active ? 'show active' : '');
+      el.classList.add('tab-pane', 'fade');
+      if (active) el.classList.add('show', 'active');
       el.id = tabId;
       content.appendChild(el);
     });
