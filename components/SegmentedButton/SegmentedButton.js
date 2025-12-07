@@ -1,13 +1,22 @@
 import { createComponent } from '../../utils/createComponent.js';
 
 export function SegmentedButton({ options = [], selected = '', onchange }) {
-    // options: [{ label, value, icon }]
+  // options: [{ label, value, icon }]
+  let parsedOptions = options;
+  if (typeof options === 'string') {
+    try {
+      parsedOptions = JSON.parse(options);
+    } catch (e) {
+      console.warn('[rnxJS] SegmentedButton: invalid options format', options);
+      parsedOptions = [];
+    }
+  }
 
-    const template = ({ selected, options }) => `
+  const template = ({ selected, options }) => `
     <div class="btn-group" role="group" style="border: 1px solid var(--md-sys-color-outline); border-radius: 28px; overflow: hidden;">
-      ${options.map(opt => {
-        const isSelected = opt.value === selected;
-        return `
+      ${parsedOptions.map(opt => {
+    const isSelected = opt.value === selected;
+    return `
           <button type="button" class="btn btn-outline-secondary border-0 ${isSelected ? 'active bg-secondary-subtle text-secondary-emphasis' : ''}" 
                   data-value="${opt.value}"
                   data-ref="btn-${opt.value}"
@@ -16,22 +25,22 @@ export function SegmentedButton({ options = [], selected = '', onchange }) {
             ${opt.label}
           </button>
         `;
-    }).join('')}
+  }).join('')}
     </div>
   `;
 
-    const component = createComponent(template, { options, selected });
+  const component = createComponent(template, { options, selected });
 
-    component.useEffect(() => {
-        options.forEach(opt => {
-            const btn = component.refs[`btn-${opt.value}`];
-            if (btn) {
-                btn.addEventListener('click', () => {
-                    if (onchange) onchange(opt.value);
-                });
-            }
+  component.useEffect(() => {
+    options.forEach(opt => {
+      const btn = component.refs[`btn-${opt.value}`];
+      if (btn) {
+        btn.addEventListener('click', () => {
+          if (onchange) onchange(opt.value);
         });
+      }
     });
+  });
 
-    return component;
+  return component;
 }

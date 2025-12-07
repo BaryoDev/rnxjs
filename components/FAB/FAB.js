@@ -9,7 +9,7 @@ export function FAB({ icon = 'add', label = '', variant = 'standard', onclick = 
 
     return `
     <button class="${classes}" data-ref="btn">
-      <span class="material-symbols-outlined">${icon}</span>
+      <i class="bi bi-${icon}"></i>
       ${label ? `<span class="extendedspan">${label}</span>` : ''}
     </button>
   `};

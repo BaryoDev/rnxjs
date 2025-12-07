@@ -15,6 +15,7 @@ export { Row } from './Row/Row.js';
 export { Select } from './Select/Select.js';
 export { Spinner } from './Spinner/Spinner.js';
 export { Tabs } from './Tabs/Tabs.js';
+export { Tab } from './Tabs/Tab.js';
 export { Textarea } from './Textarea/Textarea.js';
 export { Toast } from './Toast/Toast.js';
 export { Icon } from './Icon/Icon.js';

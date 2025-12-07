@@ -5,6 +5,7 @@ export function Tabs({ children = '' }) {
     <div>
       <ul class="nav nav-tabs" role="tablist" data-ref="nav"></ul>
       <div class="tab-content" data-ref="content"></div>
+      <div style="display: none;" data-slot></div>
     </div>
   `;
 
