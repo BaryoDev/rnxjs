@@ -14,7 +14,7 @@ describe('Material M3 Components', () => {
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
                     try {
-                        expect(fab.querySelector('.material-symbols-outlined').textContent).toBe('add');
+                        expect(fab.querySelector('.bi-add')).not.toBeNull();
                         expect(fab.className).toContain('m3-fab large');
                         fab.remove();
                         resolve();
