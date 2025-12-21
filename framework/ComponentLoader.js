@@ -2,27 +2,187 @@ import { registeredComponents } from './Registry.js';
 import { bindData } from './DataBinder.js';
 
 /**
- * Safely evaluate a condition expression with limited scope
+ * Dangerous patterns that could lead to code execution
+ * @type {RegExp[]}
+ */
+const DANGEROUS_PATTERNS = [
+  /constructor/i,
+  /prototype/i,
+  /__proto__/i,
+  /\beval\b/i,
+  /\bFunction\b/i,
+  /\bwindow\b/i,
+  /\bdocument\b/i,
+  /\bglobal\b/i,
+  /\bprocess\b/i,
+  /\brequire\b/i,
+  /\bimport\b/i,
+  /\bfetch\b/i,
+  /\bXMLHttpRequest\b/i,
+  /\blocalStorage\b/i,
+  /\bsessionStorage\b/i,
+  /\bcookie/i,
+  /\[\s*['"`]/,      // Bracket notation with strings
+  /\(\s*\)/,         // Function calls
+  /`/,               // Template literals
+  /\$\{/,            // Template interpolation
+];
+
+/**
+ * Safely get a nested value from state using dot notation
+ * @param {Object} state - The state object
+ * @param {string} path - Dot-notation path (e.g., 'user.name')
+ * @returns {*} - The value at the path or undefined
+ */
+function getStateValue(state, path) {
+  if (!state || !path) return undefined;
+
+  const keys = path.split('.');
+  let current = state;
+
+  for (const key of keys) {
+    if (current === null || current === undefined) return undefined;
+    if (typeof current !== 'object') return undefined;
+    // Block prototype access
+    if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+      console.warn(`[rnxJS] Blocked prototype access attempt: "${path}"`);
+      return undefined;
+    }
+    current = current[key];
+  }
+
+  return current;
+}
+
+/**
+ * Parse a literal value from expression string
+ * @param {string} value - The value string to parse
+ * @returns {*} - Parsed value
+ */
+function parseValue(value) {
+  if (!value) return value;
+  value = value.trim();
+
+  // String literals
+  if ((value.startsWith("'") && value.endsWith("'")) ||
+      (value.startsWith('"') && value.endsWith('"'))) {
+    return value.slice(1, -1);
+  }
+
+  // Boolean
+  if (value === 'true') return true;
+  if (value === 'false') return false;
+
+  // Null/undefined
+  if (value === 'null') return null;
+  if (value === 'undefined') return undefined;
+
+  // Number
+  const num = Number(value);
+  if (!isNaN(num)) return num;
+
+  return value;
+}
+
+/**
+ * Evaluate a simple expression (no function calls allowed)
+ * @param {string} expr - Expression to evaluate
+ * @param {Object} state - State object
+ * @returns {boolean} - Result
+ */
+function evaluateSimpleExpression(expr, state) {
+  expr = expr.trim();
+
+  // Handle logical AND
+  if (expr.includes('&&')) {
+    const parts = expr.split('&&').map(p => p.trim());
+    return parts.every(part => evaluateSimpleExpression(part, state));
+  }
+
+  // Handle logical OR
+  if (expr.includes('||')) {
+    const parts = expr.split('||').map(p => p.trim());
+    return parts.some(part => evaluateSimpleExpression(part, state));
+  }
+
+  // Handle negation
+  if (expr.startsWith('!')) {
+    return !evaluateSimpleExpression(expr.slice(1).trim(), state);
+  }
+
+  // Handle comparison operators
+  const comparisonMatch = expr.match(/^([a-zA-Z_$][\w.$]*)\s*(===|!==|==|!=|>=|<=|>|<)\s*(.+)$/);
+  if (comparisonMatch) {
+    const [, leftPath, operator, rightRaw] = comparisonMatch;
+    const leftValue = getStateValue(state, leftPath);
+    const rightValue = parseValue(rightRaw.trim());
+
+    switch (operator) {
+      case '===':
+      case '==':
+        return leftValue === rightValue;
+      case '!==':
+      case '!=':
+        return leftValue !== rightValue;
+      case '>':
+        return leftValue > rightValue;
+      case '<':
+        return leftValue < rightValue;
+      case '>=':
+        return leftValue >= rightValue;
+      case '<=':
+        return leftValue <= rightValue;
+      default:
+        return false;
+    }
+  }
+
+  // Handle simple property access (truthy check)
+  const propertyMatch = expr.match(/^([a-zA-Z_$][\w.$]*)$/);
+  if (propertyMatch) {
+    return Boolean(getStateValue(state, propertyMatch[1]));
+  }
+
+  console.warn(`[rnxJS] Unsupported expression syntax: "${expr}"`);
+  return false;
+}
+
+/**
+ * Safely evaluate a condition expression without code execution risks
+ *
+ * Supported expressions:
+ * - property (truthy check)
+ * - nested.property (truthy check)
+ * - !property (negation)
+ * - property === 'value'
+ * - property !== 'value'
+ * - property > 0, property < 10, property >= 5, property <= 5
+ * - property && other
+ * - property || other
+ *
  * @param {string} expression - The expression to evaluate
  * @param {Object} state - The reactive state to use as context
  * @returns {boolean} - Result of the expression
  */
 function safeEvaluateCondition(expression, state) {
+  if (!expression || typeof expression !== 'string') {
+    return false;
+  }
+
+  expression = expression.trim();
+
+  // Block dangerous patterns
+  for (const pattern of DANGEROUS_PATTERNS) {
+    if (pattern.test(expression)) {
+      console.warn(`[rnxJS] Blocked potentially dangerous expression: "${expression}"`);
+      return false;
+    }
+  }
+
   try {
-    // Create a function with the state as the only accessible variable
-    // This is safer than eval() as it limits the scope
-    const fn = new Function('state', `
-      'use strict';
-      try {
-        return Boolean(${expression});
-      } catch (e) {
-        console.error('[rnxJS] Error evaluating condition "${expression}":', e.message);
-        return false;
-      }
-    `);
-    return fn(state);
+    return evaluateSimpleExpression(expression, state);
   } catch (error) {
-    console.error('[rnxJS] Invalid condition expression "${expression}":', error.message);
+    console.warn(`[rnxJS] Error evaluating condition "${expression}":`, error.message);
     return false;
   }
 }

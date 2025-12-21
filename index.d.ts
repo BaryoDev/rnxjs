@@ -188,3 +188,90 @@ export function Spinner(props: any): Component;
 export function Tabs(props: any): Component;
 export function Textarea(props: any): Component;
 export function Toast(props: any): Component;
+
+// ============================================
+// Security Utilities
+// ============================================
+
+/**
+ * Trusted HTML wrapper type
+ */
+export interface TrustedHtml {
+    __rnxTrustedHtml: true;
+    toString(): string;
+    valueOf(): string;
+}
+
+/**
+ * Escape HTML special characters to prevent XSS
+ * @param str - String to escape (non-strings are converted)
+ * @returns Escaped string safe for HTML insertion
+ *
+ * @example
+ * escapeHtml('<script>alert("xss")</script>')
+ * // Returns: '&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;'
+ */
+export function escapeHtml(str: any): string;
+
+/**
+ * Escape string for use in HTML attributes
+ * More aggressive escaping for attribute context
+ * @param str - String to escape
+ * @returns Escaped string safe for attribute values
+ */
+export function escapeAttribute(str: any): string;
+
+/**
+ * Escape string for use in JavaScript string context
+ * @param str - String to escape
+ * @returns Escaped string safe for JS strings
+ */
+export function escapeJs(str: any): string;
+
+/**
+ * Template tag for safe HTML with automatic escaping
+ * All interpolated values are automatically escaped unless wrapped with trustHtml()
+ *
+ * @example
+ * const name = '<script>alert("xss")</script>';
+ * const html = safeHtml`<div>Hello, ${name}!</div>`;
+ * // Returns: '<div>Hello, &lt;script&gt;...&lt;/script&gt;!</div>'
+ */
+export function safeHtml(strings: TemplateStringsArray, ...values: any[]): string;
+
+/**
+ * Mark a string as trusted HTML (bypass escaping)
+ * USE WITH EXTREME CAUTION - only for pre-sanitized content
+ * @param html - Pre-sanitized HTML string
+ * @returns Trusted HTML object
+ */
+export function trustHtml(html: string): TrustedHtml;
+
+/**
+ * Check if a value is trusted HTML
+ * @param value - Value to check
+ * @returns True if trusted HTML
+ */
+export function isTrustedHtml(value: any): value is TrustedHtml;
+
+/**
+ * Sanitize a string for safe display
+ * Removes control characters and normalizes whitespace
+ * @param str - String to sanitize
+ * @returns Sanitized string
+ */
+export function sanitizeText(str: any): string;
+
+/**
+ * Sanitize a URL to prevent javascript: and data: attacks
+ * @param url - URL to sanitize
+ * @returns Safe URL or null if unsafe
+ */
+export function sanitizeUrl(url: string): string | null;
+
+/**
+ * Sanitize object keys to prevent prototype pollution
+ * @param obj - Object to sanitize
+ * @returns Sanitized object (deep clone)
+ */
+export function sanitizeObject<T extends object>(obj: T): T;

@@ -3,6 +3,19 @@ export { createComponent } from './utils/createComponent.js';
 export { createReactiveState } from './utils/createReactiveState.js';
 export { setBootstrap, getBootstrap } from './utils/config.js';
 
+// Security Utilities
+export {
+  escapeHtml,
+  escapeAttribute,
+  escapeJs,
+  safeHtml,
+  trustHtml,
+  isTrustedHtml,
+  sanitizeText,
+  sanitizeUrl,
+  sanitizeObject
+} from './utils/security.js';
+
 // Framework
 export { registerComponent } from './framework/Registry.js';
 export { loadComponents } from './framework/ComponentLoader.js';
