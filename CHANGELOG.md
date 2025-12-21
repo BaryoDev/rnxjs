@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.4.0] - 2025-12-26
 
+### Enterprise Readiness
+
+- **Accessibility Utilities**: Comprehensive a11y helper functions for WCAG 2.1 AA compliance (Sprint 3 Task 3.2)
+  - `isFocusable()` - Check if element can receive focus
+  - `getFocusableElements()` - Get all focusable elements in container
+  - `createFocusTrap()` - Trap focus within modal dialogs
+  - `announce()` - Screen reader announcements with live regions
+  - `createSkipLink()` - Keyboard navigation skip links
+  - `setupAccessibleClick()` - Make non-interactive elements keyboard accessible
+  - `createDisclosureWidget()` - Manage ARIA expanded state for accordions/dropdowns
+  - Complete test coverage (28 tests)
+
+- **Theming System**: CSS custom properties with light/dark mode support (Sprint 3 Task 3.4)
+  - Theme manager with registration, switching, and persistence
+  - Built-in light and dark themes
+  - System preference detection (`prefers-color-scheme`)
+  - Auto-watch for system preference changes
+  - localStorage persistence of user preference
+  - CSS custom property tokens for colors, spacing, typography, shadows
+  - Support for `prefers-reduced-motion` and `prefers-contrast: high`
+  - Utility classes: `.rnx-sr-only`, `.rnx-skip-link`
+  - Complete test coverage (24 tests)
+
 ### Performance
 
 - **Update Batching**: Implemented microtask-based batching for state updates (Sprint 2 Task 2.2)
