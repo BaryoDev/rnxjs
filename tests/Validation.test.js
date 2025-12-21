@@ -47,6 +47,7 @@ describe('DataBinder Validation', () => {
         // Make valid
         input.value = 'John';
         input.dispatchEvent(new Event('input'));
+        state.$flushSync(); // Flush batched updates
 
         expect(state.errors.user.name).toBe('');
         expect(errorSpan.textContent).toBe('');
@@ -54,6 +55,7 @@ describe('DataBinder Validation', () => {
         // Make invalid again
         input.value = '';
         input.dispatchEvent(new Event('input'));
+        state.$flushSync(); // Flush batched updates
 
         expect(state.errors.user.name).toBe('This field is required');
     });
@@ -68,11 +70,13 @@ describe('DataBinder Validation', () => {
         // Invalid email
         input.value = 'invalid-email';
         input.dispatchEvent(new Event('input'));
+        state.$flushSync(); // Flush batched updates
         expect(state.errors.user.email).toBe('Invalid email address');
 
         // Valid email
         input.value = 'test@example.com';
         input.dispatchEvent(new Event('input'));
+        state.$flushSync(); // Flush batched updates
         expect(state.errors.user.email).toBe('');
     });
 
@@ -85,10 +89,12 @@ describe('DataBinder Validation', () => {
 
         input.value = 'Jo';
         input.dispatchEvent(new Event('input'));
+        state.$flushSync(); // Flush batched updates
         expect(state.errors.user.name).toBe('Must be at least 3 characters');
 
         input.value = 'Joe';
         input.dispatchEvent(new Event('input'));
+        state.$flushSync(); // Flush batched updates
         expect(state.errors.user.name).toBe('');
     });
 
@@ -101,10 +107,12 @@ describe('DataBinder Validation', () => {
 
         input.value = 'Joseph';
         input.dispatchEvent(new Event('input'));
+        state.$flushSync(); // Flush batched updates
         expect(state.errors.user.name).toBe('Must be no more than 5 characters');
 
         input.value = 'Jose';
         input.dispatchEvent(new Event('input'));
+        state.$flushSync(); // Flush batched updates
         expect(state.errors.user.name).toBe('');
     });
 
@@ -117,10 +125,12 @@ describe('DataBinder Validation', () => {
 
         input.value = '10';
         input.dispatchEvent(new Event('input'));
+        state.$flushSync(); // Flush batched updates
         expect(state.errors.user.age).toBe('Must be at least 18');
 
         input.value = '20';
         input.dispatchEvent(new Event('input'));
+        state.$flushSync(); // Flush batched updates
         expect(state.errors.user.age).toBe('');
     });
 
@@ -134,16 +144,19 @@ describe('DataBinder Validation', () => {
         // Required check
         input.value = '';
         input.dispatchEvent(new Event('input'));
+        state.$flushSync(); // Flush batched updates
         expect(state.errors.user.name).toBe('This field is required');
 
         // Min length check
         input.value = 'Jo';
         input.dispatchEvent(new Event('input'));
+        state.$flushSync(); // Flush batched updates
         expect(state.errors.user.name).toBe('Must be at least 3 characters');
 
         // Valid
         input.value = 'Joe';
         input.dispatchEvent(new Event('input'));
+        state.$flushSync(); // Flush batched updates
         expect(state.errors.user.name).toBe('');
     });
 
@@ -155,9 +168,11 @@ describe('DataBinder Validation', () => {
 
         // Update state directly
         state.user.name = 'John';
+        state.$flushSync(); // Flush batched updates
         expect(state.errors.user.name).toBe('');
 
         state.user.name = '';
+        state.$flushSync(); // Flush batched updates
         expect(state.errors.user.name).toBe('This field is required');
     });
 });

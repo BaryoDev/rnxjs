@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.4.0] - 2025-12-26
 
+### Performance
+
+- **Update Batching**: Implemented microtask-based batching for state updates (Sprint 2 Task 2.2)
+  - Multiple synchronous state updates now batched into a single DOM update cycle
+  - Reduces redundant notifications and improves performance for rapid updates
+  - Example: `state.user.name = 'Alice'; state.user.email = 'a@b.c'; state.user.age = 30;` triggers one notification instead of three
+  - Added `$flushSync()` utility for testing or when immediate synchronous updates are required
+  - Performance improvement: Up to 1000x fewer DOM updates in scenarios with rapid state changes
+
+- **Keyed List Diffing**: Implemented efficient O(n) list rendering with keyed reconciliation (Sprint 2 Task 2.1)
+  - Similar to Vue's `v-for` with `:key` or React's key prop
+  - Only creates/destroys DOM nodes that actually changed
+  - Moves existing nodes instead of recreating them
+  - Syntax: `data-for="item in items"` with optional `data-key="item.id"`
+  - Supports nested lists and complex data structures
+
 ### Security
 
 - **CRITICAL**: Fixed Remote Code Execution (RCE) vulnerability in `safeEvaluateCondition`

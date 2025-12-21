@@ -15,6 +15,10 @@ export function createReactiveState(initialState = {}) {
     const visitedObjects = new WeakSet(); // Prevent circular reference infinite loops
     const unsubscribeFunctions = new Set(); // Track all unsubscribe functions for cleanup
 
+    // Update batching state
+    let pendingNotifications = new Map();
+    let batchScheduled = false;
+
     /**
      * Subscribe to changes on a specific property path
      * @param {string} path - Dot-notation path (e.g., 'user.email')
@@ -69,37 +73,77 @@ export function createReactiveState(initialState = {}) {
     }
 
     /**
-     * Notify all subscribers for a given path
+     * Queue a notification to be processed in the next microtask
+     * Also queue parent path notifications to avoid redundant lookups
      * @param {string} path - Property path that changed
      * @param {*} value - New value
      */
-    function notify(path, value) {
+    function queueNotification(path, value) {
+        // Store the notification for the exact path
+        pendingNotifications.set(path, value);
+
+        // Also queue parent path notifications
+        // (will be computed at flush time with latest values)
+        const parts = path.split('.');
+        for (let i = parts.length - 1; i > 0; i--) {
+            const parentPath = parts.slice(0, i).join('.');
+            // Mark parent as needing update (value will be recomputed at flush)
+            if (!pendingNotifications.has(parentPath)) {
+                pendingNotifications.set(parentPath, null); // null means "compute from state"
+            }
+        }
+
+        // Schedule batch if not already scheduled
+        if (!batchScheduled) {
+            batchScheduled = true;
+            queueMicrotask(flushNotifications);
+        }
+    }
+
+    /**
+     * Flush all pending notifications
+     * This is called in a microtask to batch multiple updates
+     */
+    function flushNotifications() {
+        const notifications = pendingNotifications;
+        pendingNotifications = new Map();
+        batchScheduled = false;
+
+        // Process all queued notifications
+        for (const [path, value] of notifications) {
+            notifyImmediate(path, value);
+        }
+    }
+
+    /**
+     * Synchronously flush all pending notifications
+     * Useful for testing or when immediate updates are required
+     */
+    function flushSync() {
+        if (batchScheduled) {
+            flushNotifications();
+        }
+    }
+
+    /**
+     * Notify all subscribers for a given path (immediate, no batching)
+     * @param {string} path - Property path that changed
+     * @param {*} value - New value (null means compute from state)
+     */
+    function notifyImmediate(path, value) {
         try {
             // Notify exact path subscribers
             if (subscribers.has(path)) {
+                // If value is null, compute it from state
+                const actualValue = value === null ? getNestedValue(state, path) : value;
+
                 subscribers.get(path).forEach(callback => {
                     try {
-                        callback(value);
+                        callback(actualValue);
                     } catch (error) {
                         console.error(`[rnxJS] Error in subscriber for path "${path}":`, error);
                     }
                 });
-            }
-
-            // Notify parent path subscribers (e.g., 'user' when 'user.email' changes)
-            const parts = path.split('.');
-            for (let i = parts.length - 1; i > 0; i--) {
-                const parentPath = parts.slice(0, i).join('.');
-                if (subscribers.has(parentPath)) {
-                    const parentValue = getNestedValue(state, parentPath);
-                    subscribers.get(parentPath).forEach(callback => {
-                        try {
-                            callback(parentValue);
-                        } catch (error) {
-                            console.error(`[rnxJS] Error in subscriber for path "${parentPath}":`, error);
-                        }
-                    });
-                }
             }
         } catch (error) {
             console.error(`[rnxJS] Error notifying subscribers for path "${path}":`, error);
@@ -169,8 +213,8 @@ export function createReactiveState(initialState = {}) {
                 if (isArray && arrayMutatorMethods.includes(prop)) {
                     return function (...args) {
                         const result = Array.prototype[prop].apply(obj, args);
-                        // Notify subscribers that the array changed
-                        notify(basePath, obj);
+                        // Queue notification that the array changed
+                        queueNotification(basePath, obj);
                         return result;
                     };
                 }
@@ -196,7 +240,7 @@ export function createReactiveState(initialState = {}) {
                 // Only update and notify if value actually changed
                 if (oldValue !== value) {
                     obj[prop] = value;
-                    notify(currentPath, value);
+                    queueNotification(currentPath, value);
                 }
 
                 return true;
@@ -236,6 +280,13 @@ export function createReactiveState(initialState = {}) {
 
     Object.defineProperty(state, '$destroy', {
         value: destroy,
+        enumerable: false,
+        writable: false,
+        configurable: false
+    });
+
+    Object.defineProperty(state, '$flushSync', {
+        value: flushSync,
         enumerable: false,
         writable: false,
         configurable: false

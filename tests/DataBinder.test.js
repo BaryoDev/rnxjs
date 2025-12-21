@@ -48,6 +48,7 @@ describe('DataBinder', () => {
             expect(input.value).toBe('Alice');
 
             state.name = 'Bob';
+            state.$flushSync(); // Flush batched updates
             expect(input.value).toBe('Bob');
         });
     });
@@ -207,6 +208,7 @@ describe('DataBinder', () => {
 
             input1.value = 'Alice';
             input1.dispatchEvent(new Event('input'));
+            state.$flushSync(); // Flush batched updates
 
             expect(input2.value).toBe('Alice');
         });
@@ -225,6 +227,7 @@ describe('DataBinder', () => {
 
             input.value = 'Alice';
             input.dispatchEvent(new Event('input'));
+            state.$flushSync(); // Flush batched updates
 
             expect(span.textContent).toBe('Alice');
         });

@@ -28,6 +28,7 @@ describe('createReactiveState', () => {
 
             state.subscribe('count', callback);
             state.count = 5;
+            state.$flushSync(); // Flush batched updates
 
             expect(callback).toHaveBeenCalledWith(5);
             expect(callback).toHaveBeenCalledTimes(1);
@@ -51,6 +52,7 @@ describe('createReactiveState', () => {
             state.subscribe('count', callback1);
             state.subscribe('count', callback2);
             state.count = 10;
+            state.$flushSync(); // Flush batched updates
 
             expect(callback1).toHaveBeenCalledWith(10);
             expect(callback2).toHaveBeenCalledWith(10);
@@ -62,10 +64,12 @@ describe('createReactiveState', () => {
 
             const unsubscribe = state.subscribe('count', callback);
             state.count = 1;
+            state.$flushSync(); // Flush batched updates
             expect(callback).toHaveBeenCalledTimes(1);
 
             unsubscribe();
             state.count = 2;
+            state.$flushSync(); // Flush batched updates
             expect(callback).toHaveBeenCalledTimes(1); // Not called again
         });
 
@@ -77,6 +81,7 @@ describe('createReactiveState', () => {
             state.subscribe('user', parentCallback);
             state.subscribe('user.name', childCallback);
             state.user.name = 'Bob';
+            state.$flushSync(); // Flush batched updates
 
             expect(childCallback).toHaveBeenCalledWith('Bob');
             expect(parentCallback).toHaveBeenCalled();
@@ -110,6 +115,7 @@ describe('createReactiveState', () => {
             const callback = vi.fn();
             state.subscribe('user.profile.name', callback);
             state.user.profile.name = 'Bob';
+            state.$flushSync(); // Flush batched updates
 
             expect(callback).toHaveBeenCalledWith('Bob');
         });
@@ -132,6 +138,7 @@ describe('createReactiveState', () => {
 
             state.subscribe('items', callback);
             state.items.push(4);
+            state.$flushSync(); // Flush batched updates
 
             expect(callback).toHaveBeenCalled();
             expect(state.items).toContain(4);
@@ -143,6 +150,7 @@ describe('createReactiveState', () => {
 
             state.subscribe('items', callback);
             const popped = state.items.pop();
+            state.$flushSync(); // Flush batched updates
 
             expect(callback).toHaveBeenCalled();
             expect(popped).toBe(3);
@@ -154,6 +162,7 @@ describe('createReactiveState', () => {
 
             state.subscribe('items', callback);
             state.items.splice(1, 1);
+            state.$flushSync(); // Flush batched updates
 
             expect(callback).toHaveBeenCalled();
             expect(state.items).toEqual([1, 3]);
@@ -172,6 +181,7 @@ describe('createReactiveState', () => {
 
             state.subscribe('items', callback);
             state.items.sort();
+            state.$flushSync(); // Flush batched updates
 
             expect(callback).toHaveBeenCalled();
             expect(state.items).toEqual([1, 2, 3]);
@@ -208,6 +218,7 @@ describe('createReactiveState', () => {
             state.subscribe('count', errorCallback);
             state.subscribe('count', normalCallback);
             state.count = 5;
+            state.$flushSync(); // Flush batched updates
 
             // Normal callback should still be called despite error
             expect(normalCallback).toHaveBeenCalledWith(5);
