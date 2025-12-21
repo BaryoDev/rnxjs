@@ -44,3 +44,16 @@ coverage/
 .cache/
 .next/
 .nuxt/
+
+# IDE and AI Assistant files
+.claude/
+brain/
+
+# Test output and reports
+test-results/
+playwright-report/
+
+# Temporary scripts and files
+verify_*.js
+repro_*.js
+test-bundle.html
