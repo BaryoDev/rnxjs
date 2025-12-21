@@ -31,3 +31,13 @@ export { List } from './List/List.js';
 export { Slider } from './Slider/Slider.js';
 export { Search } from './Search/Search.js';
 export { SegmentedButton } from './SegmentedButton/SegmentedButton.js';
+
+// Sprint 4 - Phase 1 Components
+export { DataTable } from './DataTable/DataTable.js';
+export { StatCard } from './StatCard/StatCard.js';
+export { Skeleton } from './Skeleton/Skeleton.js';
+export { EmptyState } from './EmptyState/EmptyState.js';
+export { ErrorState } from './ErrorState/ErrorState.js';
+export { DatePicker } from './DatePicker/DatePicker.js';
+export { Autocomplete } from './Autocomplete/Autocomplete.js';
+export { Breadcrumb } from './Breadcrumb/Breadcrumb.js';
