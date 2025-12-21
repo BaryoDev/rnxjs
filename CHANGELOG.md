@@ -67,6 +67,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Performance
 
+- **Performance Monitoring Utilities**: Developer tools for identifying performance bottlenecks (Sprint 2 Task 2.6)
+  - Core performance monitoring utility (`utils/performance.ts`) with TypeScript support
+  - Mark and measure API (`rnxPerf.mark()`, `rnxPerf.measure()`) for tracking operation duration
+  - Statistical reporting with count, total, min, max, and average duration
+  - Slow operation warnings with configurable threshold (default: 16ms for 60fps)
+  - `withPerf()` wrapper function for automatic performance tracking of sync/async functions
+  - `@perf()` decorator for class methods with custom operation names
+  - `logReport()` for console table output of performance statistics
+  - Supports both `performance.now()` (high-resolution) and `Date.now()` (fallback)
+  - Complete test coverage (29 tests)
+  - All 325 tests passing
+
 - **Update Batching**: Implemented microtask-based batching for state updates (Sprint 2 Task 2.2)
   - Multiple synchronous state updates now batched into a single DOM update cycle
   - Reduces redundant notifications and improves performance for rapid updates
