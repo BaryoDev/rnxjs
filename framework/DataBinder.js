@@ -3,11 +3,16 @@
  * Processes data-bind attributes and synchronizes DOM with reactive state
  */
 
+import { ListRenderer, setBindDataFunction } from './ListRenderer.js';
+
 // Track subscriptions for cleanup
 const bindingSubscriptions = new WeakMap();
 
 // Track bound elements to prevent duplicate bindings
 const boundElements = new WeakSet();
+
+// Track list renderers for cleanup
+const listRenderers = new WeakMap();
 
 /**
  * Get nested property value from object
@@ -156,6 +161,9 @@ function validateField(value, rules) {
  * @param {Proxy} state - Reactive state object created by createReactiveState
  */
 export function bindData(rootElement = document, state = null) {
+    // Set up bindData function reference for nested lists (first time only)
+    setBindDataFunction(bindData);
+
     // Validation
     if (!rootElement || typeof rootElement.querySelectorAll !== 'function') {
         console.error('[rnxJS] bindData: rootElement must be a valid DOM element');
@@ -188,10 +196,38 @@ export function bindData(rootElement = document, state = null) {
     }
     const subscriptions = bindingSubscriptions.get(rootElement);
 
+    // Process data-for list rendering first (before data-bind)
+    const listElements = rootElement.querySelectorAll('[data-for]');
+
+    if (!listRenderers.has(rootElement)) {
+        listRenderers.set(rootElement, []);
+    }
+    const renderers = listRenderers.get(rootElement);
+
+    listElements.forEach(element => {
+        // Prevent duplicate list rendering
+        if (boundElements.has(element)) return;
+        boundElements.add(element);
+
+        try {
+            const renderer = setupListRenderer(element, state);
+            if (renderer) {
+                renderers.push(renderer);
+            }
+        } catch (error) {
+            console.error('[rnxJS] Error setting up list renderer:', error);
+        }
+    });
+
     // Find all elements with data-bind attribute
     const elements = rootElement.querySelectorAll('[data-bind]');
 
     elements.forEach(element => {
+        // Skip elements that are part of a data-for template
+        if (element.hasAttribute('data-for') || element.closest('[data-for]')) {
+            return;
+        }
+
         // Prevent duplicate binding
         if (boundElements.has(element)) return;
         boundElements.add(element);
@@ -238,20 +274,31 @@ export function bindData(rootElement = document, state = null) {
  * @param {HTMLElement} rootElement - Root element to unbind
  */
 export function unbindData(rootElement) {
-    if (!bindingSubscriptions.has(rootElement)) {
-        return;
+    // Cleanup subscriptions
+    if (bindingSubscriptions.has(rootElement)) {
+        const subscriptions = bindingSubscriptions.get(rootElement);
+        subscriptions.forEach(unsubscribe => {
+            try {
+                unsubscribe();
+            } catch (error) {
+                console.error('[rnxJS] Error unsubscribing:', error);
+            }
+        });
+        bindingSubscriptions.delete(rootElement);
     }
 
-    const subscriptions = bindingSubscriptions.get(rootElement);
-    subscriptions.forEach(unsubscribe => {
-        try {
-            unsubscribe();
-        } catch (error) {
-            console.error('[rnxJS] Error unsubscribing:', error);
-        }
-    });
-
-    bindingSubscriptions.delete(rootElement);
+    // Cleanup list renderers
+    if (listRenderers.has(rootElement)) {
+        const renderers = listRenderers.get(rootElement);
+        renderers.forEach(renderer => {
+            try {
+                renderer.destroy();
+            } catch (error) {
+                console.error('[rnxJS] Error destroying list renderer:', error);
+            }
+        });
+        listRenderers.delete(rootElement);
+    }
 }
 
 /**
@@ -398,4 +445,78 @@ function updateInputValue(element, value, type) {
     } catch (error) {
         console.error('[rnxJS] Error updating input value:', error);
     }
+}
+
+/**
+ * Set up list renderer for data-for attribute
+ * Syntax: data-for="item in items" or data-for="(item, index) in items"
+ * Optional: data-key="item.id" for keyed diffing
+ * @param {HTMLElement} element - Template element
+ * @param {Proxy} state - Reactive state
+ * @returns {ListRenderer} - List renderer instance
+ */
+function setupListRenderer(element, state) {
+    const forAttr = element.getAttribute('data-for');
+
+    if (!forAttr || typeof forAttr !== 'string') {
+        console.warn('[rnxJS] data-for attribute is empty or invalid on element:', element);
+        return null;
+    }
+
+    // Parse data-for syntax: "item in items" or "(item, index) in items"
+    const forPattern = /^\s*(?:\(([a-zA-Z_$][\w$]*)\s*,\s*([a-zA-Z_$][\w$]*)\)|([a-zA-Z_$][\w$]*))\s+in\s+([a-zA-Z_$][\w.$]*)\s*$/;
+    const match = forAttr.match(forPattern);
+
+    if (!match) {
+        console.warn(`[rnxJS] Invalid data-for syntax "${forAttr}". Expected "item in items" or "(item, index) in items"`);
+        return null;
+    }
+
+    const varName = match[3] || match[1]; // Single var or first in tuple
+    const indexName = match[2] || null; // Second in tuple
+    const arrayPath = match[4];
+
+    // Parse data-key attribute for key function
+    const keyAttr = element.getAttribute('data-key');
+    let keyFn = (item, index) => String(index); // Default: use index as key
+
+    if (keyAttr) {
+        // Simple property access: "item.id" or "id"
+        if (keyAttr.startsWith(varName + '.')) {
+            const propPath = keyAttr.slice(varName.length + 1);
+            keyFn = (item) => {
+                const value = propPath.split('.').reduce((curr, key) => curr?.[key], item);
+                return String(value ?? '');
+            };
+        } else if (keyAttr === varName) {
+            // Use item itself as key (for primitives)
+            keyFn = (item) => String(item);
+        } else {
+            console.warn(`[rnxJS] data-key "${keyAttr}" should reference "${varName}". Using index as key.`);
+        }
+    }
+
+    // Create placeholder comment node
+    const placeholder = document.createComment(` data-for: ${forAttr} `);
+    element.parentNode.insertBefore(placeholder, element);
+
+    // Remove original element from DOM (it's the template)
+    element.remove();
+
+    // Create list renderer
+    const renderer = new ListRenderer(element, placeholder, state, arrayPath, {
+        key: keyFn,
+        varName,
+        indexName
+    });
+
+    // Initial render
+    renderer.render();
+
+    // Subscribe to array changes
+    state.subscribe(arrayPath, () => {
+        renderer.render();
+    });
+
+    return renderer;
 }
