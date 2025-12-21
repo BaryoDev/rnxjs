@@ -67,6 +67,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Performance
 
+- **Virtual Scrolling Component**: Efficient rendering for large lists (Sprint 2 Task 2.5)
+  - VirtualList component for lists with 1000+ items
+  - Only renders visible items + configurable buffer for smooth scrolling
+  - Automatic viewport calculation and item positioning
+  - Scroll event optimization (updates only on significant scroll changes)
+  - Utility methods: `scrollToIndex()`, `scrollToTop()`, `scrollToBottom()`, `getVisibleRange()`
+  - Reactive state integration for automatic updates
+  - Customizable item height, visible count, and buffer size
+  - Complete test coverage (19 tests)
+
+- **Computed Properties**: Optimized derived state with equality checking (Sprint 2 Task 2.3)
+  - Lazy evaluation with automatic caching
+  - Automatic dependency tracking via Proxy
+  - Equality checking to prevent unnecessary recomputations (shallow and deep equality)
+  - Custom equality functions for complex data structures
+  - `createComputed()` for single computed properties
+  - `createComputedProperties()` for batch creation
+  - Support for chained computed properties
+  - Complete test coverage (30 tests)
+
 - **Memory Leak Prevention**: Automatic cleanup and resource management (Sprint 2 Task 2.4)
   - Component auto-cleanup using MutationObserver when removed from DOM
   - Automatic disconnection of subscriptions and effects on component removal
@@ -75,7 +95,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Proper cleanup of effect handlers and unmount callbacks
   - MutationObserver-based detection of DOM removal (supports nested removals)
   - Complete test coverage (22 tests)
-  - All 347 tests passing
 
 - **Performance Monitoring Utilities**: Developer tools for identifying performance bottlenecks (Sprint 2 Task 2.6)
   - Core performance monitoring utility (`utils/performance.ts`) with TypeScript support
