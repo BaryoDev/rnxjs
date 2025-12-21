@@ -1,0 +1,255 @@
+/**
+ * Plugin Styling for rnxJS
+ *
+ * Styles for toast notifications and other plugin components
+ */
+
+/* ============================================================================
+   Toast Container & Base
+   ============================================================================ */
+
+.rnx-toast-container {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+  font-family: inherit;
+}
+
+/* Positioning variants */
+.rnx-toast-container.rnx-toast-top-right {
+  top: 1rem;
+  right: 1rem;
+}
+
+.rnx-toast-container.rnx-toast-top-left {
+  top: 1rem;
+  left: 1rem;
+}
+
+.rnx-toast-container.rnx-toast-bottom-right {
+  bottom: 1rem;
+  right: 1rem;
+}
+
+.rnx-toast-container.rnx-toast-bottom-left {
+  bottom: 1rem;
+  left: 1rem;
+}
+
+.rnx-toast-container.rnx-toast-top-center {
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.rnx-toast-container.rnx-toast-bottom-center {
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* ============================================================================
+   Toast Base Styles
+   ============================================================================ */
+
+.rnx-toast {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  border-radius: 0.375rem;
+  background-color: white;
+  border-left: 4px solid currentColor;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  pointer-events: auto;
+  opacity: 0;
+  transform: translateY(-1rem);
+  transition: all 0.3s ease;
+  min-width: 300px;
+  max-width: 400px;
+  word-break: break-word;
+}
+
+/* Show animation */
+.rnx-toast.rnx-toast-show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hide animation */
+.rnx-toast.rnx-toast-hide {
+  opacity: 0;
+  transform: translateY(-1rem);
+}
+
+/* ============================================================================
+   Toast Variants (Types)
+   ============================================================================ */
+
+/* Success - Green */
+.rnx-toast.rnx-toast-success {
+  border-left-color: #28a745;
+  background-color: #f8fdf9;
+}
+
+.rnx-toast.rnx-toast-success .bi {
+  color: #28a745;
+  font-size: 1.25rem;
+}
+
+/* Error - Red */
+.rnx-toast.rnx-toast-error {
+  border-left-color: #dc3545;
+  background-color: #fdfafb;
+}
+
+.rnx-toast.rnx-toast-error .bi {
+  color: #dc3545;
+  font-size: 1.25rem;
+}
+
+/* Warning - Yellow */
+.rnx-toast.rnx-toast-warning {
+  border-left-color: #ffc107;
+  background-color: #fffdf8;
+}
+
+.rnx-toast.rnx-toast-warning .bi {
+  color: #ffc107;
+  font-size: 1.25rem;
+}
+
+/* Info - Blue */
+.rnx-toast.rnx-toast-info {
+  border-left-color: #17a2b8;
+  background-color: #f8fdfe;
+}
+
+.rnx-toast.rnx-toast-info .bi {
+  color: #17a2b8;
+  font-size: 1.25rem;
+}
+
+/* Custom */
+.rnx-toast.rnx-toast-custom {
+  border-left-color: #6c757d;
+  background-color: #f8f9fa;
+}
+
+.rnx-toast.rnx-toast-custom .bi {
+  color: #6c757d;
+  font-size: 1.25rem;
+}
+
+/* ============================================================================
+   Toast Elements
+   ============================================================================ */
+
+.rnx-toast-message {
+  flex: 1;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: #212529;
+}
+
+.rnx-toast-close {
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  margin: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.25rem;
+  color: #6c757d;
+  transition: all 0.2s ease;
+}
+
+.rnx-toast-close:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: #212529;
+}
+
+.rnx-toast-close:active {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.rnx-toast-close .bi {
+  font-size: 1rem;
+  color: currentColor;
+}
+
+/* ============================================================================
+   Responsive Design
+   ============================================================================ */
+
+@media (max-width: 480px) {
+  .rnx-toast {
+    min-width: auto;
+    max-width: calc(100vw - 2rem);
+  }
+
+  .rnx-toast-container.rnx-toast-top-right,
+  .rnx-toast-container.rnx-toast-top-left,
+  .rnx-toast-container.rnx-toast-bottom-right,
+  .rnx-toast-container.rnx-toast-bottom-left {
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    transform: none;
+  }
+
+  .rnx-toast-container.rnx-toast-top-center {
+    left: 1rem;
+    right: 1rem;
+    transform: none;
+  }
+}
+
+/* ============================================================================
+   Dark Mode Support
+   ============================================================================ */
+
+@media (prefers-color-scheme: dark) {
+  .rnx-toast {
+    background-color: #2d2d2d;
+  }
+
+  .rnx-toast-message {
+    color: #f0f0f0;
+  }
+
+  .rnx-toast.rnx-toast-success {
+    background-color: #0d2818;
+  }
+
+  .rnx-toast.rnx-toast-error {
+    background-color: #2d0f14;
+  }
+
+  .rnx-toast.rnx-toast-warning {
+    background-color: #2d2415;
+  }
+
+  .rnx-toast.rnx-toast-info {
+    background-color: #0f2028;
+  }
+
+  .rnx-toast-close {
+    color: #adb5bd;
+  }
+
+  .rnx-toast-close:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #f0f0f0;
+  }
+}
