@@ -19,6 +19,7 @@
 | Guide | Description |
 |-------|-------------|
 | [**Quick Start**](./docs/QUICK-START.md) | Get started in 5 minutes |
+| [**Component Library**](./docs/COMPONENTS.md) | Complete reference for all 46 components with examples |
 | [**API Reference**](./docs/API.md) | Complete API documentation with stability guarantees |
 | [**Migration Guide**](./docs/MIGRATION.md) | Migrate from jQuery to rnxJS |
 | [**Benchmarks**](./docs/BENCHMARKS.md) | Performance comparisons with jQuery, Vue, React |
