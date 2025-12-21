@@ -18,6 +18,7 @@
 
 | Guide | Description |
 |-------|-------------|
+| [**📰 v1.0.0 Release Post**](./docs/BLOG-V1.0.0.md) | Complete overview of v1.0.0 features, benchmarks, and comparisons |
 | [**Quick Start**](./docs/QUICK-START.md) | Get started in 5 minutes |
 | [**Component Library**](./docs/COMPONENTS.md) | Complete reference for all 46 components with examples |
 | [**API Reference**](./docs/API.md) | Complete API documentation with stability guarantees |
