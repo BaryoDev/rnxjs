@@ -166,6 +166,11 @@ export function createComponent(templateFn, initialState = {}, styles = '') {
       if (unmountCleanup && typeof unmountCleanup === 'function') {
         unmountCleanup();
       }
+      // Disconnect mutation observer if it exists
+      if (component._mutationObserver) {
+        component._mutationObserver.disconnect();
+        component._mutationObserver = null;
+      }
       // Clear references
       effectCleanup = null;
       unmountCleanup = null;
@@ -180,6 +185,39 @@ export function createComponent(templateFn, initialState = {}, styles = '') {
 
   component = render();
   attachMethods(component);
+
+  // Auto-cleanup on DOM removal (if MutationObserver available)
+  if (typeof MutationObserver !== 'undefined') {
+    // Wait for component to be attached to DOM
+    requestAnimationFrame(() => {
+      if (component && component.parentNode) {
+        const observer = new MutationObserver((mutations) => {
+          for (const mutation of mutations) {
+            for (const node of mutation.removedNodes) {
+              // Check if the removed node is the component or contains it
+              if (node === component || (node.contains && node.contains(component))) {
+                destroy();
+                observer.disconnect();
+                return;
+              }
+            }
+          }
+        });
+
+        // Find the highest ancestor to observe (up to document.body)
+        let observeTarget = component.parentNode;
+        while (observeTarget.parentNode && observeTarget !== document.body) {
+          observeTarget = observeTarget.parentNode;
+        }
+
+        // Observe from a higher level to catch parent removals
+        observer.observe(observeTarget, { childList: true, subtree: true });
+
+        // Store observer reference for cleanup
+        component._mutationObserver = observer;
+      }
+    });
+  }
 
   return component;
 }

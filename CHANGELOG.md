@@ -67,6 +67,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Performance
 
+- **Memory Leak Prevention**: Automatic cleanup and resource management (Sprint 2 Task 2.4)
+  - Component auto-cleanup using MutationObserver when removed from DOM
+  - Automatic disconnection of subscriptions and effects on component removal
+  - Enhanced `destroy()` method with complete resource cleanup
+  - Reactive state cleanup with `$unsubscribeAll()` and `$destroy()` methods
+  - Proper cleanup of effect handlers and unmount callbacks
+  - MutationObserver-based detection of DOM removal (supports nested removals)
+  - Complete test coverage (22 tests)
+  - All 347 tests passing
+
 - **Performance Monitoring Utilities**: Developer tools for identifying performance bottlenecks (Sprint 2 Task 2.6)
   - Core performance monitoring utility (`utils/performance.ts`) with TypeScript support
   - Mark and measure API (`rnxPerf.mark()`, `rnxPerf.measure()`) for tracking operation duration
@@ -77,7 +87,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `logReport()` for console table output of performance statistics
   - Supports both `performance.now()` (high-resolution) and `Date.now()` (fallback)
   - Complete test coverage (29 tests)
-  - All 325 tests passing
 
 - **Update Batching**: Implemented microtask-based batching for state updates (Sprint 2 Task 2.2)
   - Multiple synchronous state updates now batched into a single DOM update cycle
