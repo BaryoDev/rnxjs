@@ -380,6 +380,16 @@ When using the `icon` prop in components like `Button`, `FAB`, `Icon`, etc., sim
 
 ## 📋 Changelog
 
+### Version 0.4.0 (Phase 2 Enhancement) - December 2025
+
+- **Phase 2 Components**: Added 6 advanced enhancement components (FileUpload, ProgressBar, Tooltip, Sidebar, Stepper, Dropdown)
+- **Comprehensive Testing**: 68 unit test cases + 23 performance benchmarks for Phase 2 components
+- **Production Ready**: Full test coverage with performance metrics and stability verification
+- **Component Library**: Now includes 22+ production-ready components with professional documentation
+- **CLI Enhancement**: Multi-template scaffolding with 4 templates (blank, dashboard, landing, form)
+
+---
+
 ### Version 0.3.16 (Release) - December 2025
 
 - **Stability**: Added comprehensive stability tests for race conditions and rapid updates.

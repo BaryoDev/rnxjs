@@ -102,7 +102,9 @@ my-app/
 
 ## ✨ What's Included
 
-- **rnxJS v0.4.0+**: Core framework with Phase 1 components
+- **rnxJS v0.4.0+**: Core framework with 22+ production-ready components
+  - **Phase 1**: 8 core components (Button, Input, Card, Modal, etc.)
+  - **Phase 2**: 6 enhanced components (FileUpload, ProgressBar, Tooltip, Sidebar, Stepper, Dropdown)
 - **Bootstrap 5/Tailwind**: CSS framework (configurable)
 - **jsconfig.json**: Excellent VS Code intellisense
 - **Template-specific content**: Ready-to-use starting code
