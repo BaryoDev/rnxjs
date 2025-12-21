@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load rnx %}
+
+{% block content %}
+    <div class="example-section">
+        <h2>Reactive State Example</h2>
+        <p>The state below is reactive and automatically synced with rnxJS:</p>
+
+        {% rnx_state user 'userState' %}
+
+        <div style="margin-top: 20px;">
+            <h3>User Profile</h3>
+            <p><strong>Name:</strong> <span data-bind="userState.name"></span></p>
+            <p><strong>Email:</strong> <span data-bind="userState.email"></span></p>
+            <p><strong>Role:</strong> <span data-bind="userState.role"></span></p>
+        </div>
+    </div>
+
+    <div class="example-section">
+        <h2>Notifications</h2>
+        <p>Notifications list (reactive):</p>
+
+        {% rnx_state notifications 'notificationsState' %}
+
+        <div style="margin-top: 20px;">
+            <ul data-bind="notificationsState">
+                <li>
+                    <span data-bind="notificationsState.0.text"></span>
+                    <small style="color: #666;" data-bind="notificationsState.0.type"></small>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="example-section">
+        <h2>Interactive Elements</h2>
+        {% rnx_component 'Button' variant='primary' label='Click Me' onclick='alert("Button clicked!")' %}
+        <br><br>
+        {% rnx_component 'Input' type='text' placeholder='Type something...' %}
+    </div>
+{% endblock %}

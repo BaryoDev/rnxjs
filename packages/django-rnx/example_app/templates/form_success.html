@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load rnx %}
+
+{% block content %}
+    <div class="example-section" style="background: #d4edda; border-color: #c3e6cb;">
+        <h2 style="color: #155724;">Success!</h2>
+        <p>Thank you for your message, <strong>{{ name }}</strong>!</p>
+        <p><a href="{% url 'form' %}">Send another message</a></p>
+    </div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{
+  "name": "@arnelirobles/django-rnx",
+  "version": "1.0.0",
+  "description": "Django integration for rnxJS - Add reactive components to your Django templates",
+  "type": "module",
+  "keywords": [
+    "django",
+    "rnxjs",
+    "reactive",
+    "components",
+    "python",
+    "integration",
+    "template-tags"
+  ],
+  "author": "Arnel Isiderio Robles",
+  "license": "MPL-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arnelirobles/rnxjs",
+    "directory": "packages/django-rnx"
+  },
+  "homepage": "https://github.com/arnelirobles/rnxjs/tree/main/packages/django-rnx",
+  "bugs": {
+    "url": "https://github.com/arnelirobles/rnxjs/issues"
+  },
+  "files": [
+    "django_rnx/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "echo 'No tests defined yet'"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  }
+}

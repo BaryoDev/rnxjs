@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% load rnx %}
+
+{% block content %}
+    <div class="example-section">
+        <h2>Router Plugin Example</h2>
+        <p>Navigation between pages using rnxJS router:</p>
+
+        {% rnx_plugin 'router' mode='hash' default_route='/' %}
+
+        <div style="margin-top: 20px;">
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                {% for route, label in routes.items %}
+                    <button onclick="window.rnxRouter.push('{{ route }}')" style="padding: 10px 15px; cursor: pointer;">
+                        {{ label }}
+                    </button>
+                {% endfor %}
+            </div>
+
+            <div data-route="/" style="display: none; padding: 20px; border: 1px solid #ccc; border-radius: 4px;">
+                <h3>Home Page</h3>
+                <p>Welcome to the home page. Navigate using the buttons above.</p>
+            </div>
+
+            <div data-route="/users" style="display: none; padding: 20px; border: 1px solid #ccc; border-radius: 4px;">
+                <h3>Users Page</h3>
+                <p>This is the users page.</p>
+            </div>
+
+            <div data-route="/settings" style="display: none; padding: 20px; border: 1px solid #ccc; border-radius: 4px;">
+                <h3>Settings Page</h3>
+                <p>Manage your application settings here.</p>
+            </div>
+
+            <div data-route="/about" style="display: none; padding: 20px; border: 1px solid #ccc; border-radius: 4px;">
+                <h3>About Page</h3>
+                <p>Learn more about our application.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="example-section">
+        <h2>Toast Plugin Example</h2>
+        <p>Display notifications using the toast plugin:</p>
+
+        <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+            {% rnx_plugin 'toast' position='top-right' duration=3000 %}
+
+            <button onclick="window.rnx.toast.success('Operation completed successfully!')" style="padding: 10px 15px; cursor: pointer; background: #28a745; color: white; border: none; border-radius: 4px;">
+                Show Success
+            </button>
+            <button onclick="window.rnx.toast.error('An error occurred!')" style="padding: 10px 15px; cursor: pointer; background: #dc3545; color: white; border: none; border-radius: 4px;">
+                Show Error
+            </button>
+            <button onclick="window.rnx.toast.warning('Warning message')" style="padding: 10px 15px; cursor: pointer; background: #ffc107; color: #333; border: none; border-radius: 4px;">
+                Show Warning
+            </button>
+            <button onclick="window.rnx.toast.info('Information')" style="padding: 10px 15px; cursor: pointer; background: #17a2b8; color: white; border: none; border-radius: 4px;">
+                Show Info
+            </button>
+        </div>
+    </div>
+
+    <div class="example-section">
+        <h2>Storage Plugin Example</h2>
+        <p>Persist and retrieve user preferences using localStorage:</p>
+
+        {% rnx_state appState 'appState' %}
+        {% rnx_plugin 'storage' prefix='rnxjs_demo_' %}
+
+        <script>
+            // Example: Persist theme preference
+            function setTheme(theme) {
+                appState.theme = theme;
+                window.rnx.storage.persist(appState, 'appState', ['theme']);
+                alert('Theme preference saved: ' + theme);
+            }
+
+            function loadTheme() {
+                const saved = window.rnx.storage.get('appState_theme');
+                if (saved) {
+                    alert('Saved theme: ' + saved);
+                } else {
+                    alert('No saved theme found');
+                }
+            }
+        </script>
+
+        <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+            <button onclick="setTheme('light')" style="padding: 10px 15px; cursor: pointer;">
+                Save Light Theme
+            </button>
+            <button onclick="setTheme('dark')" style="padding: 10px 15px; cursor: pointer;">
+                Save Dark Theme
+            </button>
+            <button onclick="loadTheme()" style="padding: 10px 15px; cursor: pointer;">
+                Load Saved Theme
+            </button>
+        </div>
+    </div>
+{% endblock %}

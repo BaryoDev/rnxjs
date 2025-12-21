@@ -1,0 +1,5 @@
+include README.md
+include LICENSE
+include CHANGELOG.md
+recursive-include django_rnx *.py
+recursive-include tests *.py

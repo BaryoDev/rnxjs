@@ -5,7 +5,7 @@
 [![npm downloads](https://img.shields.io/npm/dm/@arnelirobles/rnxjs)](https://www.npmjs.com/package/@arnelirobles/rnxjs)
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/@arnelirobles/rnxjs)](https://bundlephobia.com/package/@arnelirobles/rnxjs)
 [![License](https://img.shields.io/npm/l/@arnelirobles/rnxjs)](https://github.com/arnelirobles/rnxjs/blob/main/LICENSE)
-[![Tests](https://img.shields.io/badge/tests-84%20passing-brightgreen)](https://github.com/arnelirobles/rnxjs)
+[![Tests](https://img.shields.io/badge/tests-600%2B%20passing-brightgreen)](https://github.com/arnelirobles/rnxjs)
 
 **The Bootstrap-Native Framework for Production Apps.**
 
@@ -14,16 +14,28 @@
 
 ---
 
+## 📚 Documentation
+
+| Guide | Description |
+|-------|-------------|
+| [**Quick Start**](./docs/QUICK-START.md) | Get started in 5 minutes |
+| [**API Reference**](./docs/API.md) | Complete API documentation with stability guarantees |
+| [**Migration Guide**](./docs/MIGRATION.md) | Migrate from jQuery to rnxJS |
+| [**Benchmarks**](./docs/BENCHMARKS.md) | Performance comparisons with jQuery, Vue, React |
+
+---
+
 ## 🛡️ Production Readiness
 
-rnxJS is tested and production-ready.
+rnxJS is tested and production-ready for v1.0.0.
 
-- **Test Coverage**: 90+ tests covering core reactivity, components, and edge cases.
+- **Test Coverage**: 600+ tests covering core reactivity, 34 components, plugins, and edge cases.
 - **Stability**: Verified against rapid state updates, race conditions, and memory leaks.
 - **Browser Support**: Compatible with all modern browsers (Chrome, Firefox, Safari, Edge).
-- **Zero Dependencies**: usage with CDN version (only requires Bootstrap CSS).
+- **Zero Dependencies**: CDN version only requires Bootstrap CSS.
+- **Bundle Size**: ~10KB gzipped with all 34 components included.
 
-> **Disclaimer**: While production ready, rnxJS is designed as a lightweight, no-build alternative to React/Vue for backend-driven apps and internal tools. For massive, complex Single Page Applications, a full framework might be more appropriate.
+> **Note**: rnxJS is designed as a lightweight, no-build alternative to React/Vue for backend-driven apps and internal tools. For massive, complex Single Page Applications, consider a full framework.
 
 ---
 
@@ -214,12 +226,13 @@ Add rules to inputs to populate `state.errors`.
 Rules: `required`, `email`, `numeric`, `min:5`, `max:10`, `pattern:^A.*`.
 
 ### 3. Components (`rnxJS Components`)
-rnxJS provides 20+ Bootstrap/Material components.
+rnxJS provides **34 production-ready** Bootstrap/Material components.
 
 **Standard**: `<Button>`, `<Card>`, `<Modal>`, `<Alert>`, `<Badge>`, `<Spinner>`, `<Toast>`.
-**Forms**: `<Input>`, `<Checkbox>`, `<Radio>`, `<Select>`, `<Textarea>`, `<Switch>`, `<Slider>`.
-**Layout**: `<Container>`, `<Row>`, `<Column>`.
+**Forms**: `<Input>`, `<Checkbox>`, `<Radio>`, `<Select>`, `<Textarea>`, `<Switch>`, `<Slider>`, `<FileUpload>`.
+**Layout**: `<Container>`, `<Row>`, `<Column>`, `<Sidebar>`.
 **Material (M3)**: `<FAB>`, `<Chips>`, `<NavigationDrawer>`, `<TopAppBar>`, `<List>`, `<Icon>`.
+**Advanced**: `<DataTable>`, `<Dropdown>`, `<ProgressBar>`, `<Stepper>`, `<Tooltip>`, `<Tabs>`, `<Accordion>`, `<Pagination>`.
 
 **Usage:**
 1. **Auto Register**: `rnx.autoRegisterComponents()` registers all of them.
@@ -328,18 +341,23 @@ Use `unpkg` or `jsdelivr`.
 
 ## 🚀 Why rnxJS?
 
-| Feature            | rnxJS                  | React/Vue     | jQuery     |
-| :----------------- | :--------------------- | :------------ | :--------- |
-| **Reactivity**     | ✅ Proxy-based          | ✅ Virtual DOM | ❌ Manual   |
-| **Build Step**     | ❌ Optional             | ✅ Required    | ❌ No       |
-| **UI Library**     | ✅ Included (Bootstrap) | ❌ External    | ❌ External |
-| **Learning Curve** | Low (HTML/JS)          | High          | Medium     |
-| **Size**           | ~10KB                  | ~130KB+       | ~30KB      |
+| Feature | rnxJS | jQuery | Vue 3 | React 18 |
+|---------|-------|--------|-------|----------|
+| **Bundle Size (gzipped)** | **~10KB** | ~30KB | ~16KB | ~42KB |
+| **Zero Build Required** | **✅ Yes** | ✅ Yes | ⚠️ Recommended | ❌ Required |
+| **Built-in Components** | **34** | 0 | 0 | 0 |
+| **Two-Way Binding** | **✅ Built-in** | ❌ Manual | ✅ v-model | ❌ Manual |
+| **Form Validation** | **✅ Built-in** | ❌ Plugin | ❌ Library | ❌ Library |
+| **Learning Curve** | **1 hour** | 1 hour | 1 day | 1 week |
+| **Backend Integration** | **✅ Django/Rails/Laravel/Express** | ✅ Any | ⚠️ Nuxt | ⚠️ Next.js |
 
 **Perfect for:**
 - **Backend Devs**: Django/Rails/Laravel developers who want interactivity without a separate SPA repo.
-- **Internal Tools**: rapidly build admin panels using standard Bootstrap.
-- **Prototypes**: "Zero to Hero" in minutes.
+- **Internal Tools**: Rapidly build admin panels using standard Bootstrap.
+- **Prototypes**: "Zero to Hero" in 5 minutes.
+- **jQuery Migrations**: Modern reactivity with similar simplicity.
+
+See [full benchmarks](./docs/BENCHMARKS.md) for detailed performance comparisons.
 
 ---
 
@@ -379,6 +397,23 @@ When using the `icon` prop in components like `Button`, `FAB`, `Icon`, etc., sim
 ---
 
 ## 📋 Changelog
+
+### Version 1.0.0 (Stable Release) - December 2025
+
+**The first stable release of rnxJS!**
+
+- **34 Production Components**: Complete component library with full test coverage
+- **600+ Tests**: Comprehensive test suite covering all components, reactivity, and edge cases
+- **Plugin System**: Extensible architecture with 3 official plugins (Router, Toast, Storage)
+- **Backend Integrations**: Official packages for Django, Rails, Laravel, and Express
+- **Complete Documentation**:
+  - [API Reference](./docs/API.md) with stability guarantees
+  - [Migration Guide](./docs/MIGRATION.md) for jQuery users
+  - [Quick Start](./docs/QUICK-START.md) for new users
+  - [Benchmarks](./docs/BENCHMARKS.md) vs jQuery/Vue/React
+- **Performance**: ~10KB gzipped, <100ms time to interactive
+
+---
 
 ### Version 0.4.0 (Phase 2 Enhancement) - December 2025
 

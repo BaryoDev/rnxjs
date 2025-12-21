@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load rnx %}
+
+{% block content %}
+    <div class="example-section">
+        <h2>Contact Form Example</h2>
+        <p>This form demonstrates rnxJS component rendering with Django forms:</p>
+
+        <form method="post" style="margin-top: 20px;">
+            {% csrf_token %}
+            {% rnx_form form %}
+
+            <div style="margin-top: 20px;">
+                {% rnx_component 'Button' type='submit' variant='primary' label='Send Message' %}
+            </div>
+        </form>
+    </div>
+
+    <div class="example-section">
+        <h2>Manual Component Rendering</h2>
+        <p>You can also manually render individual components:</p>
+
+        <div style="margin-top: 20px;">
+            {% rnx_component 'Input' type='text' placeholder='Name' label='Full Name' %}
+            <br><br>
+            {% rnx_component 'Input' type='email' placeholder='Email' label='Email Address' %}
+            <br><br>
+            {% rnx_component 'Input' type='textarea' placeholder='Message' label='Your Message' %}
+        </div>
+    </div>
+{% endblock %}
