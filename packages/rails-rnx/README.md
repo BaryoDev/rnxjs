@@ -1,6 +1,6 @@
 # rnx_rails
 
-Rails gem providing view helpers and ERB directives for integrating [rnxJS](https://github.com/arnelirobles/rnxjs) reactive components into Rails applications.
+Rails gem providing view helpers and ERB directives for integrating [rnxJS](https://github.com/BaryoDev/rnxjs) reactive components into Rails applications.
 
 [![License: MPL-2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
 [![Ruby Version](https://img.shields.io/badge/ruby-%3E%3D2.7-red.svg)](https://www.ruby-lang.org/)
@@ -465,9 +465,9 @@ MPL-2.0 - See [LICENSE](../../LICENSE) for details.
 
 ## Support
 
-- Documentation: [rnxJS Documentation](https://github.com/arnelirobles/rnxjs)
-- Issues: [GitHub Issues](https://github.com/arnelirobles/rnxjs/issues)
-- Discussions: [GitHub Discussions](https://github.com/arnelirobles/rnxjs/discussions)
+- Documentation: [rnxJS Documentation](https://github.com/BaryoDev/rnxjs)
+- Issues: [GitHub Issues](https://github.com/BaryoDev/rnxjs/issues)
+- Discussions: [GitHub Discussions](https://github.com/BaryoDev/rnxjs/discussions)
 
 ## Changelog
 

@@ -1,6 +1,6 @@
 # django-rnx
 
-Django template tags and utilities for integrating [rnxJS](https://github.com/arnelirobles/rnxjs) reactive components into Django applications.
+Django template tags and utilities for integrating [rnxJS](https://github.com/BaryoDev/rnxjs) reactive components into Django applications.
 
 [![License: MPL-2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
 [![Python Version](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
@@ -27,7 +27,7 @@ pip install django-rnx
 ### Development Installation
 
 ```bash
-git clone https://github.com/arnelirobles/rnxjs.git
+git clone https://github.com/BaryoDev/rnxjs.git
 cd rnxjs/packages/django-rnx
 pip install -e .
 ```
@@ -432,9 +432,9 @@ MPL-2.0 - See [LICENSE](../../LICENSE) for details.
 
 ## Support
 
-- Documentation: [rnxJS Documentation](https://github.com/arnelirobles/rnxjs)
-- Issues: [GitHub Issues](https://github.com/arnelirobles/rnxjs/issues)
-- Discussions: [GitHub Discussions](https://github.com/arnelirobles/rnxjs/discussions)
+- Documentation: [rnxJS Documentation](https://github.com/BaryoDev/rnxjs)
+- Issues: [GitHub Issues](https://github.com/BaryoDev/rnxjs/issues)
+- Discussions: [GitHub Discussions](https://github.com/BaryoDev/rnxjs/discussions)
 
 ## Changelog
 

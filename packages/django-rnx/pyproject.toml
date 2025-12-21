@@ -42,11 +42,11 @@ dependencies = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/arnelirobles/rnxjs"
-"Documentation" = "https://github.com/arnelirobles/rnxjs/tree/main/packages/django-rnx"
-"Repository" = "https://github.com/arnelirobles/rnxjs"
-"Issues" = "https://github.com/arnelirobles/rnxjs/issues"
-"Changelog" = "https://github.com/arnelirobles/rnxjs/releases"
+"Homepage" = "https://github.com/BaryoDev/rnxjs"
+"Documentation" = "https://github.com/BaryoDev/rnxjs/tree/main/packages/django-rnx"
+"Repository" = "https://github.com/BaryoDev/rnxjs"
+"Issues" = "https://github.com/BaryoDev/rnxjs/issues"
+"Changelog" = "https://github.com/BaryoDev/rnxjs/releases"
 
 [project.optional-dependencies]
 dev = [

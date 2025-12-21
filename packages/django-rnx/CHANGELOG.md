@@ -26,4 +26,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Security features (HTML escaping, XSS prevention)
 - Support for Python 3.8+ and Django 3.2+
 
-[1.0.0]: https://github.com/arnelirobles/rnxjs/releases/tag/v1.0.0
+[1.0.0]: https://github.com/BaryoDev/rnxjs/releases/tag/v1.0.0

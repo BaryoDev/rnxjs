@@ -1,6 +1,6 @@
 # laravel-rnx
 
-Laravel Blade directives and helpers for integrating [rnxJS](https://github.com/arnelirobles/rnxjs) reactive components into Laravel applications.
+Laravel Blade directives and helpers for integrating [rnxJS](https://github.com/BaryoDev/rnxjs) reactive components into Laravel applications.
 
 [![License: MPL-2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
 [![PHP Version](https://img.shields.io/badge/php-%3E%3D8.0-blue.svg)](https://www.php.net/)
@@ -444,9 +444,9 @@ MPL-2.0 - See [LICENSE](../../LICENSE) for details.
 
 ## Support
 
-- Documentation: [rnxJS Documentation](https://github.com/arnelirobles/rnxjs)
-- Issues: [GitHub Issues](https://github.com/arnelirobles/rnxjs/issues)
-- Discussions: [GitHub Discussions](https://github.com/arnelirobles/rnxjs/discussions)
+- Documentation: [rnxJS Documentation](https://github.com/BaryoDev/rnxjs)
+- Issues: [GitHub Issues](https://github.com/BaryoDev/rnxjs/issues)
+- Discussions: [GitHub Discussions](https://github.com/BaryoDev/rnxjs/discussions)
 
 ## Changelog
 

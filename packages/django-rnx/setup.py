@@ -12,7 +12,7 @@ setup(
     long_description_content_type='text/markdown',
     author='Arnel Irobles',
     author_email='arnel@arnelirobles.com',
-    url='https://github.com/arnelirobles/rnxjs',
+    url='https://github.com/BaryoDev/rnxjs',
     license='MPL-2.0',
     packages=find_packages(exclude=['tests', 'example_app']),
     python_requires='>=3.8',
@@ -52,9 +52,9 @@ setup(
     ],
     keywords='django rnxjs reactive components template-tags',
     project_urls={
-        'Documentation': 'https://github.com/arnelirobles/rnxjs/tree/main/packages/django-rnx',
-        'Source Code': 'https://github.com/arnelirobles/rnxjs',
-        'Issue Tracker': 'https://github.com/arnelirobles/rnxjs/issues',
-        'Changelog': 'https://github.com/arnelirobles/rnxjs/releases',
+        'Documentation': 'https://github.com/BaryoDev/rnxjs/tree/main/packages/django-rnx',
+        'Source Code': 'https://github.com/BaryoDev/rnxjs',
+        'Issue Tracker': 'https://github.com/BaryoDev/rnxjs/issues',
+        'Changelog': 'https://github.com/BaryoDev/rnxjs/releases',
     },
 )

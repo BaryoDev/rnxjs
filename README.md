@@ -4,8 +4,8 @@
 [![npm version](https://img.shields.io/npm/v/@arnelirobles/rnxjs)](https://www.npmjs.com/package/@arnelirobles/rnxjs)
 [![npm downloads](https://img.shields.io/npm/dm/@arnelirobles/rnxjs)](https://www.npmjs.com/package/@arnelirobles/rnxjs)
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/@arnelirobles/rnxjs)](https://bundlephobia.com/package/@arnelirobles/rnxjs)
-[![License](https://img.shields.io/npm/l/@arnelirobles/rnxjs)](https://github.com/arnelirobles/rnxjs/blob/main/LICENSE)
-[![Tests](https://img.shields.io/badge/tests-600%2B%20passing-brightgreen)](https://github.com/arnelirobles/rnxjs)
+[![License](https://img.shields.io/npm/l/@arnelirobles/rnxjs)](https://github.com/BaryoDev/rnxjs/blob/main/LICENSE)
+[![Tests](https://img.shields.io/badge/tests-600%2B%20passing-brightgreen)](https://github.com/BaryoDev/rnxjs)
 
 **The Bootstrap-Native Framework for Production Apps.**
 
@@ -16,14 +16,16 @@
 
 ## 📚 Documentation
 
-| Guide | Description |
-|-------|-------------|
-| [**📰 v1.0.0 Release Post**](./docs/BLOG-V1.0.0.md) | Complete overview of v1.0.0 features, benchmarks, and comparisons |
-| [**Quick Start**](./docs/QUICK-START.md) | Get started in 5 minutes |
-| [**Component Library**](./docs/COMPONENTS.md) | Complete reference for all 46 components with examples |
-| [**API Reference**](./docs/API.md) | Complete API documentation with stability guarantees |
-| [**Migration Guide**](./docs/MIGRATION.md) | Migrate from jQuery to rnxJS |
-| [**Benchmarks**](./docs/BENCHMARKS.md) | Performance comparisons with jQuery, Vue, React |
+| Guide                                                          | Description                                                       |
+| -------------------------------------------------------------- | ----------------------------------------------------------------- |
+| [**📰 v1.0.0 Release Post**](./docs/BLOG-V1.0.0.md)             | Complete overview of v1.0.0 features, benchmarks, and comparisons |
+| [**✅ Release Status Report**](./docs/V1.0.0-RELEASE-STATUS.md) | Verification status for all packages and publication readiness    |
+| [**Quick Start**](./docs/QUICK-START.md)                       | Get started in 5 minutes                                          |
+| [**Component Library**](./docs/COMPONENTS.md)                  | Complete reference for all 46 components with examples            |
+| [**API Reference**](./docs/API.md)                             | Complete API documentation with stability guarantees              |
+| [**Migration Guide**](./docs/MIGRATION.md)                     | Migrate from jQuery to rnxJS                                      |
+| [**Benchmarks**](./docs/BENCHMARKS.md)                         | Performance comparisons with jQuery, Vue, React                   |
+| [**Publication Checklist**](./docs/PUBLICATION-CHECKLIST.md)   | v1.0.0 publication guide for all package registries               |
 
 ---
 
@@ -343,15 +345,15 @@ Use `unpkg` or `jsdelivr`.
 
 ## 🚀 Why rnxJS?
 
-| Feature | rnxJS | jQuery | Vue 3 | React 18 |
-|---------|-------|--------|-------|----------|
-| **Bundle Size (gzipped)** | **~10KB** | ~30KB | ~16KB | ~42KB |
-| **Zero Build Required** | **✅ Yes** | ✅ Yes | ⚠️ Recommended | ❌ Required |
-| **Built-in Components** | **34** | 0 | 0 | 0 |
-| **Two-Way Binding** | **✅ Built-in** | ❌ Manual | ✅ v-model | ❌ Manual |
-| **Form Validation** | **✅ Built-in** | ❌ Plugin | ❌ Library | ❌ Library |
-| **Learning Curve** | **1 hour** | 1 hour | 1 day | 1 week |
-| **Backend Integration** | **✅ Django/Rails/Laravel/Express** | ✅ Any | ⚠️ Nuxt | ⚠️ Next.js |
+| Feature                   | rnxJS                              | jQuery   | Vue 3         | React 18   |
+| ------------------------- | ---------------------------------- | -------- | ------------- | ---------- |
+| **Bundle Size (gzipped)** | **~10KB**                          | ~30KB    | ~16KB         | ~42KB      |
+| **Zero Build Required**   | **✅ Yes**                          | ✅ Yes    | ⚠️ Recommended | ❌ Required |
+| **Built-in Components**   | **34**                             | 0        | 0             | 0          |
+| **Two-Way Binding**       | **✅ Built-in**                     | ❌ Manual | ✅ v-model     | ❌ Manual   |
+| **Form Validation**       | **✅ Built-in**                     | ❌ Plugin | ❌ Library     | ❌ Library  |
+| **Learning Curve**        | **1 hour**                         | 1 hour   | 1 day         | 1 week     |
+| **Backend Integration**   | **✅ Django/Rails/Laravel/Express** | ✅ Any    | ⚠️ Nuxt        | ⚠️ Next.js  |
 
 **Perfect for:**
 - **Backend Devs**: Django/Rails/Laravel developers who want interactivity without a separate SPA repo.

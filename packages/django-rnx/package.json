@@ -16,12 +16,12 @@
   "license": "MPL-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/arnelirobles/rnxjs",
+    "url": "https://github.com/BaryoDev/rnxjs",
     "directory": "packages/django-rnx"
   },
-  "homepage": "https://github.com/arnelirobles/rnxjs/tree/main/packages/django-rnx",
+  "homepage": "https://github.com/BaryoDev/rnxjs/tree/main/packages/django-rnx",
   "bugs": {
-    "url": "https://github.com/arnelirobles/rnxjs/issues"
+    "url": "https://github.com/BaryoDev/rnxjs/issues"
   },
   "files": [
     "django_rnx/",

@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
 
   spec.summary = 'rnxJS integration for Rails - View helpers and directives for reactive components'
   spec.description = 'Rails gem providing view helpers, ERB directives, and configuration for integrating rnxJS reactive components into Rails applications'
-  spec.homepage = 'https://github.com/arnelirobles/rnxjs'
+  spec.homepage = 'https://github.com/BaryoDev/rnxjs'
   spec.license = 'MPL-2.0'
   spec.required_ruby_version = '>= 2.7'
 

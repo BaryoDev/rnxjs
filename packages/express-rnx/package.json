@@ -26,14 +26,14 @@
   ],
   "author": "Arnel Irobles <arnel@arnelirobles.com>",
   "license": "MPL-2.0",
-  "homepage": "https://github.com/arnelirobles/rnxjs",
+  "homepage": "https://github.com/BaryoDev/rnxjs",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/arnelirobles/rnxjs.git",
+    "url": "git+https://github.com/BaryoDev/rnxjs.git",
     "directory": "packages/express-rnx"
   },
   "bugs": {
-    "url": "https://github.com/arnelirobles/rnxjs/issues"
+    "url": "https://github.com/BaryoDev/rnxjs/issues"
   },
   "engines": {
     "node": ">=12.0.0"

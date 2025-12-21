@@ -1,6 +1,6 @@
 # @arnelirobles/express-rnx
 
-Express middleware and view helpers for integrating [rnxJS](https://github.com/arnelirobles/rnxjs) reactive components into Express applications.
+Express middleware and view helpers for integrating [rnxJS](https://github.com/BaryoDev/rnxjs) reactive components into Express applications.
 
 [![License: MPL-2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
 [![Node Version](https://img.shields.io/badge/node-%3E%3D12.0-green.svg)](https://nodejs.org/)
@@ -504,9 +504,9 @@ MPL-2.0 - See [LICENSE](../../LICENSE) for details.
 
 ## Support
 
-- Documentation: [rnxJS Documentation](https://github.com/arnelirobles/rnxjs)
-- Issues: [GitHub Issues](https://github.com/arnelirobles/rnxjs/issues)
-- Discussions: [GitHub Discussions](https://github.com/arnelirobles/rnxjs/discussions)
+- Documentation: [rnxJS Documentation](https://github.com/BaryoDev/rnxjs)
+- Issues: [GitHub Issues](https://github.com/BaryoDev/rnxjs/issues)
+- Discussions: [GitHub Discussions](https://github.com/BaryoDev/rnxjs/discussions)
 
 ## Changelog
 
