@@ -39,6 +39,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Dynamic `aria-hidden` updates for accessibility tree management
   - All existing tests passing (5 tests)
 
+- **Internationalization (i18n) System**: Full i18n support for multilingual applications (Sprint 3 Task 3.3)
+  - Core i18n utility (`utils/i18n.ts`) with TypeScript support
+  - Translation management with key-based lookups (dot notation: `common.buttons.save`)
+  - Pluralization support using `Intl.PluralRules` API (zero, one, few, many, other forms)
+  - Interpolation with placeholders (`"Welcome, {name}!"`)
+  - Number, currency, date, and relative time formatting with `Intl` formatters
+  - Locale switching with automatic subscriber notifications
+  - Browser locale detection and localStorage persistence
+  - Fallback locale support for missing translations
+  - Lazy loading support for translation files
+  - Data binding framework (`framework/i18nBinder.js`) with `data-i18n` attributes
+  - Example locale files (English and Spanish) in `locales/` directory
+  - Complete test coverage (33 tests)
+  - All 296 tests passing
+
 - **Theming System**: CSS custom properties with light/dark mode support (Sprint 3 Task 3.4)
   - Theme manager with registration, switching, and persistence
   - Built-in light and dark themes
