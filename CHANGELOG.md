@@ -65,6 +65,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Utility classes: `.rnx-sr-only`, `.rnx-skip-link`
   - Complete test coverage (24 tests)
 
+- **Error Tracking and Boundaries**: Production-ready error monitoring (Sprint 3 Task 3.5)
+  - Error tracking manager (`utils/errorTracking.ts`) with TypeScript support
+  - `ErrorBoundary` component for catching errors in child components
+  - Breadcrumb logging for debugging context (automatic timestamp, category, data)
+  - Global context propagation (user info, app state, metadata)
+  - Provider pattern for integration with error tracking services (Sentry, Rollbar, etc.)
+  - Built-in providers: `SentryProvider`, `ConsoleProvider` (for development)
+  - Custom error handler registration with `addHandler()`
+  - Global error and unhandled promise rejection catching
+  - `withErrorTracking()` wrapper for automatic error tracking in functions
+  - ErrorBoundary features:
+    - Catch errors in child components with fallback UI
+    - Custom fallback rendering function
+    - Error callback for custom handling
+    - Automatic error tracking integration
+    - Utility methods: `resetError()`, `getError()`
+    - Event listener error catching
+  - Complete test coverage (17 tests)
+
 ### Performance
 
 - **Virtual Scrolling Component**: Efficient rendering for large lists (Sprint 2 Task 2.5)
