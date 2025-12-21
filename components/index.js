@@ -41,3 +41,11 @@ export { ErrorState } from './ErrorState/ErrorState.js';
 export { DatePicker } from './DatePicker/DatePicker.js';
 export { Autocomplete } from './Autocomplete/Autocomplete.js';
 export { Breadcrumb } from './Breadcrumb/Breadcrumb.js';
+
+// Sprint 4 - Phase 2 Enhancement Components
+export { FileUpload } from './FileUpload/FileUpload.js';
+export { ProgressBar } from './ProgressBar/ProgressBar.js';
+export { Tooltip } from './Tooltip/Tooltip.js';
+export { Sidebar } from './Sidebar/Sidebar.js';
+export { Stepper } from './Stepper/Stepper.js';
+export { Dropdown } from './Dropdown/Dropdown.js';
