@@ -1,0 +1,15 @@
+{
+  "name": "my-form-app",
+  "version": "1.0.0",
+  "description": "Multi-step form built with rnxJS",
+  "type": "module",
+  "scripts": {
+    "dev": "echo 'Start your dev server'",
+    "build": "echo 'Build your form'",
+    "preview": "echo 'Preview your build'"
+  },
+  "dependencies": {
+    "@arnelirobles/rnxjs": "^0.4.0"
+  },
+  "devDependencies": {}
+}

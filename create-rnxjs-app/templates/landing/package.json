@@ -1,0 +1,15 @@
+{
+  "name": "my-landing",
+  "version": "1.0.0",
+  "description": "Landing page built with rnxJS",
+  "type": "module",
+  "scripts": {
+    "dev": "echo 'Start your dev server'",
+    "build": "echo 'Build your landing page'",
+    "preview": "echo 'Preview your build'"
+  },
+  "dependencies": {
+    "@arnelirobles/rnxjs": "^0.4.0"
+  },
+  "devDependencies": {}
+}

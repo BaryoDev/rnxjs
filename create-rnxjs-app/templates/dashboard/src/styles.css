@@ -1,0 +1,251 @@
+:root {
+  --primary-color: #0b57d0;
+  --success-color: #0f9e6e;
+  --danger-color: #d92b2b;
+  --warning-color: #f57f17;
+  --info-color: #0097a7;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: #f5f5f5;
+  color: #212529;
+}
+
+body {
+  padding: 0;
+}
+
+#app {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+/* TopAppBar custom styling */
+.top-app-bar {
+  background: linear-gradient(135deg, var(--primary-color) 0%, #0847ab 100%);
+  color: white;
+  padding: 2rem 1rem;
+  margin-bottom: 2rem;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.top-app-bar h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.top-app-bar p {
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+/* StatCard Grid */
+.row {
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 8px;
+  border-left: 4px solid var(--primary-color);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.stat-card.primary {
+  border-left-color: var(--primary-color);
+}
+
+.stat-card.success {
+  border-left-color: var(--success-color);
+}
+
+.stat-card.danger {
+  border-left-color: var(--danger-color);
+}
+
+.stat-card.warning {
+  border-left-color: var(--warning-color);
+}
+
+.stat-card.info {
+  border-left-color: var(--info-color);
+}
+
+.stat-card-icon {
+  font-size: 24px;
+  opacity: 0.8;
+  margin-right: 12px;
+}
+
+.stat-card-value {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 8px 0;
+}
+
+.stat-card-change {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.stat-card-change.up {
+  color: var(--success-color);
+}
+
+.stat-card-change.down {
+  color: var(--warning-color);
+}
+
+/* Card styling */
+.card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
+  background: white;
+}
+
+.card-header {
+  background: white;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 1.5rem;
+  border-radius: 8px 8px 0 0;
+}
+
+.card-header h5 {
+  margin: 0;
+  font-weight: 600;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+/* DataTable styles */
+.datatable {
+  margin-bottom: 0;
+}
+
+.datatable thead th {
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #e0e0e0;
+  font-weight: 600;
+  color: #212529;
+  padding: 12px;
+}
+
+.datatable tbody td {
+  padding: 12px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.datatable tbody tr:hover {
+  background-color: #f8f9fa;
+  cursor: pointer;
+}
+
+.datatable-header.sortable {
+  cursor: pointer;
+}
+
+.datatable-header.sortable:hover {
+  background-color: #e7f3ff;
+}
+
+.datatable-header.sorted-asc i,
+.datatable-header.sorted-desc i {
+  opacity: 1;
+}
+
+/* Breadcrumb styling */
+.breadcrumb {
+  background-color: transparent;
+  padding: 0 0 1rem 0;
+  margin-bottom: 1rem;
+}
+
+.breadcrumb-item a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+  text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+  color: #6c757d;
+  font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .top-app-bar {
+    padding: 1.5rem 1rem;
+  }
+
+  .top-app-bar h1 {
+    font-size: 1.5rem;
+  }
+
+  .stat-card {
+    margin-bottom: 1rem;
+  }
+
+  .datatable {
+    font-size: 14px;
+  }
+
+  .datatable thead th,
+  .datatable tbody td {
+    padding: 8px;
+  }
+}
+
+/* Button styles */
+.btn {
+  border-radius: 4px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+  background-color: #0847ab;
+  border-color: #0847ab;
+  transform: translateY(-1px);
+}
+
+.btn-success {
+  background-color: var(--success-color);
+  border-color: var(--success-color);
+}
+
+.btn-success:hover {
+  background-color: #0d7c5a;
+  border-color: #0d7c5a;
+}
