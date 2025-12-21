@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { bindData, unbindData } from '../framework/DataBinder.js';
-import { createReactiveState } from '../utils/createReactiveState.js';
+import { createReactiveState } from '../utils/createReactiveState.ts';
 
 describe('DataBinder Validation', () => {
     let container;

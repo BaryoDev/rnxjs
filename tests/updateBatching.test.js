@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createReactiveState } from '../utils/createReactiveState.js';
+import { createReactiveState } from '../utils/createReactiveState.ts';
 
 describe('Update Batching', () => {
     let state;

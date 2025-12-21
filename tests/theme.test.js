@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { theme, setTheme, getTheme, toggleDarkMode, isDarkMode, registerTheme } from '../utils/theme.js';
+import { theme, setTheme, getTheme, toggleDarkMode, isDarkMode, registerTheme } from '../utils/theme.ts';
 
 describe('Theme Manager', () => {
     beforeEach(() => {

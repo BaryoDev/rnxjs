@@ -17,9 +17,9 @@ export default defineConfig({
                 'build.js'
             ],
             include: [
-                'utils/**/*.js',
-                'framework/**/*.js',
-                'components/**/**.js'
+                'utils/**/*.{js,ts}',
+                'framework/**/*.{js,ts}',
+                'components/**/*.{js,ts}'
             ]
         }
     }

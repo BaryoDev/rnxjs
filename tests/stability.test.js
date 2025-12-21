@@ -1,6 +1,6 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { createReactiveState } from '../utils/createReactiveState.js';
+import { createReactiveState } from '../utils/createReactiveState.ts';
 import { bindData } from '../framework/DataBinder.js';
 import { createComponent } from '../utils/createComponent.js';
 

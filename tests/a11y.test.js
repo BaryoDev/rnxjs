@@ -16,7 +16,7 @@ import {
     ensureId,
     createAriaLabel,
     createAriaDescription
-} from '../utils/a11y.js';
+} from '../utils/a11y.ts';
 
 describe('Accessibility Utilities', () => {
     let container;

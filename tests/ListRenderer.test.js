@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { createReactiveState } from '../utils/createReactiveState.js';
+import { createReactiveState } from '../utils/createReactiveState.ts';
 import { bindData } from '../framework/DataBinder.js';
 
 describe('ListRenderer with data-for', () => {
