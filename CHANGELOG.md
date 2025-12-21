@@ -28,6 +28,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `createDisclosureWidget()` - Manage ARIA expanded state for accordions/dropdowns
   - Complete test coverage (28 tests)
 
+- **Modal Component Accessibility**: Enhanced Modal component with WCAG 2.1 AA compliance (Sprint 3 Task 3.2)
+  - Integrated focus trap to keep keyboard focus within modal dialog
+  - Added `role="dialog"` and `aria-modal="true"` for screen reader context
+  - Added `role="document"` to modal dialog wrapper
+  - Automatic focus management - traps focus when modal opens
+  - Focus restoration - returns focus to previously focused element on close
+  - Enhanced keyboard navigation - Escape key closes modal (respects `dismissable` prop)
+  - Screen reader announcements when modal opens/closes
+  - Dynamic `aria-hidden` updates for accessibility tree management
+  - All existing tests passing (5 tests)
+
 - **Theming System**: CSS custom properties with light/dark mode support (Sprint 3 Task 3.4)
   - Theme manager with registration, switching, and persistence
   - Built-in light and dark themes
