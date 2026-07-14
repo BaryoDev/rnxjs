@@ -4,6 +4,7 @@
  */
 
 import { ListRenderer, setBindDataFunction } from './ListRenderer.js';
+import { isSafeRegex } from '../utils/security.js';
 
 // Track subscriptions for cleanup
 const bindingSubscriptions = new WeakMap();
@@ -141,6 +142,12 @@ function validateField(value, rules) {
 
         if (name === 'pattern') {
             try {
+                // SECURITY FIX: Validate regex pattern to prevent ReDoS attacks
+                if (!isSafeRegex(param)) {
+                    console.error('[rnxJS] Unsafe regex pattern rejected:', param);
+                    return 'Invalid validation rule';
+                }
+
                 const regex = new RegExp(param);
                 if (value && !regex.test(String(value))) {
                     return 'Invalid format';
@@ -513,8 +520,9 @@ function setupListRenderer(element, state) {
     // Initial render
     renderer.render();
 
+    // MEMORY LEAK FIX: Store unsubscribe function for cleanup
     // Subscribe to array changes
-    state.subscribe(arrayPath, () => {
+    renderer._unsubscribe = state.subscribe(arrayPath, () => {
         renderer.render();
     });
 

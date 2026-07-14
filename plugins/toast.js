@@ -40,12 +40,16 @@ export function toastPlugin(options = {}) {
             return div.innerHTML;
           };
 
-      // Create container
-      const container = document.createElement('div');
+      // Create container, or reuse an existing one so repeated installs
+      // don't stack duplicate containers
+      let container = document.querySelector('.rnx-toast-container');
+      if (!container) {
+        container = document.createElement('div');
+        document.body.appendChild(container);
+      }
       container.className = `rnx-toast-container rnx-toast-${position}`;
       container.setAttribute('aria-live', 'polite');
       container.setAttribute('aria-atomic', 'true');
-      document.body.appendChild(container);
 
       const toasts = [];
 
@@ -107,7 +111,14 @@ export function toastPlugin(options = {}) {
        * Remove a toast with animation
        */
       function remove(toast) {
-        if (!toast || !toast.parentNode) return;
+        if (!toast) return;
+
+        // Remove from tracking synchronously — callers loop on toasts.length,
+        // so deferring the splice would spin forever
+        const idx = toasts.indexOf(toast);
+        if (idx > -1) toasts.splice(idx, 1);
+
+        if (!toast.parentNode) return;
 
         toast.classList.remove('rnx-toast-show');
         toast.classList.add('rnx-toast-hide');
@@ -116,8 +127,6 @@ export function toastPlugin(options = {}) {
           if (toast.parentNode) {
             toast.parentNode.removeChild(toast);
           }
-          const idx = toasts.indexOf(toast);
-          if (idx > -1) toasts.splice(idx, 1);
         }, 300);
       }
 

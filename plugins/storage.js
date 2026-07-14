@@ -99,19 +99,25 @@ export function storagePlugin(options = {}) {
           console.warn('[rnxJS Storage] Failed to load initial data:', e);
         }
 
+        // Save current values to storage
+        function save() {
+          try {
+            const data = {};
+            pathsToWatch.forEach(p => {
+              data[p] = getNestedValue(state, p);
+            });
+            storage.setItem(storageKey, JSON.stringify(data));
+          } catch (e) {
+            console.warn('[rnxJS Storage] Failed to save:', e);
+          }
+        }
+
+        // Write initial snapshot
+        save();
+
         // Subscribe to changes
         pathsToWatch.forEach(path => {
-          state.subscribe(path, () => {
-            try {
-              const data = {};
-              pathsToWatch.forEach(p => {
-                data[p] = getNestedValue(state, p);
-              });
-              storage.setItem(storageKey, JSON.stringify(data));
-            } catch (e) {
-              console.warn('[rnxJS Storage] Failed to save:', e);
-            }
-          });
+          state.subscribe(path, save);
         });
 
         console.log(`[rnxJS Storage] Persisting ${pathsToWatch.length} paths to "${storageKey}"`);

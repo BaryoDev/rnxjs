@@ -1,9 +1,13 @@
 /**
- * ProgressBar Component for rnxJS
- * Determinate and indeterminate progress indicator
+ * ProgressBar Component for rnxJS - CSS Framework Agnostic
+ *
+ * Works with any registered theme (Bootstrap, Tailwind, custom).
+ * Supports determinate and indeterminate progress indicators.
  */
 
 import { createComponent } from '../../utils/createComponent.js';
+import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
+import { cn } from '../../utils/classNames.js';
 import { escapeHtml } from '../../utils/security.js';
 
 /**
@@ -18,16 +22,20 @@ import { escapeHtml } from '../../utils/security.js';
  * @param {string} options.label - Optional label text
  * @param {boolean} options.showValue - Show percentage value (default: true)
  * @param {string} options.height - Height in CSS units (default: '1.5rem')
- * @param {string} options.className - Additional CSS classes
+ * @param {string} options.className - Additional CSS classes for Blazor-style customization
  * @returns {HTMLElement} ProgressBar component
  *
  * @example
- * const progress = ProgressBar({
- *   value: 65,
- *   variant: 'success',
- *   label: 'Upload Progress',
- *   showValue: true
- * });
+ * // Basic usage
+ * <ProgressBar value={65} />
+ *
+ * @example
+ * // With label and variant
+ * <ProgressBar value={80} variant="success" label="Upload Progress" />
+ *
+ * @example
+ * // Indeterminate (loading)
+ * <ProgressBar indeterminate={true} />
  */
 export function ProgressBar({
     value = 0,
@@ -37,11 +45,31 @@ export function ProgressBar({
     indeterminate = false,
     label = '',
     showValue = true,
+    showLabel = false,
     height = '1.5rem',
     className = ''
-}) {
+} = {}) {
     // Clamp value between 0 and 100
     let currentValue = Math.max(0, Math.min(value, 100));
+
+    // Resolve classes from active theme
+    const progressClass = cn(
+        resolveClasses('progressbar', {
+          variant: striped ? 'striped' : (animated && striped ? 'animated' : undefined)
+        }),
+        'progress-bar-wrapper',
+        className
+    );
+
+    const barClass = cn(
+        resolvePartClasses('progressbar', 'bar'),
+        'progress-bar',
+        `progress-bar-${variant}`,
+        `bg-${variant}`, // Color utility
+        striped ? 'striped progress-bar-striped bg-gradient-to-r' : '',
+        animated && striped ? 'animated progress-bar-animated animate-pulse' : '',
+        indeterminate ? 'indeterminate progress-indeterminate' : ''
+    );
 
     /**
      * Template function
@@ -50,7 +78,7 @@ export function ProgressBar({
         return `
             <div class="progress-wrapper ${className}" data-ref="wrapper">
                 ${label ? `
-                    <div class="progress-label mb-2">
+                    <div class="progress-label mb-2 flex justify-between">
                         <span class="label-text">${escapeHtml(label)}</span>
                         ${showValue && !indeterminate ? `
                             <span class="label-value">${currentValue}%</span>
@@ -58,15 +86,15 @@ export function ProgressBar({
                     </div>
                 ` : ''}
 
-                <div class="progress" style="height: ${height};">
-                    <div class="progress-bar bg-${variant} ${striped ? 'progress-bar-striped' : ''} ${animated && striped ? 'progress-bar-animated' : ''} ${indeterminate ? 'progress-indeterminate' : ''}"
+                <div class="${progressClass}" style="height: ${escapeHtml(height)};">
+                    <div class="${barClass}"
                          role="progressbar"
                          aria-valuenow="${currentValue}"
                          aria-valuemin="0"
                          aria-valuemax="100"
                          ${!indeterminate ? `style="width: ${currentValue}%"` : ''}
                     >
-                        ${showValue && !striped && !indeterminate ? `
+                        ${(showValue || showLabel) && !striped && !indeterminate ? `
                             <span class="progress-text">${currentValue}%</span>
                         ` : ''}
                     </div>

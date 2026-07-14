@@ -1,10 +1,15 @@
 /**
- * VirtualList Component for rnxJS
- * Efficient rendering of large lists using virtual scrolling
- * Only renders visible items + buffer for smooth scrolling
+ * VirtualList Component for rnxJS - CSS Framework Agnostic
+ *
+ * Works with any registered theme (Bootstrap, Tailwind, custom).
+ * Efficient rendering of large lists using virtual scrolling.
+ * Only renders visible items + buffer for smooth scrolling.
  */
 
 import { createComponent } from '../../utils/createComponent.js';
+import { escapeHtml, escapeAttribute } from '../../utils/security.js';
+import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
+import { cn } from '../../utils/classNames.js';
 
 /**
  * Create a virtual scrolling list component
@@ -15,6 +20,11 @@ import { createComponent } from '../../utils/createComponent.js';
  * @param {number} [options.visibleCount=20] - Number of visible items
  * @param {number} [options.bufferSize=5] - Number of extra items to render above/below viewport
  * @param {Function} options.renderItem - Function to render each item (item, index) => HTML string
+ *                                         ⚠️ SECURITY WARNING: You MUST escape user content yourself!
+ *                                         Use escapeHtml() from '@arnelirobles/rnxjs/utils/security'
+ * @param {Function} [options.renderItemSafe] - SAFE alternative: renders text-only content (auto-escaped)
+ *                                               Use this instead of renderItem if you only need text.
+ *                                               Returns object: { title, subtitle, content }
  * @param {string} [options.height] - Container height (CSS value, defaults to auto-calculated)
  * @param {string} [options.className=''] - Additional CSS classes for container
  * @param {Function} [options.onScroll] - Scroll event callback
@@ -22,42 +32,73 @@ import { createComponent } from '../../utils/createComponent.js';
  * @returns {HTMLElement} Virtual list component
  *
  * @example
- * const list = VirtualList({
+ * // UNSAFE: User content not escaped
+ * const unsafeList = VirtualList({
  *   items: state.items,
- *   itemHeight: 50,
- *   visibleCount: 20,
- *   renderItem: (item, index) => `
- *     <div class="list-item">
- *       <h3>${item.title}</h3>
- *       <p>${item.description}</p>
+ *   renderItem: (item) => `<div>${item.title}</div>`  // ❌ XSS RISK!
+ * });
+ *
+ * @example
+ * // SAFE: Using escapeHtml
+ * import { escapeHtml } from '@arnelirobles/rnxjs/utils/security';
+ * const safeList = VirtualList({
+ *   items: state.items,
+ *   renderItem: (item) => `
+ *     <div class="item">
+ *       <h3>${escapeHtml(item.title)}</h3>
+ *       <p>${escapeHtml(item.description)}</p>
  *     </div>
- *   `
+ *   ` // ✅ SAFE
+ * });
+ *
+ * @example
+ * // SAFE: Using renderItemSafe (text only, auto-escaped)
+ * const safeTextList = VirtualList({
+ *   items: state.items,
+ *   renderItemSafe: (item) => ({
+ *     title: item.title,      // Auto-escaped
+ *     subtitle: item.author,  // Auto-escaped
+ *     content: item.preview   // Auto-escaped
+ *   })
  * });
  */
-export function VirtualList(options) {
+export function VirtualList(options = {}) {
     const {
         items = [],
         itemHeight = 40,
         visibleCount = 20,
         bufferSize = 5,
         renderItem,
+        renderItemSafe,
         height,
         className = '',
         onScroll,
         state
     } = options;
 
-    if (!renderItem || typeof renderItem !== 'function') {
+    // Validate render function
+    if (!renderItem && !renderItemSafe) {
+        throw new TypeError('[rnxJS] VirtualList: renderItem must be a function (or provide renderItemSafe)');
+    }
+
+    if (renderItem && typeof renderItem !== 'function') {
         throw new TypeError('[rnxJS] VirtualList: renderItem must be a function');
+    }
+
+    if (renderItemSafe && typeof renderItemSafe !== 'function') {
+        throw new TypeError('[rnxJS] VirtualList: renderItemSafe must be a function');
     }
 
     if (!Array.isArray(items)) {
         console.warn('[rnxJS] VirtualList: items must be an array');
     }
 
+    // Current items (mutable so state updates and refresh() re-render correctly)
+    let currentItems = Array.isArray(items) ? items : [];
+
     // Calculate dimensions
     const containerHeight = height || `${visibleCount * itemHeight}px`;
-    const totalHeight = items.length * itemHeight;
+    const getTotalHeight = () => currentItems.length * itemHeight;
 
     // Component state
     let scrollTop = 0;
@@ -70,7 +111,7 @@ export function VirtualList(options) {
     const calculateVisibleRange = () => {
         startIndex = Math.max(0, Math.floor(scrollTop / itemHeight) - bufferSize);
         endIndex = Math.min(
-            items.length,
+            currentItems.length,
             Math.ceil((scrollTop + parseInt(containerHeight)) / itemHeight) + bufferSize
         );
     };
@@ -81,16 +122,46 @@ export function VirtualList(options) {
     const renderVisibleItems = () => {
         calculateVisibleRange();
 
+        const itemPartClass = cn(
+            resolvePartClasses('virtuallist', 'item'),
+            'rnx-virtual-list-item'
+        );
+
         const itemsHtml = [];
         for (let i = startIndex; i < endIndex; i++) {
-            const item = items[i];
+            const item = currentItems[i];
             if (!item) continue;
 
             const offsetTop = i * itemHeight;
+
+            // Determine which render function to use
+            let content;
+            if (renderItemSafe) {
+                // SAFE MODE: Auto-escape all content
+                const data = renderItemSafe(item, i);
+                const title = data?.title ? escapeHtml(data.title) : '';
+                const subtitle = data?.subtitle ? escapeHtml(data.subtitle) : '';
+                const itemContent = data?.content ? escapeHtml(data.content) : '';
+
+                content = `
+                    <div class="rnx-virtual-list-item-inner">
+                        ${title ? `<div class="item-title">${title}</div>` : ''}
+                        ${subtitle ? `<div class="item-subtitle">${subtitle}</div>` : ''}
+                        ${itemContent ? `<div class="item-content">${itemContent}</div>` : ''}
+                    </div>
+                `;
+            } else {
+                // UNSAFE MODE: Developer is responsible for escaping
+                content = renderItem(item, i);
+            }
+
             itemsHtml.push(`
                 <div
-                    class="rnx-virtual-list-item"
+                    class="${itemPartClass}"
                     data-index="${i}"
+                    role="listitem"
+                    aria-setsize="${currentItems.length}"
+                    aria-posinset="${i + 1}"
                     style="
                         position: absolute;
                         top: ${offsetTop}px;
@@ -99,7 +170,7 @@ export function VirtualList(options) {
                         left: 0;
                     "
                 >
-                    ${renderItem(item, i)}
+                    ${content}
                 </div>
             `);
         }
@@ -110,28 +181,42 @@ export function VirtualList(options) {
     /**
      * Template function for the component
      */
-    const template = () => `
-        <div
-            class="rnx-virtual-list ${className}"
-            data-ref="container"
-            style="
-                height: ${containerHeight};
-                overflow-y: auto;
-                position: relative;
-            "
-        >
+    const template = () => {
+        // Resolve classes from active theme
+        const containerClass = cn(
+            resolveClasses('virtuallist'),
+            'rnx-virtual-list',
+            className
+        );
+        const contentClass = cn(
+            resolvePartClasses('virtuallist', 'container'),
+            'rnx-virtual-list-content'
+        );
+
+        return `
             <div
-                class="rnx-virtual-list-content"
-                data-ref="content"
+                class="${containerClass}"
+                data-ref="container"
                 style="
-                    height: ${totalHeight}px;
+                    height: ${escapeAttribute(containerHeight)};
+                    overflow-y: auto;
                     position: relative;
                 "
             >
-                ${renderVisibleItems()}
+                <div
+                    class="${contentClass}"
+                    data-ref="content"
+                    role="list"
+                    style="
+                        height: ${getTotalHeight()}px;
+                        position: relative;
+                    "
+                >
+                    ${renderVisibleItems()}
+                </div>
             </div>
-        </div>
-    `;
+        `;
+    };
 
     // Create the component
     const component = createComponent(template, {
@@ -141,7 +226,7 @@ export function VirtualList(options) {
         endIndex: 0
     });
 
-    // Set up scroll handler
+    // Set up scroll handler (removed with stored reference in cleanup)
     component.useEffect((el) => {
         const container = el.refs.container;
         if (!container) return;
@@ -193,8 +278,9 @@ export function VirtualList(options) {
         component.useEffect(() => {
             const unsubscribe = state.subscribe(itemsPath, () => {
                 // Items changed, re-render
+                currentItems = Array.isArray(state[itemsPath]) ? state[itemsPath] : [];
                 component.setState({
-                    items: state[itemsPath] || []
+                    items: currentItems
                 });
             });
 
@@ -220,7 +306,7 @@ export function VirtualList(options) {
     component.scrollToBottom = () => {
         const container = component.refs.container;
         if (container) {
-            container.scrollTop = totalHeight;
+            container.scrollTop = getTotalHeight();
         }
     };
 
@@ -231,8 +317,9 @@ export function VirtualList(options) {
     });
 
     component.refresh = () => {
+        currentItems = Array.isArray(options.items) ? options.items : [];
         component.setState({
-            items: options.items || []
+            items: currentItems
         });
     };
 

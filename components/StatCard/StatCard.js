@@ -1,10 +1,14 @@
 /**
- * StatCard Component for rnxJS
- * Dashboard statistic card with value, trend, and icon
+ * StatCard Component for rnxJS - CSS Framework Agnostic
+ *
+ * Works with any registered theme (Bootstrap, Tailwind, custom).
+ * Dashboard statistic card with value, trend, and icon.
  */
 
 import { createComponent } from '../../utils/createComponent.js';
 import { escapeHtml } from '../../utils/security.js';
+import { resolveClasses, resolvePartClasses, resolveUtility } from '../../utils/ThemeProvider.js';
+import { cn } from '../../utils/classNames.js';
 
 /**
  * Create a statistic card for dashboard displays
@@ -38,7 +42,7 @@ export function StatCard({
     footer = '',
     onclick,
     className = ''
-}) {
+} = {}) {
     // Validate variant
     const validVariants = ['primary', 'success', 'danger', 'warning', 'info', 'light'];
     if (!validVariants.includes(variant)) {
@@ -48,13 +52,31 @@ export function StatCard({
     /**
      * Template function
      */
-    const template = () => {
+    const template = ({ label, value, icon, change, variant, footer }) => {
+        // Resolve classes from active theme
+        const cardClass = cn(
+            resolveClasses('statcard', { variant }),
+            'stat-card',
+            onclick ? 'cursor-pointer' : '',
+            className
+        );
+
+        const bodyClass = resolvePartClasses('statcard', 'body');
+        const titleClass = resolvePartClasses('statcard', 'title');
+        const valueClass = resolvePartClasses('statcard', 'value');
+        const trendClass = resolvePartClasses('statcard', 'trend');
+
+        const layoutClass = cn(
+            resolveUtility('layout', 'flex'),
+            resolveUtility('flexbox', 'justifyBetween'),
+            resolveUtility('flexbox', 'alignStart')
+        );
+
         const trendColor = change
-            ? change.trend === 'up'
-                ? 'text-success'
-                : change.trend === 'down'
-                ? 'text-danger'
-                : 'text-muted'
+            ? resolveUtility(
+                'text',
+                change.trend === 'up' ? 'success' : change.trend === 'down' ? 'danger' : 'muted'
+              )
             : '';
 
         const trendIcon = change
@@ -66,32 +88,32 @@ export function StatCard({
             : '';
 
         return `
-            <div class="card stat-card bg-${variant} ${onclick ? 'cursor-pointer' : ''} ${className}" data-ref="card">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div class="flex-grow-1">
-                            <p class="card-text text-muted mb-2" style="font-size: 0.875rem;">
+            <div class="${cardClass}" data-ref="card"${onclick ? ' role="button" tabindex="0"' : ''}>
+                <div class="${bodyClass}">
+                    <div class="${layoutClass}">
+                        <div style="flex: 1 1 auto;">
+                            <p class="${titleClass}">
                                 ${escapeHtml(label)}
                             </p>
-                            <h3 class="card-title mb-0" data-ref="value">
+                            <h3 class="${valueClass}" data-ref="value">
                                 ${escapeHtml(String(value))}
                             </h3>
                             ${change ? `
-                                <small class="${trendColor} mt-2" style="display: inline-block;">
-                                    <i class="bi bi-${trendIcon}"></i>
-                                    ${Math.abs(change.value)}%
+                                <small class="${cn(trendClass, trendColor)}" style="display: inline-block;">
+                                    <i class="bi bi-${trendIcon}" aria-hidden="true"></i>
+                                    ${escapeHtml(String(Math.abs(change.value)))}%
                                 </small>
                             ` : ''}
                         </div>
                         ${icon ? `
-                            <div class="stat-icon ms-3" data-ref="icon">
-                                <i class="bi bi-${icon} fs-2 text-${variant}" style="opacity: 0.7;"></i>
+                            <div class="${cn('stat-icon', resolveUtility('spacing', 'ml', 3), resolveUtility('text', variant))}" data-ref="icon" aria-hidden="true">
+                                <i class="bi bi-${escapeHtml(icon)}" style="font-size: 2rem; opacity: 0.7;"></i>
                             </div>
                         ` : ''}
                     </div>
                     ${footer ? `
-                        <div class="mt-3 pt-3 border-top">
-                            <small class="text-muted">${escapeHtml(footer)}</small>
+                        <div class="${cn(resolveUtility('spacing', 'mt', 3), resolveUtility('spacing', 'pt', 3), resolveUtility('borders', 'borderTop'))}">
+                            <small class="${resolveUtility('text', 'muted')}">${escapeHtml(footer)}</small>
                         </div>
                     ` : ''}
                 </div>
@@ -114,9 +136,18 @@ export function StatCard({
      */
     component.useEffect((el) => {
         if (onclick && el.refs.card) {
-            el.refs.card.addEventListener('click', onclick);
+            const card = el.refs.card;
+            const keyHandler = (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onclick(e);
+                }
+            };
+            card.addEventListener('click', onclick);
+            card.addEventListener('keydown', keyHandler);
             return () => {
-                el.refs.card.removeEventListener('click', onclick);
+                card.removeEventListener('click', onclick);
+                card.removeEventListener('keydown', keyHandler);
             };
         }
     });
@@ -127,7 +158,7 @@ export function StatCard({
     component.setValue = (newValue) => {
         const valueEl = component.querySelector('[data-ref="value"]');
         if (valueEl) {
-            valueEl.textContent = escapeHtml(String(newValue));
+            valueEl.textContent = String(newValue);
         }
     };
 

@@ -12,8 +12,10 @@ export function createReactiveState(initialState = {}) {
 
     const subscribers = new Map();
     const proxyCache = new WeakMap(); // Cache proxies to avoid recreating them
-    const visitedObjects = new WeakSet(); // Prevent circular reference infinite loops
     const unsubscribeFunctions = new Set(); // Track all unsubscribe functions for cleanup
+
+    // RACE CONDITION FIX: visitedObjects should be per-traversal, not global
+    // Moved inside createReactiveProxy to be per-traversal
 
     // Update batching state
     let pendingNotifications = new Map();
@@ -174,9 +176,10 @@ export function createReactiveState(initialState = {}) {
      * Create reactive proxy for nested objects and arrays
      * @param {Object} target - Object to make reactive
      * @param {string} basePath - Current path prefix
+     * @param {WeakSet} visited - Per-traversal visited objects (RACE CONDITION FIX)
      * @returns {Proxy} - Reactive proxy
      */
-    function createReactiveProxy(target, basePath = '') {
+    function createReactiveProxy(target, basePath = '', visited = new WeakSet()) {
         // Handle non-object values
         if (typeof target !== 'object' || target === null) {
             return target;
@@ -187,12 +190,13 @@ export function createReactiveState(initialState = {}) {
             return proxyCache.get(target);
         }
 
-        // Prevent circular reference infinite loops
-        if (visitedObjects.has(target)) {
+        // RACE CONDITION FIX: Use per-traversal visited set to prevent circular reference infinite loops
+        // This ensures each traversal has its own tracking, preventing false positives
+        if (visited.has(target)) {
             console.warn(`[rnxJS] Circular reference detected at path "${basePath}". Skipping proxy creation.`);
             return target;
         }
-        visitedObjects.add(target);
+        visited.add(target);
 
         // Special handling for arrays
         const isArray = Array.isArray(target);
@@ -221,7 +225,8 @@ export function createReactiveState(initialState = {}) {
 
                 // Return nested proxy for objects and arrays
                 if (typeof value === 'object' && value !== null) {
-                    return createReactiveProxy(value, currentPath);
+                    // RACE CONDITION FIX: Pass visited set to track circular references per-traversal
+                    return createReactiveProxy(value, currentPath, visited);
                 }
 
                 return value;

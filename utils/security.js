@@ -269,3 +269,130 @@ export function sanitizeObject(obj) {
 
   return result;
 }
+
+/**
+ * Check if a regex pattern is safe to execute (prevent ReDoS attacks)
+ *
+ * Detects patterns that can cause catastrophic backtracking:
+ * - Nested quantifiers (e.g., (a+)+ or (a*)*)
+ * - Multiple bounded repeats (e.g., (a{1,10}){2,20})
+ * - Deeply nested groups with quantifiers
+ *
+ * @param {string} pattern - Regex pattern to validate
+ * @returns {boolean} - True if pattern is safe, false if potentially dangerous
+ *
+ * @example
+ * isSafeRegex('(a+)+b')              // Returns: false (nested quantifiers)
+ * isSafeRegex('^[a-z]+@[a-z]+\\.com$') // Returns: true (safe pattern)
+ */
+export function isSafeRegex(pattern) {
+  if (!pattern || typeof pattern !== 'string') {
+    return false;
+  }
+
+  // Patterns that indicate potential ReDoS vulnerabilities
+  const unsafePatterns = [
+    /(\+\*|\*\+|\*\*|\+\+)/,              // Nested quantifiers: +*, *+, **, ++
+    /(\{\d+,\d+\}){2,}/,                   // Multiple bounded repeats: {n,m}{x,y}
+    /(\([^)]*[\+\*]){3,}/,                 // 3+ nested groups with quantifiers
+    /(\(.*\+.*\)){2,}/,                    // Nested groups with +
+    /(\(.*\*.*\)){2,}/,                    // Nested groups with *
+    /(\([^)]*\+[^)]*\)\+)/,                // (group+)+ pattern
+    /(\([^)]*\*[^)]*\)\*)/,                // (group*)* pattern
+    /(.+)+/,                               // Literal .+ followed by +
+    /(.*)+/,                               // Literal .* followed by +
+  ];
+
+  // Check for dangerous patterns
+  for (const dangerous of unsafePatterns) {
+    if (dangerous.test(pattern)) {
+      console.warn(`[rnxJS] Unsafe regex pattern detected: ${pattern}`);
+      return false;
+    }
+  }
+
+  // Check pattern length (very long patterns can also be problematic)
+  if (pattern.length > 500) {
+    console.warn(`[rnxJS] Regex pattern too long (${pattern.length} chars), rejecting as unsafe`);
+    return false;
+  }
+
+  return true;
+}
+
+/**
+ * Sanitize HTML content to prevent XSS attacks
+ *
+ * This is a basic sanitizer that removes dangerous elements and attributes.
+ * For production use with untrusted HTML, consider using DOMPurify.
+ *
+ * @param {string} html - HTML string to sanitize
+ * @returns {string} - Sanitized HTML
+ *
+ * @example
+ * sanitizeHtml('<div>Safe</div><script>alert(1)</script>')
+ * // Returns: '<div>Safe</div>'
+ *
+ * @example
+ * sanitizeHtml('<img src=x onerror="alert(1)">')
+ * // Returns: '<img src="x">'
+ */
+export function sanitizeHtml(html) {
+  if (!html || typeof html !== 'string') {
+    return '';
+  }
+
+  // Create a temporary DOM element
+  const temp = document.createElement('div');
+  temp.innerHTML = html;
+
+  // Remove all script tags
+  const scripts = temp.querySelectorAll('script');
+  scripts.forEach(script => script.remove());
+
+  // Remove dangerous tags
+  const dangerousTags = ['iframe', 'object', 'embed', 'link', 'style', 'meta', 'base'];
+  dangerousTags.forEach(tag => {
+    const elements = temp.querySelectorAll(tag);
+    elements.forEach(el => el.remove());
+  });
+
+  // Remove event handler attributes from all elements
+  const allElements = temp.querySelectorAll('*');
+  allElements.forEach(el => {
+    // Remove all on* attributes
+    Array.from(el.attributes).forEach(attr => {
+      if (attr.name.startsWith('on')) {
+        el.removeAttribute(attr.name);
+      }
+    });
+
+    // Sanitize href and src attributes
+    if (el.hasAttribute('href')) {
+      const href = sanitizeUrl(el.getAttribute('href'));
+      if (href) {
+        el.setAttribute('href', href);
+      } else {
+        el.removeAttribute('href');
+      }
+    }
+
+    if (el.hasAttribute('src')) {
+      const src = sanitizeUrl(el.getAttribute('src'));
+      if (src) {
+        el.setAttribute('src', src);
+      } else {
+        el.removeAttribute('src');
+      }
+    }
+
+    // Remove javascript: protocol from other attributes
+    Array.from(el.attributes).forEach(attr => {
+      if (attr.value && attr.value.toLowerCase().includes('javascript:')) {
+        el.removeAttribute(attr.name);
+      }
+    });
+  });
+
+  return temp.innerHTML;
+}

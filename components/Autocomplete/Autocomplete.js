@@ -1,26 +1,43 @@
 /**
- * Autocomplete Component for rnxJS
- * Search-as-you-type with async support and keyboard navigation
+ * Autocomplete Component for rnxJS - CSS Framework Agnostic
+ *
+ * Works with any registered theme (Bootstrap, Tailwind, custom).
+ * Search-as-you-type with async support, keyboard navigation and
+ * WAI-ARIA combobox semantics.
  */
 
 import { createComponent } from '../../utils/createComponent.js';
 import { escapeHtml } from '../../utils/security.js';
+import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
+import { cn } from '../../utils/classNames.js';
+
+let autocompleteUid = 0;
+
+/**
+ * Resolve just the state classes for a component (without its base classes)
+ */
+const stateClasses = (component, state) => {
+    const base = resolveClasses(component);
+    const withState = resolveClasses(component, { [state]: true });
+    return withState.startsWith(base) ? withState.slice(base.length).trim() : withState;
+};
 
 /**
  * Create an autocomplete input with dropdown suggestions
  *
- * @param {Object} options - Configuration options
- * @param {string} options.label - Input label
- * @param {Array|Function} options.items - Array of items or async function returning items
- * @param {string} options.placeholder - Input placeholder
- * @param {string} options.value - Initial value
- * @param {boolean} options.multiple - Enable multiple selection (default: false)
- * @param {number} options.debounce - Debounce delay in ms (default: 300)
- * @param {number} options.minChars - Minimum characters to trigger search (default: 1)
- * @param {Function} options.renderItem - Custom item renderer (default: label)
- * @param {Function} options.onchange - Change callback: (value) => {}
- * @param {Function} options.onselect - Selection callback: (item) => {}
- * @param {string} options.className - Additional CSS classes
+ * @param {Object} [options={}] - Configuration options
+ * @param {string} [options.label] - Input label (associated via for/id)
+ * @param {Array|Function} [options.items] - Array of items or async function returning items
+ * @param {string} [options.placeholder] - Input placeholder
+ * @param {string} [options.value] - Initial value
+ * @param {boolean} [options.multiple] - Enable multiple selection (default: false)
+ * @param {number} [options.debounce] - Debounce delay in ms (default: 300)
+ * @param {number} [options.minChars] - Minimum characters to trigger search (default: 1)
+ * @param {Function} [options.renderItem] - Custom item renderer (default: label)
+ * @param {Function} [options.onchange] - Change callback: (value) => {}
+ * @param {Function} [options.onselect] - Selection callback: (item) => {}
+ * @param {string} [options.id] - Input HTML id attribute (auto-generated if omitted)
+ * @param {string} [options.className] - Additional CSS classes
  * @returns {HTMLElement} Autocomplete component
  *
  * @example
@@ -42,11 +59,12 @@ export function Autocomplete({
     multiple = false,
     debounce = 300,
     minChars = 1,
-    renderItem = (item) => item.label || String(item),
+    renderItem = (item) => (item && item.label) || String(item),
     onchange,
     onselect,
+    id,
     className = ''
-}) {
+} = {}) {
     let isOpen = false;
     let isLoading = false;
     let selectedItems = multiple ? [] : null;
@@ -54,6 +72,10 @@ export function Autocomplete({
     let filteredItems = [];
     let highlightedIndex = -1;
     let debounceTimer = null;
+
+    const finalId = id || `autocomplete-${++autocompleteUid}`;
+    const listboxId = `${finalId}-listbox`;
+    const optionId = (index) => `${finalId}-option-${index}`;
 
     const isAsync = typeof items === 'function';
 
@@ -80,7 +102,7 @@ export function Autocomplete({
         } else {
             const query_lower = query.toLowerCase();
             return items.filter(item => {
-                const itemText = renderItem(item).toLowerCase();
+                const itemText = String(renderItem(item)).toLowerCase();
                 return itemText.includes(query_lower);
             });
         }
@@ -192,13 +214,36 @@ export function Autocomplete({
      * Template function
      */
     const template = () => {
+        // Resolve classes from active theme
+        const wrapperClass = cn(resolveClasses('autocomplete'), 'autocomplete-wrapper', className);
+        const labelClass = resolvePartClasses('input', 'label');
+        const inputClass = cn(resolvePartClasses('autocomplete', 'input'), 'autocomplete-input');
+        const dropdownClass = cn(
+            resolvePartClasses('autocomplete', 'dropdown'),
+            stateClasses('autocomplete', 'show'),
+            'autocomplete-dropdown'
+        );
+        const itemClass = cn(resolvePartClasses('autocomplete', 'item'), 'autocomplete-item');
+        const tagClass = cn(resolveClasses('chips', { variant: 'primary' }), 'badge');
+        const checkboxClass = resolveClasses('checkbox');
+        const spinnerClass = cn(resolveClasses('spinner', { variant: 'border', size: 'sm' }), 'spinner-border spinner-border-sm');
+
+        const expanded = isOpen && filteredItems.length > 0;
+        const isItemSelected = (item) => multiple ? selectedItems.includes(item) : selectedItems === item;
+
         return `
-            <div class="autocomplete-wrapper ${className}" data-ref="wrapper">
-                ${label ? `<label class="form-label">${escapeHtml(label)}</label>` : ''}
-                <div class="position-relative">
+            <div class="${wrapperClass}" data-ref="wrapper">
+                ${label ? `<label class="${labelClass}" for="${escapeHtml(finalId)}">${escapeHtml(label)}</label>` : ''}
+                <div class="autocomplete-field" style="position: relative;">
                     <input
                         type="text"
-                        class="form-control autocomplete-input"
+                        id="${escapeHtml(finalId)}"
+                        class="${inputClass}"
+                        role="combobox"
+                        aria-expanded="${expanded ? 'true' : 'false'}"
+                        aria-autocomplete="list"
+                        aria-controls="${escapeHtml(listboxId)}"
+                        ${expanded && highlightedIndex >= 0 ? `aria-activedescendant="${escapeHtml(optionId(highlightedIndex))}"` : ''}
                         placeholder="${escapeHtml(placeholder)}"
                         value="${escapeHtml(inputValue)}"
                         autocomplete="off"
@@ -206,19 +251,22 @@ export function Autocomplete({
                     />
                     ${isLoading ? `
                         <div class="autocomplete-loading">
-                            <div class="spinner-border spinner-border-sm" role="status">
+                            <div class="${spinnerClass}" role="status">
                                 <span class="visually-hidden">Loading...</span>
                             </div>
                         </div>
                     ` : ''}
-                    ${isOpen && filteredItems.length > 0 ? `
-                        <div class="autocomplete-dropdown card shadow-sm" data-ref="dropdown">
-                            <ul class="list-group list-group-flush mb-0">
+                    ${expanded ? `
+                        <div class="${dropdownClass}" data-ref="dropdown">
+                            <ul class="autocomplete-list" id="${escapeHtml(listboxId)}" role="listbox" ${multiple ? 'aria-multiselectable="true"' : ''} style="list-style: none; margin: 0; padding: 0;">
                                 ${filteredItems.map((item, index) => `
-                                    <li class="list-group-item autocomplete-item ${index === highlightedIndex ? 'active' : ''} ${multiple && selectedItems.includes(item) ? 'selected' : ''}"
+                                    <li id="${escapeHtml(optionId(index))}"
+                                        role="option"
+                                        aria-selected="${isItemSelected(item) ? 'true' : 'false'}"
+                                        class="${itemClass} ${index === highlightedIndex ? 'active' : ''} ${multiple && selectedItems.includes(item) ? 'selected' : ''}"
                                         data-index="${index}">
                                         ${multiple ? `
-                                            <input type="checkbox" class="form-check-input me-2"
+                                            <input type="checkbox" class="${checkboxClass}" style="margin-right: 0.5rem;" tabindex="-1"
                                                 ${selectedItems.includes(item) ? 'checked' : ''}
                                                 data-index="${index}" />
                                         ` : ''}
@@ -229,18 +277,18 @@ export function Autocomplete({
                         </div>
                     ` : ''}
                     ${isOpen && filteredItems.length === 0 && inputValue.length >= minChars && !isLoading ? `
-                        <div class="autocomplete-empty text-center text-muted p-3">
+                        <div class="${cn(resolvePartClasses('autocomplete', 'item'), 'autocomplete-empty')}" role="status">
                             No results found
                         </div>
                     ` : ''}
                 </div>
                 ${multiple && selectedItems.length > 0 ? `
-                    <div class="autocomplete-tags mt-2">
+                    <div class="autocomplete-tags" style="margin-top: 0.5rem;">
                         ${selectedItems.map((item, index) => `
-                            <span class="badge bg-primary me-2">
+                            <span class="${tagClass}">
                                 ${escapeHtml(renderItem(item))}
-                                <button type="button" class="btn-close btn-close-white ms-1 autocomplete-remove"
-                                    data-index="${index}" aria-label="Remove"></button>
+                                <button type="button" class="autocomplete-remove"
+                                    data-index="${index}" aria-label="Remove ${escapeHtml(renderItem(item))}">&times;</button>
                             </span>
                         `).join('')}
                     </div>
@@ -260,22 +308,28 @@ export function Autocomplete({
     });
 
     /**
-     * Setup event listeners
+     * Setup event listeners (all removed again in the returned cleanup)
      */
     component.useEffect((el) => {
+        const cleanups = [];
+        const on = (target, event, handler) => {
+            target.addEventListener(event, handler);
+            cleanups.push(() => target.removeEventListener(event, handler));
+        };
+
         const input = el.querySelector('.autocomplete-input');
 
         if (input) {
             // Input change
-            input.addEventListener('input', (e) => {
+            on(input, 'input', (e) => {
                 handleInputChange(e.target.value);
             });
 
             // Keyboard navigation
-            input.addEventListener('keydown', handleKeyboard);
+            on(input, 'keydown', handleKeyboard);
 
             // Focus
-            input.addEventListener('focus', () => {
+            on(input, 'focus', () => {
                 if (inputValue.length > 0) {
                     isOpen = true;
                     component.setState({ isOpen });
@@ -285,7 +339,7 @@ export function Autocomplete({
 
         // Item selection
         el.querySelectorAll('.autocomplete-item').forEach((item) => {
-            item.addEventListener('click', (e) => {
+            on(item, 'click', (e) => {
                 // Don't trigger on checkbox click in multiple mode
                 if (multiple && e.target.type === 'checkbox') {
                     return;
@@ -298,7 +352,7 @@ export function Autocomplete({
 
         // Checkbox selection in multiple mode
         el.querySelectorAll('.autocomplete-item input[type="checkbox"]').forEach((checkbox) => {
-            checkbox.addEventListener('change', (e) => {
+            on(checkbox, 'change', (e) => {
                 const index = parseInt(e.target.dataset.index);
                 selectItem(filteredItems[index]);
             });
@@ -306,7 +360,7 @@ export function Autocomplete({
 
         // Remove tag
         el.querySelectorAll('.autocomplete-remove').forEach((btn) => {
-            btn.addEventListener('click', (e) => {
+            on(btn, 'click', (e) => {
                 e.preventDefault();
                 const index = parseInt(btn.dataset.index);
                 selectedItems.splice(index, 1);
@@ -316,21 +370,18 @@ export function Autocomplete({
 
         // Close on outside click
         const handleOutsideClick = (e) => {
-            if (!el.contains(e.target)) {
+            if (isOpen && !el.contains(e.target)) {
                 isOpen = false;
                 component.setState({ isOpen });
             }
         };
+        on(document, 'click', handleOutsideClick);
 
-        if (isOpen) {
-            setTimeout(() => {
-                document.addEventListener('click', handleOutsideClick);
-            }, 0);
+        return () => cleanups.forEach(fn => fn());
+    });
 
-            return () => {
-                document.removeEventListener('click', handleOutsideClick);
-            };
-        }
+    component.onUnmount(() => {
+        clearTimeout(debounceTimer);
     });
 
     // Export methods

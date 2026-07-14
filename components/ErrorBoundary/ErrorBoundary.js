@@ -1,10 +1,15 @@
 /**
- * ErrorBoundary Component for rnxJS
- * Catches JavaScript errors in child components and displays fallback UI
+ * ErrorBoundary Component for rnxJS - CSS Framework Agnostic
+ *
+ * Works with any registered theme (Bootstrap, Tailwind, custom).
+ * Catches JavaScript errors in child components and displays fallback UI.
  */
 
 import { createComponent } from '../../utils/createComponent.js';
 import { errorTracking } from '../../utils/errorTracking.ts';
+import { escapeHtml } from '../../utils/security.js';
+import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
+import { cn } from '../../utils/classNames.js';
 
 /**
  * Create an error boundary component
@@ -31,7 +36,7 @@ import { errorTracking } from '../../utils/errorTracking.ts';
  *   }
  * });
  */
-export function ErrorBoundary(options) {
+export function ErrorBoundary(options = {}) {
     const {
         children,
         fallback,
@@ -45,32 +50,36 @@ export function ErrorBoundary(options) {
     }
 
     // Default fallback UI
-    const defaultFallback = (error) => `
-        <div class="rnx-error-boundary" style="
-            padding: 20px;
-            margin: 20px 0;
-            border: 2px solid #ff4444;
-            border-radius: 4px;
-            background-color: #fff5f5;
-            color: #cc0000;
-        ">
-            <h3 style="margin: 0 0 10px 0; font-size: 18px;">
-                ⚠️ Something went wrong
-            </h3>
-            <details style="cursor: pointer;">
-                <summary style="margin-bottom: 10px; font-weight: bold;">
-                    Error details
-                </summary>
-                <pre style="
-                    background: #f5f5f5;
-                    padding: 10px;
-                    border-radius: 4px;
-                    overflow-x: auto;
-                    font-size: 12px;
-                ">${error.message}\n\n${error.stack || ''}</pre>
-            </details>
-        </div>
-    `;
+    const defaultFallback = (error) => {
+        const containerClass = cn(
+            resolveClasses('errorboundary'),
+            resolvePartClasses('errorboundary', 'container'),
+            'rnx-error-boundary'
+        );
+        const titleClass = cn(
+            resolvePartClasses('errorboundary', 'title'),
+            'rnx-error-boundary-title'
+        );
+        const messageClass = cn(
+            resolvePartClasses('errorboundary', 'message'),
+            'rnx-error-boundary-message'
+        );
+        const stackClass = cn(
+            resolvePartClasses('errorboundary', 'stack'),
+            'rnx-error-boundary-stack'
+        );
+
+        return `
+            <div class="${containerClass}" role="alert">
+                <h3 class="${titleClass}">This section failed to load</h3>
+                <p class="${messageClass}">Reload the page to try again. If the problem continues, contact support.</p>
+                <details style="cursor: pointer;">
+                    <summary>Error details</summary>
+                    <pre class="${stackClass}" style="overflow-x: auto;">${escapeHtml(error?.message || 'Unknown error')}\n\n${escapeHtml(error?.stack || '')}</pre>
+                </details>
+            </div>
+        `;
+    };
 
     const fallbackFn = fallback || defaultFallback;
 

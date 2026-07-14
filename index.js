@@ -16,6 +16,19 @@ export {
   sanitizeObject
 } from './utils/security.js';
 
+// Theme System (CSS framework agnostic: Bootstrap, Tailwind, or custom)
+export {
+  themeProvider,
+  setTheme,
+  registerTheme,
+  resolveClasses,
+  resolvePartClasses,
+  resolveUtility
+} from './utils/ThemeProvider.js';
+export { cn, cls, twMerge } from './utils/classNames.js';
+export { bootstrapTheme } from './themes/bootstrap/index.js';
+export { tailwindTheme } from './themes/tailwind/index.js';
+
 // Framework
 export { registerComponent } from './framework/Registry.js';
 export { loadComponents } from './framework/ComponentLoader.js';
