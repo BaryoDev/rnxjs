@@ -5,12 +5,52 @@
 [![npm downloads](https://img.shields.io/npm/dm/@arnelirobles/rnxjs)](https://www.npmjs.com/package/@arnelirobles/rnxjs)
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/@arnelirobles/rnxjs)](https://bundlephobia.com/package/@arnelirobles/rnxjs)
 [![License](https://img.shields.io/npm/l/@arnelirobles/rnxjs)](https://github.com/BaryoDev/rnxjs/blob/main/LICENSE)
-[![Tests](https://img.shields.io/badge/tests-600%2B%20passing-brightgreen)](https://github.com/BaryoDev/rnxjs)
+[![Tests](https://img.shields.io/badge/tests-646%20passing-brightgreen)](https://github.com/BaryoDev/rnxjs)
 
-**The Bootstrap-Native Framework for Production Apps.**
+**The Bootstrap-Native Framework for Production Apps. Now CSS-Framework-Agnostic.**
 
-> Build Reactive Bootstrap Apps without a Build Step.
+> Build Reactive Apps without a Build Step — styled with Bootstrap, Tailwind, or your own theme.
 > Designed for Backend Developers (Django, Rails, Laravel) and Internal Tools.
+
+---
+
+## 🚀 What's New in v2.0.0
+
+v2.0.0 makes rnxJS **CSS-framework-agnostic** while keeping full backward compatibility — existing Bootstrap apps look identical after upgrading.
+
+- **🎨 Pluggable theme system** — every one of the 46 components resolves its styling through a theme. Bootstrap stays the default; switch to the built-in Tailwind theme with one line, or register your own.
+- **♿ Accessibility overhaul** — proper WAI-ARIA patterns across all components: dialog/menu/tablist/combobox/switch semantics, label association, `aria-describedby`, `aria-current`, keyboard activation, and focus-visible states.
+- **🧘 Forgiving APIs** — every component works when called with zero arguments and provides sensible defaults.
+- **🔒 Security hardening** — XSS fixes in ErrorBoundary, StatCard, DatePicker, Skeleton, and attribute handling; path-traversal validation in FileUpload.
+- **🐛 Critical fixes** — `rnx.toast.clear()` no longer freezes the tab (infinite loop), storage plugin persists immediately, Sidebar renders correctly, Tooltip works without Bootstrap JS via an imperative `show()/hide()` API.
+- **✅ 646 tests passing** — the full suite runs in under 4 seconds.
+
+### Theming in one line
+
+```javascript
+import { setTheme } from '@arnelirobles/rnxjs';
+
+setTheme('bootstrap');  // default — nothing changes for existing apps
+setTheme('tailwind');   // professional Tailwind design system, WCAG AA states
+
+// Or bring your own design system
+import { registerTheme } from '@arnelirobles/rnxjs';
+registerTheme({
+  name: 'my-theme',
+  components: {
+    button: { base: 'my-btn', variants: { primary: 'my-btn-primary' } }
+  }
+});
+setTheme('my-theme');
+```
+
+Components are theme-agnostic — the same code renders correctly under any registered theme:
+
+```html
+<Button variant="primary" label="Save changes"></Button>
+<!-- bootstrap: class="btn btn-primary" -->
+<!-- tailwind:  class="inline-flex items-center ... bg-indigo-600 text-white ..." -->
+```
 
 ---
 

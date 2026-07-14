@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-07-14
+
+### CSS-Framework-Agnostic Theming
+
+- **Pluggable theme system**: all 46 components resolve styling through `ThemeProvider`
+  - `setTheme('bootstrap' | 'tailwind')`, `registerTheme(custom)`, `themeProvider`, `cn`, `cls`, `twMerge` exported from the package root
+  - Bootstrap remains the default theme — existing apps look identical after upgrading
+  - New built-in Tailwind theme: professional design system (indigo primary, 14px UI density, complete hover/active/focus-visible/disabled states, `motion-reduce` support, WCAG AA warning contrast)
+  - Smart class merging with Tailwind/Bootstrap conflict resolution (`utils/classNames.js`)
+
+### Accessibility
+
+- WAI-ARIA patterns across all components: `role="dialog"`/`aria-modal` (Modal, NavigationDrawer), menu pattern (Dropdown), `tablist`/`tab`/`tabpanel` (Tabs), combobox pattern with `aria-activedescendant` (Autocomplete), `role="switch"` (Switch), `aria-sort`/`scope="col"` (DataTable), `aria-current` (Pagination, Stepper, Breadcrumb, Sidebar, NavigationBar)
+- Form controls: label association (for/id), `aria-describedby` for help/error text, `aria-invalid`, `aria-required`
+- Escape-to-close for Modal, Dropdown, NavigationDrawer, DatePicker; keyboard activation (Enter/Space) for interactive Chips and StatCard
+- Decorative icons marked `aria-hidden`; icon-only buttons get `aria-label` fallbacks; Skeleton announces loading state
+
+### Changed
+
+- Every component now works when called with no arguments (forgiving `= {}` defaults)
+- Tooltip: new framework-agnostic imperative API (`show()`, `hide()`, `setContent()`, `destroy()`) with no Bootstrap JS dependency
+- FileUpload: rebuilt drop zone with `addFiles()` API, human-readable sizes, per-file remove buttons
+
+### Fixed
+
+- **toast plugin**: `clear()` and the max-toast guard looped forever (removal was deferred), freezing the tab and crashing test workers; repeated installs no longer create duplicate containers
+- **storage plugin**: `persist()` now writes the initial snapshot synchronously
+- **Sidebar**: component was broken at runtime (invalid `createComponent` usage) — rewritten
+- **VirtualList**: reactive item updates now recompute total height and visible range
+- **XSS**: escaped `error.message`/`error.stack` in ErrorBoundary fallback, `icon` in StatCard, `value` in DatePicker, style attributes in Skeleton, label/attribute values in Button and Badge
+
 ## [0.4.0] - 2025-12-26
 
 ### Enterprise Readiness

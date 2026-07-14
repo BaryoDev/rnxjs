@@ -1,6 +1,6 @@
 {
   "name": "@arnelirobles/rnxjs",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "The Bootstrap-Native Framework for Production Apps. Zero build step, reactive components for Backend Devs & Internal Tools.",
   "main": "index.js",
   "type": "module",
@@ -51,6 +51,8 @@
     "utils/",
     "framework/",
     "components/",
+    "themes/",
+    "plugins/",
     "css/",
     "dist/",
     "examples/"
