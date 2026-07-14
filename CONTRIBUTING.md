@@ -59,15 +59,11 @@ Open an issue describing:
 #### New Components
 
 1. Create component file in `components/YourComponent/YourComponent.js`
-2. Add comprehensive README at `components/YourComponent/README.md` with:
-   - Installation instructions
-   - Basic usage example
-   - All props with types and descriptions
+2. Document the component in `docs/COMPONENTS.md` (add a section under the appropriate category) with:
+   - A one-paragraph description of what it does
+   - One representative usage example
+   - All props with types, defaults, and descriptions (as a table)
    - Available methods
-   - Key features
-   - 2-3 practical examples
-   - Styling customization section
-   - Browser support section
 3. Add unit tests in `tests/unit/YourComponent_*.test.js`
 4. Update `components/index.js` with export
 5. Add CSS styles to `css/bootstrap-m3-theme.css` if needed

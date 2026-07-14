@@ -157,23 +157,112 @@ Range slider input.
 ---
 
 #### **FileUpload** 🔧 Advanced
-File input with preview and validation.
+Drag & drop file upload with validation, file list preview, and async upload. File names containing path-traversal characters (`..`, `/`, `\`) are rejected during validation.
 
-**See:** [FileUpload README](../components/FileUpload/README.md)
+```javascript
+const upload = FileUpload({
+  label: 'Upload Images',
+  accept: ['.jpg', '.png', '.gif'],
+  maxSize: 5242880, // 5MB
+  maxFiles: 5,
+  multiple: true,
+  onchange: (files) => console.log('Files:', files)
+});
+document.getElementById('app').appendChild(upload);
+
+// Upload to server (POSTs FormData under the "files" key)
+await upload.upload('/api/upload');
+```
+
+**Props:**
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `label` | string | `'Upload Files'` | Input label |
+| `accept` | Array | `[]` | Accepted file extensions (`'.jpg'`) or MIME types |
+| `maxSize` | number | `null` | Maximum file size in bytes |
+| `maxFiles` | number | `null` | Maximum number of files |
+| `multiple` | boolean | `false` | Allow multiple file selection |
+| `preview` | boolean | `true` | Show selected file list |
+| `allowEmpty` | boolean | `true` | Set `false` to reject zero-byte files |
+| `onchange` | Function | `null` | `(files) => {}` on selection change |
+| `onupload` | Function | `null` | `(files) => {}` after successful upload |
+| `className` | string | `''` | Additional CSS classes |
+
+**Methods:**
+- `addFiles(files)` - Validate and add files programmatically; returns `{ added, errors }`
+- `getFiles()` - Get currently selected files
+- `clearFiles()` - Remove all selected files
+- `upload(url)` - Async POST of selected files; resolves with parsed JSON response, rejects on HTTP error or empty selection
 
 ---
 
 #### **Autocomplete** 🔧 Advanced
-Text input with autocomplete suggestions.
+Search-as-you-type input with dropdown suggestions, async data loading, debouncing, keyboard navigation (Arrow keys / Enter / Escape), WAI-ARIA combobox semantics, and optional multiple selection with removable tags.
 
-**See:** [Autocomplete README](../components/Autocomplete/README.md)
+```javascript
+const autocomplete = Autocomplete({
+  label: 'Search Users',
+  items: async (query) => {
+    const response = await fetch(`/api/users?q=${encodeURIComponent(query)}`);
+    return response.json();
+  },
+  minChars: 2,
+  debounce: 500,
+  renderItem: (user) => `${user.name} (${user.email})`,
+  onselect: (user) => console.log('Selected:', user)
+});
+```
+
+**Props:**
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `label` | string | `''` | Input label (associated via for/id) |
+| `items` | Array\|Function | `[]` | Item array or async function `(query) => Promise<items>` |
+| `placeholder` | string | `'Search...'` | Input placeholder |
+| `value` | string | `''` | Initial input value |
+| `multiple` | boolean | `false` | Enable multiple selection with tags |
+| `debounce` | number | `300` | Search debounce delay (ms) |
+| `minChars` | number | `1` | Minimum characters before searching |
+| `renderItem` | Function | `(item) => item.label` | Custom item renderer (output is escaped) |
+| `onchange` | Function | `null` | `(query) => {}` on input change |
+| `onselect` | Function | `null` | `(item)` or `(items)` on selection |
+| `id` | string | auto | Input `id` attribute |
+| `className` | string | `''` | Additional CSS classes |
+
+**Methods:** `getValue()` (selected item or array), `setValue(itemOrArray)`, `clear()`.
 
 ---
 
 #### **DatePicker** 🔧 Advanced
-Calendar-based date input.
+Calendar-based date input with month navigation, min/max constraints, and disabled dates. On mobile user agents (iPhone/iPad/Android) it automatically returns a native HTML5 `<input type="date">` instead of the custom calendar. Dates use `YYYY-MM-DD` format (custom display formats are not yet supported). Escape or an outside click closes the calendar.
 
-**See:** [DatePicker README](../components/DatePicker/README.md)
+```javascript
+const picker = DatePicker({
+  label: 'Appointment Date',
+  value: '2026-07-14',
+  min: '2026-01-01',
+  max: '2026-12-31',
+  disabledDates: ['2026-12-25'], // holidays
+  onchange: (date) => console.log('Selected:', date)
+});
+```
+
+**Props:**
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `label` | string | `''` | Input label (associated via for/id) |
+| `value` | string | `''` | Initial date (`YYYY-MM-DD`) |
+| `min` | string | `null` | Minimum selectable date |
+| `max` | string | `null` | Maximum selectable date |
+| `disabledDates` | Array | `[]` | Specific dates to disable (`YYYY-MM-DD`) |
+| `onchange` | Function | `null` | `(date) => {}` on selection |
+| `id` | string | auto | Input `id` attribute |
+| `className` | string | `''` | Additional CSS classes |
+
+**Methods:** `getValue()`, `setValue('2026-12-25')`.
 
 ---
 
@@ -261,15 +350,41 @@ Flexible column with responsive sizing.
 ### Advanced Layout
 
 #### **Sidebar** 🔧 Advanced
-Collapsible sidebar navigation.
+Collapsible sidebar navigation with nested submenus, active-item tracking, ARIA labels, and smooth width transitions. When collapsed, item text and arrows hide, leaving icons only.
 
-**See:** [Sidebar README](../components/Sidebar/README.md)
+```javascript
+const sidebar = Sidebar({
+  items: [
+    { id: 'dashboard', label: 'Dashboard', href: '#/', icon: '📊' },
+    {
+      id: 'settings', label: 'Settings', icon: '⚙️',
+      children: [
+        { id: 'profile', label: 'Profile', href: '#/settings/profile' },
+        { id: 'security', label: 'Security', href: '#/settings/security' }
+      ]
+    }
+  ],
+  defaultOpen: true,
+  activeItem: 'dashboard',
+  onItemClick: (item) => console.log(item.id, item.label)
+});
+```
 
-**Key Features:**
-- Collapsible state
-- Keyboard navigation
-- ARIA labels
-- Responsive collapse
+**Props:**
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `items` | Array | `[]` | `{id, label, href, icon, active, children}` (children nest one level) |
+| `defaultOpen` | boolean | `true` | Initially expanded |
+| `variant` | string | `'default'` | Style variant |
+| `width` | string | `'250px'` | Expanded width |
+| `collapsedWidth` | string | `'60px'` | Collapsed width |
+| `darkMode` | boolean | `false` | Apply dark styling |
+| `onItemClick` | Function | `null` | Receives `{ id, label }` of clicked leaf item |
+| `activeItem` | string | `null` | ID of initially active item |
+| `className` | string | `''` | Additional CSS classes |
+
+**Methods:** `toggle()`, `isOpen()`, `setActiveItem(id)`.
 
 ---
 
@@ -322,23 +437,85 @@ Contextual message container for warnings, errors, etc.
 ---
 
 #### **StatCard** 🔧 Advanced
-Card for displaying statistics/metrics.
+Dashboard statistic card showing a metric value with optional icon, trend indicator, footer, and click handler. Trends render an arrow icon plus percentage, colored by direction (color is not the only signal, for accessibility).
 
-**See:** [StatCard README](../components/StatCard/README.md)
+```javascript
+const card = StatCard({
+  label: 'Total Users',
+  value: 2543,
+  icon: 'people',                       // Bootstrap icon NAME (no 'bi-' prefix)
+  change: { value: 12.5, trend: 'up' }, // trend: 'up' | 'down' | 'neutral'
+  variant: 'primary',
+  footer: 'Last 24 hours',
+  onclick: () => (window.location.href = '/users')
+});
+```
+
+**Props:**
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `label` | string | `''` | Label above the value |
+| `value` | string\|number | `'—'` | Main metric value |
+| `icon` | string | `''` | Bootstrap icon name, e.g. `'people'`, `'cash-coin'` |
+| `change` | Object | `null` | `{ value: number, trend: 'up'\|'down'\|'neutral' }` |
+| `variant` | string | `'primary'` | primary, success, danger, warning, info, light |
+| `footer` | string | `''` | Footer text below a divider |
+| `onclick` | Function | `null` | Makes the card clickable (keyboard accessible) |
+| `className` | string | `''` | Additional CSS classes |
+
+**Methods:** `setValue(newValue)`, `setChange({ value, trend })`.
 
 ---
 
 #### **EmptyState** 🔧 Advanced
-Placeholder when no data is available.
+Centered placeholder for empty lists or no-result screens, with icon, title, message, and optional action button. Useful for empty inboxes, cleared filters, "create your first item" prompts, etc.
 
-**See:** [EmptyState README](../components/EmptyState/README.md)
+```javascript
+const empty = EmptyState({
+  icon: 'folder-plus', // Bootstrap icon NAME (no 'bi-' prefix)
+  title: 'No Projects',
+  message: 'Get started by creating your first project.',
+  actionLabel: 'New Project',
+  onAction: () => showProjectDialog()
+});
+```
+
+**Props:**
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `icon` | string | `'inbox'` | Bootstrap icon name |
+| `title` | string | `'Nothing here yet'` | Title text |
+| `message` | string | `''` | Descriptive message |
+| `actionLabel` | string | `''` | Action button label (button hidden when empty) |
+| `onAction` | Function | `null` | Action button click handler |
+| `className` | string | `''` | Additional CSS classes |
 
 ---
 
 #### **Skeleton** 🔧 Advanced
-Loading skeleton placeholder.
+Loading placeholder with shimmer animation (pure CSS, GPU-accelerated). Announces "Loading…" to screen readers via `role="status"` / `aria-busy`. Swap it for real content when data arrives (`skeleton.remove()`).
 
-**See:** [Skeleton README](../components/Skeleton/README.md)
+```javascript
+Skeleton({ variant: 'text', lines: 3 });                          // paragraph
+Skeleton({ variant: 'circle', width: '48px', height: '48px' });   // avatar
+Skeleton({ variant: 'card' });                                    // image + text card
+Skeleton({ variant: 'table', rows: 10, cols: 5 });                // table grid
+```
+
+**Props:**
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `variant` | string | `'text'` | text, circle, rectangle, card, table |
+| `lines` | number | `3` | Line count (text variant; last line renders at 60% width) |
+| `rows` | number | `5` | Row count (table variant) |
+| `cols` | number | `4` | Column count (table variant) |
+| `width` | string | `'100%'` | CSS width |
+| `height` | string | `'20px'` | CSS height |
+| `animation` | string | `'wave'` | wave, pulse, none |
+| `className` | string | `''` | Additional CSS classes |
 
 ---
 
@@ -402,16 +579,70 @@ Grouped button set for single selection.
 ---
 
 #### **Dropdown** 🔧 Advanced
-Custom dropdown menu component.
+Accessible dropdown menu (WAI-ARIA menu pattern) with keyboard navigation (Enter/Space toggles, Arrow keys move focus, Escape closes), dividers, icons, badges, and per-item disabled/active states. Closes on outside click.
 
-**See:** [Dropdown README](../components/Dropdown/README.md)
+```javascript
+const dropdown = Dropdown({
+  label: 'Actions',
+  items: [
+    { id: 'edit', label: 'Edit', icon: '✏️' },
+    { id: 'share', label: 'Share', icon: '📤', badge: '3' },
+    { divider: true },
+    { id: 'delete', label: 'Delete', icon: '🗑️', disabled: false }
+  ],
+  onSelect: (item) => console.log(item.id, item.label, item.index)
+});
+```
+
+**Props:**
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `label` | string | `'Menu'` | Trigger button label |
+| `items` | Array | `[]` | `{id, label, icon, href, badge, active, disabled}` or `{divider: true}` |
+| `position` | string | `'bottom-left'` | bottom-left, bottom-right, top-left, top-right |
+| `onSelect` | Function | `null` | Receives `{ id, label, index }` of the selected item |
+| `icon` | string | `null` | Icon before the trigger label |
+| `variant` | string | `'default'` | default, outline, minimal, danger |
+| `disabled` | boolean | `false` | Disable the dropdown |
+| `className` | string | `''` | Additional CSS classes |
+
+**Methods:** `open()`, `close()`, `toggle()`, `isOpen()`.
 
 ---
 
 #### **Tooltip** 🔧 Advanced
-Hover-triggered informational tooltip.
+Contextual information on hover or focus. Two modes:
 
-**See:** [Tooltip README](../components/Tooltip/README.md)
+1. **Imperative** (pass `element`): attaches to an existing element and returns a tooltip API object — not a DOM node.
+2. **Declarative** (no `element`): wraps `children` in a Bootstrap tooltip trigger span using `title` and `placement`.
+
+```javascript
+// Imperative mode: returns { el, show, hide, setContent, destroy }
+const tooltip = Tooltip({
+  element: document.getElementById('save-btn'), // must be an HTMLElement
+  content: 'Save changes',
+  position: 'bottom',
+  delay: 300
+});
+tooltip.setContent('Saved!');
+tooltip.destroy(); // removes listeners and the tooltip element
+```
+
+**Props (imperative mode):**
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `element` | HTMLElement | `null` | Target element (enables imperative mode) |
+| `content` | string | `''` | Tooltip text (rendered as plain text) |
+| `position` | string | `'top'` | top, bottom, left, right |
+| `delay` | number | `0` | Show delay in ms (hover/focus) |
+| `arrow` | boolean | `true` | Show arrow pointer |
+| `className` | string | `''` | Additional CSS classes |
+
+**Props (declarative mode):** `title`, `placement` (default `'top'`), `children`, `className`.
+
+**Methods (imperative):** `show()`, `hide()`, `setContent(text)`, `destroy()`; the tooltip DOM node is exposed as `.el`. Shows on `mouseenter`/`focus`, hides on `mouseleave`/`blur`.
 
 ---
 
@@ -420,16 +651,42 @@ Hover-triggered informational tooltip.
 ### Tables & Lists
 
 #### **DataTable** 🔧 Advanced
-Feature-rich data table with sorting, filtering, pagination.
+Data table with in-memory sorting, global search filtering, pagination, optional row selection, and loading/error/empty states. Only the current page is rendered. In-memory sort suits <10,000 rows; use the `onSort`/`onFilter` callbacks for server-side data, or `VirtualList` for very large flat lists.
 
-**See:** [DataTable README](../components/DataTable/README.md)
+```javascript
+const table = DataTable({
+  columns: [
+    { key: 'name', label: 'Name', sortable: true, filterable: true },
+    { key: 'email', label: 'Email', sortable: true, width: '300px' },
+    { key: 'role', label: 'Role' }
+  ],
+  rows: users,
+  pageSize: 10,
+  selectable: true,
+  onSort: (column, direction) => console.log(column, direction),
+  onSelectionChange: (selectedIndices) => console.log(selectedIndices),
+  onRowClick: (row, index) => openDetail(row)
+});
+```
 
-**Key Features:**
-- Server-side sorting/filtering
-- Pagination
-- Responsive design
-- Column customization
-- Row selection
+**Props:**
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `columns` | Array | `[]` | `{key, label, sortable, filterable, width}` (required when `rows` is non-empty) |
+| `rows` | Array | `[]` | Data objects keyed by column `key` |
+| `pageSize` | number | `10` | Rows per page |
+| `sortable` | boolean | `true` | Enable column sorting (click header to toggle asc/desc) |
+| `filterable` | boolean | `true` | Enable global search box |
+| `selectable` | boolean | `false` | Show row-selection checkboxes |
+| `loading` | boolean | `false` | Show loading spinner |
+| `error` | string | `null` | Show error message instead of data |
+| `emptyMessage` | string | `'No data available'` | Message when no rows |
+| `ariaLabel` | string | `'Data table'` | Accessible label for the table region |
+| `onSort` / `onFilter` / `onPageChange` / `onSelectionChange` / `onRowClick` | Function | `null` | `(column, direction)` / `(query)` / `(page)` / `(selectedIndices)` / `(row, index)` |
+| `className` | string | `''` | Additional CSS classes |
+
+**Methods:** `getCurrentPage()`, `setCurrentPage(page)`, `getSortColumn()`, `getSortDirection()`, `getFilterQuery()`, `setFilterQuery(query)`, `getSelectedRows()` (indices), `clearSelection()`, `getTotalRows()`, `getTotalPages()`.
 
 ---
 
@@ -448,26 +705,67 @@ Vertical list with items.
 ---
 
 #### **VirtualList** 🔧 Advanced
-High-performance list for large datasets (1000+).
+High-performance list for large datasets (1000+). Uses virtual scrolling: only visible items plus a buffer are rendered. Requires either `renderItem` or `renderItemSafe`.
 
-**See:** [VirtualList README](../components/VirtualList/README.md)
+**Security:** `renderItem` returns raw HTML — you MUST escape user content yourself with `escapeHtml()` from `utils/security`. Prefer `renderItemSafe` (returns `{ title, subtitle, content }`, auto-escaped) when you only need text.
+
+```javascript
+import { escapeHtml } from '@arnelirobles/rnxjs/utils/security';
+
+const list = VirtualList({
+  items: state.items,
+  itemHeight: 48,
+  visibleCount: 20,
+  renderItem: (item, index) => `
+    <div class="item">
+      <h3>${escapeHtml(item.title)}</h3>
+      <p>${escapeHtml(item.description)}</p>
+    </div>`
+});
+```
+
+**Props:**
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `items` | Array | `[]` | Items to render |
+| `itemHeight` | number | `40` | Fixed height per item (px) |
+| `visibleCount` | number | `20` | Visible items (sets container height unless `height` given) |
+| `bufferSize` | number | `5` | Extra items rendered above/below the viewport |
+| `renderItem` | Function | — | `(item, index) => htmlString` (escape user content!) |
+| `renderItemSafe` | Function | — | `(item) => ({ title, subtitle, content })`, auto-escaped |
+| `height` | string | auto | Container height (CSS value) |
+| `onScroll` | Function | `null` | Scroll event callback |
+| `state` | Object | `null` | Reactive state object for auto-updates |
+| `className` | string | `''` | Additional CSS classes |
+
+**Methods:** `scrollToIndex(i)`, `scrollToTop()`, `scrollToBottom()`, `getVisibleRange()`, `refresh()`.
 
 ---
 
 ### Navigation Lists
 
 #### **Breadcrumb** 🔧 Advanced
-Navigation trail showing page hierarchy.
+Navigation trail showing the user's location in a page hierarchy. Renders semantic `<nav aria-label="breadcrumb">` with an ordered list; the active (current) item is plain text with `aria-current="page"`, all others are links. Throws if `items` is empty.
 
-**See:** [Breadcrumb README](../components/Breadcrumb/README.md)
-
-```html
-<Breadcrumb>
-  <a href="/">Home</a>
-  <a href="/products">Products</a>
-  <span>Details</span>
-</Breadcrumb>
+```javascript
+const breadcrumb = Breadcrumb({
+  items: [
+    { label: 'Home', href: '/' },
+    { label: 'Products', href: '/products' },
+    { label: 'Electronics', active: true }
+  ],
+  separator: '→' // optional, default '/'
+});
 ```
+
+**Props:**
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `items` | Array | required (non-empty) | `{label, href, active}`; `href` ignored when `active: true` |
+| `separator` | string | `'/'` | Separator between items (e.g. `'>'`, `'→'`) |
+| `className` | string | `''` | Additional CSS classes |
 
 ---
 
@@ -533,9 +831,7 @@ Side drawer for navigation (Material Design 3).
 ---
 
 #### **Sidebar** 🔧 Advanced
-Custom sidebar with collapsible sections.
-
-**See:** [Sidebar README](../components/Sidebar/README.md)
+Custom sidebar with collapsible sections. Documented above under [Layout Components → Advanced Layout](#advanced-layout).
 
 ---
 
@@ -558,27 +854,68 @@ Loading indicator.
 ---
 
 #### **ProgressBar** 🔧 Advanced
-Progress bar with value indication.
+Progress bar with determinate and indeterminate modes, optional label and percentage display, and striped/animated styles. Value is clamped to 0-100. Uses ARIA `progressbar` role with `aria-valuenow`/`min`/`max`.
 
-**See:** [ProgressBar README](../components/ProgressBar/README.md)
+```javascript
+const progress = ProgressBar({
+  value: 0,
+  label: 'Uploading...',
+  variant: 'primary'
+});
+container.appendChild(progress);
+progress.setValue(65); // update as the upload proceeds
 
-```html
-<ProgressBar
-  value="65"
-  label="Upload Progress"
-/>
+// Indeterminate loading state
+ProgressBar({ indeterminate: true, label: 'Loading data...' });
 ```
+
+**Props:**
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | number | `0` | Progress percentage (0-100) |
+| `variant` | string | `'primary'` | primary, success, danger, warning, info |
+| `striped` | boolean | `false` | Striped pattern |
+| `animated` | boolean | `true` | Animate the striped pattern (with `striped`) |
+| `indeterminate` | boolean | `false` | Indeterminate (unknown duration) mode |
+| `label` | string | `''` | Label text above the bar |
+| `showValue` | boolean | `true` | Display percentage value |
+| `height` | string | `'1.5rem'` | CSS height |
+| `className` | string | `''` | Additional CSS classes |
+
+**Methods:** `setValue(newValue)`, `getValue()`.
 
 ---
 
 #### **Stepper** 🔧 Advanced
-Multi-step process indicator.
+Multi-step process indicator (wizard) with horizontal and vertical orientations. Steps show a numbered circle (checkmark once completed); step `content` HTML is sanitized before rendering. With `editable: true`, users can click completed steps to go back.
 
-**Key Features:**
-- Linear and non-linear modes
-- Step navigation
-- Validation per step
-- Icon/number display
+```javascript
+const stepper = Stepper({
+  steps: [
+    { title: 'Personal Info', content: '<p>Step 1 content</p>' },
+    { title: 'Address', content: '<p>Step 2 content</p>' },
+    { title: 'Review', content: '<p>Step 3 content</p>' }
+  ],
+  editable: true,
+  onStepChange: ({ step, title, isCompleted }) => console.log(step, title)
+});
+nextBtn.onclick = () => { if (!stepper.isLastStep()) stepper.nextStep(); };
+```
+
+**Props:**
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `steps` | Array | `[]` | `{title, content}` — `content` is sanitized HTML |
+| `currentStep` | number | `0` | Initially active step (0-indexed) |
+| `orientation` | string | `'horizontal'` | horizontal or vertical |
+| `editable` | boolean | `false` | Allow clicking completed steps to navigate back |
+| `onStepChange` | Function | `null` | Receives `{ step, title, isCompleted }` |
+| `variant` | string | `'default'` | Style variant |
+| `className` | string | `''` | Additional CSS classes |
+
+**Methods:** `getStep()`, `setStep(i)`, `nextStep()`, `prevStep()`, `isFirstStep()`, `isLastStep()`, `getTotalSteps()`.
 
 ---
 
@@ -631,16 +968,60 @@ Dialog box for focused tasks or confirmations.
 ### Error States
 
 #### **ErrorBoundary** 🔧 Advanced
-Component error boundary catching and displaying errors.
+Catches JavaScript errors in wrapped child components and displays a fallback UI instead of crashing the app. Optionally reports errors to the error-tracking utility. `children` is required (throws otherwise). The default fallback shows a title, message, and an expandable error-details section.
 
-**See:** [ErrorBoundary README](../components/ErrorBoundary/README.md)
+```javascript
+const boundary = ErrorBoundary({
+  children: myComponent,
+  fallback: (error, errorInfo) => `
+    <div class="error">
+      <h2>Something went wrong</h2>
+      <p>${error.message}</p>
+    </div>`,
+  onError: (error, errorInfo) => console.error('Caught:', error, errorInfo)
+});
+```
+
+**Props:**
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | HTMLElement\|Array | required | Child element(s) to wrap |
+| `fallback` | Function | built-in | `(error, errorInfo) => htmlString` fallback UI |
+| `onError` | Function | `null` | Called with `(error, errorInfo)` when an error is caught |
+| `trackErrors` | boolean | `true` | Send caught errors to error tracking |
+| `componentName` | string | `'ErrorBoundary'` | Name used in error context |
+
+**Methods:** `resetError()` (clear error state and re-render children), `getError()` (returns the caught error and info).
 
 ---
 
 #### **ErrorState** 🔧 Advanced
-Dedicated error display component.
+Full error display with icon, title, message, retry action, and an optional expandable technical-details section (accepts an `Error`, string, or plain object). Rendered with `role="alert"`.
 
-**See:** [ErrorState README](../components/ErrorState/README.md)
+```javascript
+const errorView = ErrorState({
+  title: 'Failed to load data',
+  message: 'Check your connection and try again.',
+  error: new Error('Network timeout'), // shown in a Show/Hide Details toggle
+  showDetails: true,
+  actionLabel: 'Retry',
+  onAction: () => reloadData()
+});
+```
+
+**Props:**
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `icon` | string | `'exclamation-triangle'` | Bootstrap icon name (no `'bi-'` prefix) |
+| `title` | string | `'Something went wrong'` | Error title |
+| `message` | string | generic retry hint | Descriptive message |
+| `error` | Error\|string\|Object | `null` | Technical details (objects are JSON-stringified) |
+| `showDetails` | boolean | `false` | Render the Show/Hide Details toggle (requires `error`) |
+| `actionLabel` | string | `'Try Again'` | Action button label (empty string hides the button) |
+| `onAction` | Function | `null` | Action button click handler |
+| `className` | string | `''` | Additional CSS classes |
 
 ---
 
@@ -741,9 +1122,9 @@ export const MyComponent = ({ title, content }) => {
 | Radio | ⭐ Stable | ✅ API.md | ✅ | ✅ | ✅ |
 | Switch | ⭐ Stable | ✅ API.md | ✅ | ✅ | ✅ M3 |
 | Slider | ⭐ Stable | ✅ API.md | ✅ | ✅ | ✅ |
-| FileUpload | 🔧 Advanced | ✅ README | ✅ | ✅ | ✅ |
-| Autocomplete | 🔧 Advanced | ✅ README | ✅ | ✅ | ✅ |
-| DatePicker | 🔧 Advanced | ✅ README | ✅ | ✅ | ✅ |
+| FileUpload | 🔧 Advanced | ✅ This page | ✅ | ✅ | ✅ |
+| Autocomplete | 🔧 Advanced | ✅ This page | ✅ | ✅ | ✅ |
+| DatePicker | 🔧 Advanced | ✅ This page | ✅ | ✅ | ✅ |
 | Search | ⭐ Stable | ✅ API.md | ✅ | ✅ | ✅ |
 | FormGroup | ⭐ Stable | ✅ API.md | ✅ | ✅ | ✅ |
 | Button | ⭐ Stable | ✅ API.md | ✅ | ✅ | ✅ M3 |
@@ -757,29 +1138,29 @@ export const MyComponent = ({ title, content }) => {
 | TopAppBar | ⭐ Stable | ✅ API.md | ✅ | ✅ | ✅ M3 |
 | NavigationBar | ⭐ Stable | ✅ API.md | ✅ | ✅ | ✅ M3 |
 | NavigationDrawer | ⭐ Stable | ✅ API.md | ✅ | ✅ | ✅ M3 |
-| Sidebar | 🔧 Advanced | ✅ README | ✅ | ✅ | ✅ |
-| DataTable | 🔧 Advanced | ✅ README | ✅ | ✅ | ✅ |
+| Sidebar | 🔧 Advanced | ✅ This page | ✅ | ✅ | ✅ |
+| DataTable | 🔧 Advanced | ✅ This page | ✅ | ✅ | ✅ |
 | List | ⭐ Stable | ✅ API.md | ✅ | ✅ | ✅ M3 |
-| VirtualList | 🔧 Advanced | ✅ README | ✅ | ✅ | N/A |
+| VirtualList | 🔧 Advanced | ✅ This page | ✅ | ✅ | N/A |
 | Pagination | ⭐ Stable | ✅ API.md | ✅ | ✅ | ✅ |
-| Breadcrumb | 🔧 Advanced | ✅ README | ✅ | ✅ | ✅ |
+| Breadcrumb | 🔧 Advanced | ✅ This page | ✅ | ✅ | ✅ |
 | Toast | ⭐ Stable | ✅ API.md | ✅ | ✅ | ✅ |
 | Modal | ⭐ Stable | ✅ API.md | ✅ | ✅ | ✅ |
 | Spinner | ⭐ Stable | ✅ API.md | ✅ | ✅ | ✅ |
-| ProgressBar | 🔧 Advanced | ✅ README | ✅ | ✅ | ✅ |
-| Stepper | 🔧 Advanced | ✅ README | ✅ | ✅ | ✅ |
+| ProgressBar | 🔧 Advanced | ✅ This page | ✅ | ✅ | ✅ |
+| Stepper | 🔧 Advanced | ✅ This page | ✅ | ✅ | ✅ |
 | Accordion | ⭐ Stable | ✅ API.md | ✅ | ✅ | ✅ |
 | Tabs | ⭐ Stable | ✅ API.md | ✅ | ✅ | ✅ |
 | Chips | ⭐ Stable | ✅ API.md | ✅ | ✅ | ✅ M3 |
 | Icon | ⭐ Stable | ✅ API.md | ✅ | ✅ | ✅ |
-| Dropdown | 🔧 Advanced | ✅ README | ✅ | ✅ | ✅ |
-| Tooltip | 🔧 Advanced | ✅ README | ✅ | ✅ | ✅ |
+| Dropdown | 🔧 Advanced | ✅ This page | ✅ | ✅ | ✅ |
+| Tooltip | 🔧 Advanced | ✅ This page | ✅ | ✅ | ✅ |
 | SegmentedButton | ⭐ Stable | ✅ API.md | ✅ | ✅ | ✅ M3 |
-| StatCard | 🔧 Advanced | ✅ README | ✅ | ✅ | ✅ |
-| EmptyState | 🔧 Advanced | ✅ README | ✅ | ✅ | ✅ |
-| ErrorState | 🔧 Advanced | ✅ README | ✅ | ✅ | ✅ |
-| ErrorBoundary | 🔧 Advanced | ✅ README | ✅ | ✅ | ✅ |
-| Skeleton | 🔧 Advanced | ✅ README | ✅ | ✅ | ✅ |
+| StatCard | 🔧 Advanced | ✅ This page | ✅ | ✅ | ✅ |
+| EmptyState | 🔧 Advanced | ✅ This page | ✅ | ✅ | ✅ |
+| ErrorState | 🔧 Advanced | ✅ This page | ✅ | ✅ | ✅ |
+| ErrorBoundary | 🔧 Advanced | ✅ This page | ✅ | ✅ | ✅ |
+| Skeleton | 🔧 Advanced | ✅ This page | ✅ | ✅ | ✅ |
 
 ---
 
