@@ -1,10 +1,14 @@
 /**
- * ErrorState Component for rnxJS
- * Error display with optional details and retry action
+ * ErrorState Component for rnxJS - CSS Framework Agnostic
+ *
+ * Works with any registered theme (Bootstrap, Tailwind, custom).
+ * Error display with optional details and retry action.
  */
 
 import { createComponent } from '../../utils/createComponent.js';
 import { escapeHtml } from '../../utils/security.js';
+import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
+import { cn } from '../../utils/classNames.js';
 
 /**
  * Create an error state display
@@ -56,10 +60,18 @@ export function ErrorState({
      * Template function
      */
     const template = () => {
+        // Resolve classes from active theme
+        const containerClass = cn(
+            resolveClasses('errorstate'),
+            'error-state text-center py-5',
+            className
+        );
+        const buttonClass = resolvePartClasses('errorstate', 'button') || 'btn btn-primary';
+
         const errorMsg = getErrorMessage();
 
         return `
-            <div class="error-state text-center py-5 ${className}" data-ref="container">
+            <div class="${containerClass}" data-ref="container">
                 <div class="mb-4">
                     <i class="bi bi-${icon} d-block text-danger" style="font-size: 3rem;"></i>
                 </div>
@@ -83,7 +95,7 @@ export function ErrorState({
                 ` : ''}
 
                 ${actionLabel ? `
-                    <button class="btn btn-primary error-state-action" data-ref="actionBtn">
+                    <button class="${buttonClass} error-state-action" data-ref="actionBtn">
                         ${escapeHtml(actionLabel)}
                     </button>
                 ` : ''}
@@ -105,25 +117,33 @@ export function ErrorState({
      * Setup event listeners
      */
     component.useEffect((el) => {
-        // Details toggle
+        // MEMORY LEAK FIX: Store handler references for proper cleanup
         const toggleBtn = el.refs.toggleBtn;
+        let toggleHandler = null;
+
+        // Details toggle
         if (toggleBtn) {
-            toggleBtn.addEventListener('click', () => {
+            toggleHandler = () => {
                 detailsVisible = !detailsVisible;
                 component.setState({ detailsVisible });
-            });
+            };
+            toggleBtn.addEventListener('click', toggleHandler);
         }
 
         // Action button
         if (onAction && el.refs.actionBtn) {
             el.refs.actionBtn.addEventListener('click', onAction);
-            return () => {
-                el.refs.actionBtn.removeEventListener('click', onAction);
-                if (toggleBtn) {
-                    toggleBtn.removeEventListener('click', null);
-                }
-            };
         }
+
+        // MEMORY LEAK FIX: Proper cleanup with stored handler references
+        return () => {
+            if (onAction && el.refs.actionBtn) {
+                el.refs.actionBtn.removeEventListener('click', onAction);
+            }
+            if (toggleBtn && toggleHandler) {
+                toggleBtn.removeEventListener('click', toggleHandler);
+            }
+        };
     });
 
     return component;

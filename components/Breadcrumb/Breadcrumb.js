@@ -1,9 +1,13 @@
 /**
- * Breadcrumb Component for rnxJS
- * Navigation path display with customizable separator
+ * Breadcrumb Component for rnxJS - CSS Framework Agnostic
+ *
+ * Works with any registered theme (Bootstrap, Tailwind, custom).
+ * Navigation path display with customizable separator.
  */
 
 import { createComponent } from '../../utils/createComponent.js';
+import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
+import { cn } from '../../utils/classNames.js';
 import { escapeHtml } from '../../utils/security.js';
 
 /**
@@ -12,18 +16,20 @@ import { escapeHtml } from '../../utils/security.js';
  * @param {Object} options - Configuration options
  * @param {Array} options.items - Breadcrumb items [{label, href, active}]
  * @param {string} options.separator - Separator between items (default: '/')
- * @param {string} options.className - Additional CSS classes
+ * @param {string} options.className - Additional CSS classes for Blazor-style customization
  * @returns {HTMLElement} Breadcrumb component
  *
  * @example
- * const breadcrumb = Breadcrumb({
- *   items: [
- *     { label: 'Home', href: '/' },
- *     { label: 'Products', href: '/products' },
- *     { label: 'Electronics', href: '/products/electronics', active: true }
- *   ],
- *   separator: '>'
- * });
+ * // Basic usage
+ * <Breadcrumb items={[
+ *   { label: 'Home', href: '/' },
+ *   { label: 'Products', href: '/products' },
+ *   { label: 'Electronics', active: true }
+ * ]} />
+ *
+ * @example
+ * // Custom separator
+ * <Breadcrumb items={items} separator=">" />
  */
 export function Breadcrumb({
     items = [],
@@ -35,28 +41,39 @@ export function Breadcrumb({
         throw new Error('Breadcrumb: items must be a non-empty array');
     }
 
+    // Resolve classes from active theme
+    const breadcrumbClass = cn(
+        resolveClasses('breadcrumb'),
+        'mb-0',
+        className
+    );
+
+    const itemClass = resolvePartClasses('breadcrumb', 'item');
+    const activeClass = resolvePartClasses('breadcrumb', 'active');
+    const separatorClass = resolvePartClasses('breadcrumb', 'separator');
+
     /**
      * Template function
      */
     const template = () => {
         return `
             <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0 ${className}">
+                <ol class="${breadcrumbClass}">
                     ${items.map((item, index) => `
-                        <li class="breadcrumb-item ${item.active ? 'active' : ''}">
+                        <li class="${item.active ? activeClass : itemClass}">
                             ${item.active
                                 ? `<span>${escapeHtml(item.label)}</span>`
-                                : `<a href="${escapeHtml(item.href)}">${escapeHtml(item.label)}</a>`
+                                : `<a href="${escapeHtml(item.href || '#')}">${escapeHtml(item.label)}</a>`
                             }
                         </li>
-                    `).join(`<li class="breadcrumb-separator mx-1">${escapeHtml(separator)}</li>`)}
+                    `).join(`<li class="${separatorClass} mx-1">${escapeHtml(separator)}</li>`)}
                 </ol>
             </nav>
         `;
     };
 
     // Create component
-    const component = createComponent(template);
+    const component = createComponent(template, { items, separator, className });
 
     return component;
 }

@@ -1,6 +1,24 @@
 import { createComponent } from '../../utils/createComponent.js';
 import { escapeHtml } from '../../utils/security.js';
+import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
+import { cn } from '../../utils/classNames.js';
 
+/**
+ * Stepper Component - CSS Framework Agnostic
+ *
+ * Works with any registered theme (Bootstrap, Tailwind, custom).
+ * Multi-step progress indicator with optional navigation.
+ *
+ * @param {Object} props - Component properties
+ * @param {Array} [props.steps=[]] - Step definitions [{title, content}]
+ * @param {number} [props.currentStep=0] - Current active step index
+ * @param {string} [props.orientation='horizontal'] - horizontal or vertical
+ * @param {boolean} [props.editable=false] - Allow clicking completed steps
+ * @param {Function} [props.onStepChange] - Called when step changes
+ * @param {string} [props.variant='default'] - Stepper variant
+ * @param {string} [props.className=''] - Custom classes for Blazor-style customization
+ * @returns {HTMLElement} Stepper element
+ */
 export const Stepper = (props = {}) => {
     const {
         steps = [],
@@ -8,15 +26,23 @@ export const Stepper = (props = {}) => {
         orientation = 'horizontal',
         editable = false,
         onStepChange,
-        variant = 'default'
+        variant = 'default',
+        className = ''
     } = props;
 
     let activeStep = currentStep;
 
     const component = createComponent({
         render() {
+            // Resolve classes from active theme
+            const stepperClass = cn(
+                resolveClasses('stepper', { variant, orientation }),
+                `stepper stepper-${orientation} stepper-${variant}`,
+                className
+            );
+
             const container = document.createElement('div');
-            container.className = `stepper stepper-${orientation} stepper-${variant}`;
+            container.className = stepperClass;
             container.setAttribute('data-ref', 'stepper');
 
             if (orientation === 'horizontal') {
@@ -65,20 +91,26 @@ export const Stepper = (props = {}) => {
         useEffect(component) {
             if (!editable) return;
 
+            // MEMORY LEAK FIX: Store handler references for proper cleanup
             const steps = component.querySelectorAll('.stepper-step');
+            const stepHandlers = [];
+
             steps.forEach(step => {
-                step.addEventListener('click', () => {
+                const clickHandler = () => {
                     const stepIndex = parseInt(step.getAttribute('data-step'));
                     if (stepIndex <= activeStep) {
                         goToStep(stepIndex);
                     }
-                });
+                };
+                step.addEventListener('click', clickHandler);
                 step.style.cursor = 'pointer';
+                stepHandlers.push({ element: step, handler: clickHandler });
             });
 
+            // MEMORY LEAK FIX: Proper cleanup with stored handler references
             return () => {
-                steps.forEach(step => {
-                    step.removeEventListener('click', null);
+                stepHandlers.forEach(({ element, handler }) => {
+                    element.removeEventListener('click', handler);
                 });
             };
         }

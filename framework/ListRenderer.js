@@ -46,6 +46,9 @@ export class ListRenderer {
     // Map of key -> { element, item, index }
     this.renderedMap = new Map();
     this.renderedOrder = []; // Keys in current order
+
+    // MEMORY LEAK FIX: Store unsubscribe function for cleanup
+    this._unsubscribe = null;
   }
 
   /**
@@ -290,6 +293,13 @@ export class ListRenderer {
    */
   destroy() {
     this.clear();
+
+    // MEMORY LEAK FIX: Unsubscribe from state changes
+    if (this._unsubscribe) {
+      this._unsubscribe();
+      this._unsubscribe = null;
+    }
+
     // Note: Don't remove placeholder as it's needed to mark position
   }
 }

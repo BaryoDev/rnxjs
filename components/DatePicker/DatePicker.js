@@ -1,11 +1,15 @@
 /**
- * DatePicker Component for rnxJS
- * Calendar-based date selection with mobile fallback
+ * DatePicker Component for rnxJS - CSS Framework Agnostic
+ *
+ * Works with any registered theme (Bootstrap, Tailwind, custom).
+ * Calendar-based date selection with mobile fallback.
  */
 
 import { createComponent } from '../../utils/createComponent.js';
 import { Input } from '../Input/Input.js';
 import { escapeHtml } from '../../utils/security.js';
+import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
+import { cn } from '../../utils/classNames.js';
 
 /**
  * Create a date picker with calendar popup
@@ -168,8 +172,12 @@ export function DatePicker({
      * Template function
      */
     const template = () => {
+        // Resolve classes from active theme
+        const wrapperClass = cn(resolveClasses('datepicker'), 'datepicker-wrapper', className);
+        const inputClass = resolvePartClasses('datepicker', 'input') || 'form-control datepicker-input';
+
         return `
-            <div class="datepicker-wrapper ${className}" data-ref="wrapper">
+            <div class="${wrapperClass}" data-ref="wrapper">
                 <div class="mb-2">
                     <label class="form-label">${escapeHtml(label)}</label>
                     <div class="input-group">

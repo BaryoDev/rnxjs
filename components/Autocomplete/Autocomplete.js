@@ -1,10 +1,14 @@
 /**
- * Autocomplete Component for rnxJS
- * Search-as-you-type with async support and keyboard navigation
+ * Autocomplete Component for rnxJS - CSS Framework Agnostic
+ *
+ * Works with any registered theme (Bootstrap, Tailwind, custom).
+ * Search-as-you-type with async support and keyboard navigation.
  */
 
 import { createComponent } from '../../utils/createComponent.js';
 import { escapeHtml } from '../../utils/security.js';
+import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
+import { cn } from '../../utils/classNames.js';
 
 /**
  * Create an autocomplete input with dropdown suggestions
@@ -192,8 +196,15 @@ export function Autocomplete({
      * Template function
      */
     const template = () => {
+        // Resolve classes from active theme
+        const wrapperClass = cn(resolveClasses('autocomplete'), 'autocomplete-wrapper', className);
+        const inputClass = resolvePartClasses('autocomplete', 'input') || 'form-control autocomplete-input';
+        const dropdownClass = resolvePartClasses('autocomplete', 'dropdown') || 'autocomplete-dropdown card shadow-sm';
+        const itemClass = resolvePartClasses('autocomplete', 'item') || 'list-group-item autocomplete-item';
+        const tagClass = resolvePartClasses('autocomplete', 'tag') || 'badge bg-primary me-2 mr-2';
+
         return `
-            <div class="autocomplete-wrapper ${className}" data-ref="wrapper">
+            <div class="${wrapperClass}" data-ref="wrapper">
                 ${label ? `<label class="form-label">${escapeHtml(label)}</label>` : ''}
                 <div class="position-relative">
                     <input

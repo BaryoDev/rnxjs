@@ -1,10 +1,14 @@
 /**
- * DataTable Component for rnxJS
- * Sortable, filterable, paginated data display
+ * DataTable Component for rnxJS - CSS Framework Agnostic
+ *
+ * Works with any registered theme (Bootstrap, Tailwind, custom).
+ * Sortable, filterable, paginated data display.
  */
 
 import { createComponent } from '../../utils/createComponent.js';
 import { escapeHtml } from '../../utils/security.js';
+import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
+import { cn } from '../../utils/classNames.js';
 
 /**
  * Create a data table with sorting, filtering, and pagination
@@ -315,11 +319,20 @@ export function DataTable({
      * Template function
      */
     const template = () => {
+        // Resolve classes from active theme
+        const containerClass = cn(
+            resolveClasses('datatable'),
+            'datatable-container',
+            className
+        );
+        const tableWrapperClass = resolvePartClasses('datatable', 'wrapper') || 'table-responsive';
+        const tableClass = resolvePartClasses('datatable', 'table') || 'table table-hover table-sm datatable';
+
         return `
-            <div class="datatable-container ${className}">
+            <div class="${containerClass}">
                 ${renderFilterBar()}
-                <div class="table-responsive">
-                    <table class="table table-hover table-sm datatable">
+                <div class="${tableWrapperClass}">
+                    <table class="${tableClass}">
                         ${renderHeader()}
                         ${renderBody()}
                     </table>

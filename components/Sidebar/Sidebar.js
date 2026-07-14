@@ -1,6 +1,35 @@
 import { createComponent } from '../../utils/createComponent.js';
+import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
+import { cn } from '../../utils/classNames.js';
 import { escapeHtml } from '../../utils/security.js';
 
+/**
+ * Sidebar Component - CSS Framework Agnostic
+ *
+ * Works with any registered theme (Bootstrap, Tailwind, custom).
+ * Collapsible sidebar navigation with nested menu support.
+ *
+ * @param {Object} props - Component properties
+ * @param {Array} [props.items=[]] - Menu items [{label, icon, href, id, active, children}]
+ * @param {boolean} [props.defaultOpen=true] - Initially open state
+ * @param {string} [props.variant='default'] - Sidebar variant
+ * @param {string} [props.width='250px'] - Expanded width
+ * @param {string} [props.collapsedWidth='60px'] - Collapsed width
+ * @param {boolean} [props.darkMode=false] - Enable dark mode styling
+ * @param {Function} [props.onItemClick] - Called when item is clicked
+ * @param {string|null} [props.activeItem=null] - Currently active item ID
+ * @param {string} [props.className=''] - Custom classes for Blazor-style customization
+ * @returns {HTMLElement} Sidebar element
+ *
+ * @example
+ * <Sidebar
+ *   items={[
+ *     { label: 'Dashboard', icon: '📊', href: '/dashboard', id: 'dash' },
+ *     { label: 'Settings', icon: '⚙️', href: '/settings', id: 'settings' }
+ *   ]}
+ *   onItemClick={(item) => console.log(item.id)}
+ * />
+ */
 export const Sidebar = (props = {}) => {
     const {
         items = [],
@@ -10,7 +39,8 @@ export const Sidebar = (props = {}) => {
         collapsedWidth = '60px',
         darkMode = false,
         onItemClick,
-        activeItem = null
+        activeItem = null,
+        className = ''
     } = props;
 
     let isOpen = defaultOpen;
@@ -18,20 +48,40 @@ export const Sidebar = (props = {}) => {
 
     const component = createComponent({
         render() {
+            // Resolve classes from active theme
+            const sidebarClass = cn(
+                resolveClasses('sidebar', { variant, darkMode }),
+                isOpen ? 'sidebar-open' : 'sidebar-collapsed',
+                className
+            );
+            const headerClass = resolvePartClasses('sidebar', 'header');
+            const brandClass = resolvePartClasses('sidebar', 'brand');
+            const toggleClass = resolvePartClasses('sidebar', 'toggle');
+            const navClass = resolvePartClasses('sidebar', 'nav');
+            const menuClass = resolvePartClasses('sidebar', 'menu');
+            const itemClass = resolvePartClasses('sidebar', 'item');
+            const itemBtnClass = resolvePartClasses('sidebar', 'itemBtn');
+            const iconClass = resolvePartClasses('sidebar', 'icon');
+            const itemTextClass = resolvePartClasses('sidebar', 'itemText');
+            const parentClass = resolvePartClasses('sidebar', 'parent');
+            const submenuClass = resolvePartClasses('sidebar', 'submenu');
+            const subitemClass = resolvePartClasses('sidebar', 'subitem');
+            const arrowClass = resolvePartClasses('sidebar', 'arrow');
+
             const sidebar = document.createElement('div');
-            sidebar.className = `sidebar sidebar-${variant} ${isOpen ? 'sidebar-open' : 'sidebar-collapsed'} ${darkMode ? 'sidebar-dark' : ''}`;
+            sidebar.className = sidebarClass;
             sidebar.setAttribute('data-ref', 'sidebar');
             sidebar.style.width = isOpen ? width : collapsedWidth;
             sidebar.style.transition = 'width 0.3s ease';
 
             // Header with toggle button
             const header = document.createElement('div');
-            header.className = 'sidebar-header';
+            header.className = headerClass || 'sidebar-header';
             header.innerHTML = `
-                <div class="sidebar-brand">
+                <div class="${brandClass || 'sidebar-brand'}">
                     <span class="sidebar-brand-text" style="display: ${isOpen ? 'inline' : 'none'}; transition: display 0.3s ease;">Menu</span>
                 </div>
-                <button class="sidebar-toggle" aria-label="Toggle sidebar">
+                <button class="${toggleClass || 'sidebar-toggle'}" aria-label="Toggle sidebar">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="3" y1="6" x2="21" y2="6"></line>
                         <line x1="3" y1="12" x2="21" y2="12"></line>
@@ -42,28 +92,28 @@ export const Sidebar = (props = {}) => {
 
             // Navigation list
             const nav = document.createElement('nav');
-            nav.className = 'sidebar-nav';
+            nav.className = navClass || 'sidebar-nav';
 
             const list = document.createElement('ul');
-            list.className = 'sidebar-menu';
+            list.className = menuClass || 'sidebar-menu';
 
             items.forEach((item, index) => {
                 const li = document.createElement('li');
-                li.className = 'sidebar-item';
+                li.className = itemClass || 'sidebar-item';
                 if (item.active || item.id === currentActiveItem) {
                     li.classList.add('active');
                 }
 
                 if (item.children && item.children.length > 0) {
                     // Parent item with submenu
-                    li.classList.add('sidebar-parent');
+                    li.classList.add(parentClass || 'sidebar-parent');
                     const toggle = document.createElement('div');
                     toggle.className = 'sidebar-parent-toggle';
                     toggle.innerHTML = `
-                        <button class="sidebar-item-btn" aria-expanded="false">
-                            ${item.icon ? `<span class="sidebar-icon">${escapeHtml(item.icon)}</span>` : ''}
-                            <span class="sidebar-item-text" style="display: ${isOpen ? 'inline' : 'none'}; transition: display 0.3s ease;">${escapeHtml(item.label)}</span>
-                            <span class="sidebar-submenu-arrow" style="display: ${isOpen ? 'inline' : 'none'}; transition: display 0.3s ease;">
+                        <button class="${itemBtnClass || 'sidebar-item-btn'}" aria-expanded="false">
+                            ${item.icon ? `<span class="${iconClass || 'sidebar-icon'}">${escapeHtml(item.icon)}</span>` : ''}
+                            <span class="${itemTextClass || 'sidebar-item-text'}" style="display: ${isOpen ? 'inline' : 'none'}; transition: display 0.3s ease;">${escapeHtml(item.label)}</span>
+                            <span class="${arrowClass || 'sidebar-submenu-arrow'}" style="display: ${isOpen ? 'inline' : 'none'}; transition: display 0.3s ease;">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <polyline points="6 9 12 15 18 9"></polyline>
                                 </svg>
@@ -73,20 +123,20 @@ export const Sidebar = (props = {}) => {
 
                     // Submenu
                     const submenu = document.createElement('ul');
-                    submenu.className = 'sidebar-submenu';
+                    submenu.className = submenuClass || 'sidebar-submenu';
                     submenu.style.display = 'none';
                     submenu.style.maxHeight = 'none';
 
                     item.children.forEach(child => {
                         const subli = document.createElement('li');
-                        subli.className = 'sidebar-subitem';
+                        subli.className = subitemClass || 'sidebar-subitem';
                         if (child.active || child.id === currentActiveItem) {
                             subli.classList.add('active');
                         }
                         subli.innerHTML = `
                             <a href="${escapeHtml(child.href || '#')}" class="sidebar-subitem-link" data-item-id="${escapeHtml(child.id || '')}">
-                                ${child.icon ? `<span class="sidebar-icon">${escapeHtml(child.icon)}</span>` : ''}
-                                <span class="sidebar-item-text" style="display: ${isOpen ? 'inline' : 'none'}; transition: display 0.3s ease;">${escapeHtml(child.label)}</span>
+                                ${child.icon ? `<span class="${iconClass || 'sidebar-icon'}">${escapeHtml(child.icon)}</span>` : ''}
+                                <span class="${itemTextClass || 'sidebar-item-text'}" style="display: ${isOpen ? 'inline' : 'none'}; transition: display 0.3s ease;">${escapeHtml(child.label)}</span>
                             </a>
                         `;
                         submenu.appendChild(subli);
@@ -97,9 +147,9 @@ export const Sidebar = (props = {}) => {
                 } else {
                     // Regular item
                     li.innerHTML = `
-                        <a href="${escapeHtml(item.href || '#')}" class="sidebar-item-btn" data-item-id="${escapeHtml(item.id || '')}">
-                            ${item.icon ? `<span class="sidebar-icon">${escapeHtml(item.icon)}</span>` : ''}
-                            <span class="sidebar-item-text" style="display: ${isOpen ? 'inline' : 'none'}; transition: display 0.3s ease;">${escapeHtml(item.label)}</span>
+                        <a href="${escapeHtml(item.href || '#')}" class="${itemBtnClass || 'sidebar-item-btn'}" data-item-id="${escapeHtml(item.id || '')}">
+                            ${item.icon ? `<span class="${iconClass || 'sidebar-icon'}">${escapeHtml(item.icon)}</span>` : ''}
+                            <span class="${itemTextClass || 'sidebar-item-text'}" style="display: ${isOpen ? 'inline' : 'none'}; transition: display 0.3s ease;">${escapeHtml(item.label)}</span>
                         </a>
                     `;
                 }
@@ -119,9 +169,15 @@ export const Sidebar = (props = {}) => {
             const toggleBtn = component.querySelector('.sidebar-toggle');
             const sidebar = component.querySelector('[data-ref="sidebar"]');
 
+            // MEMORY LEAK FIX: Store handler references for proper cleanup
+            const handlers = {
+                toggleClick: null,
+                itemClicks: []
+            };
+
             // Toggle sidebar
             if (toggleBtn) {
-                toggleBtn.addEventListener('click', () => {
+                handlers.toggleClick = () => {
                     isOpen = !isOpen;
                     sidebar.style.width = isOpen ? width : collapsedWidth;
 
@@ -132,13 +188,14 @@ export const Sidebar = (props = {}) => {
 
                     sidebar.classList.toggle('sidebar-open');
                     sidebar.classList.toggle('sidebar-collapsed');
-                });
+                };
+                toggleBtn.addEventListener('click', handlers.toggleClick);
             }
 
             // Handle menu item clicks
             const itemBtns = component.querySelectorAll('.sidebar-item-btn, .sidebar-subitem-link');
             itemBtns.forEach(btn => {
-                btn.addEventListener('click', (e) => {
+                const clickHandler = (e) => {
                     const parentToggle = btn.closest('.sidebar-parent-toggle');
                     if (parentToggle) {
                         e.preventDefault();
@@ -169,16 +226,18 @@ export const Sidebar = (props = {}) => {
                             });
                         }
                     }
-                });
+                };
+                btn.addEventListener('click', clickHandler);
+                handlers.itemClicks.push({ element: btn, handler: clickHandler });
             });
 
+            // MEMORY LEAK FIX: Proper cleanup with stored handler references
             return () => {
-                // Cleanup
-                itemBtns.forEach(btn => {
-                    btn.removeEventListener('click', null);
+                handlers.itemClicks.forEach(({ element, handler }) => {
+                    element.removeEventListener('click', handler);
                 });
-                if (toggleBtn) {
-                    toggleBtn.removeEventListener('click', null);
+                if (toggleBtn && handlers.toggleClick) {
+                    toggleBtn.removeEventListener('click', handlers.toggleClick);
                 }
             };
         }

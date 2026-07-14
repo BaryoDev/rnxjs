@@ -1,10 +1,14 @@
 /**
- * FileUpload Component for rnxJS
- * Drag & drop file upload with preview and validation
+ * FileUpload Component for rnxJS - CSS Framework Agnostic
+ *
+ * Works with any registered theme (Bootstrap, Tailwind, custom).
+ * Drag & drop file upload with preview and validation.
  */
 
 import { createComponent } from '../../utils/createComponent.js';
 import { escapeHtml } from '../../utils/security.js';
+import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
+import { cn } from '../../utils/classNames.js';
 
 /**
  * Create a file upload component with drag & drop support
@@ -140,8 +144,15 @@ export function FileUpload({
      * Template function
      */
     const template = () => {
+        // Resolve classes from active theme
+        const wrapperClass = cn(resolveClasses('fileupload'), 'file-upload-wrapper', className);
+        const zoneClass = cn(
+            resolvePartClasses('fileupload', 'zone') || 'file-upload-zone',
+            isDragOver ? 'drag-over' : ''
+        );
+
         return `
-            <div class="file-upload-wrapper ${className}" data-ref="wrapper">
+            <div class="${wrapperClass}" data-ref="wrapper">
                 ${label ? `<label class="form-label">${escapeHtml(label)}</label>` : ''}
 
                 <div class="file-upload-zone ${isDragOver ? 'drag-over' : ''}" data-ref="dropZone">

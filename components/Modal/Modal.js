@@ -1,8 +1,26 @@
 import { createComponent } from '../../utils/createComponent.js';
 import { bs } from '../../utils/bootstrap.js';
 import { createFocusTrap, announce } from '../../utils/a11y.ts';
+import { sanitizeHtml, escapeHtml } from '../../utils/security.js';
+import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
+import { cn } from '../../utils/classNames.js';
 
-export function Modal({ id = '', title = '', dismissable = true, children = [], footer = '' }) {
+/**
+ * Modal Component - CSS Framework Agnostic
+ *
+ * Works with any registered theme (Bootstrap, Tailwind, custom).
+ * Accessible dialog with focus trap and screen reader support.
+ *
+ * @param {Object} props - Component properties
+ * @param {string} [props.id=''] - Modal ID for targeting
+ * @param {string} [props.title=''] - Modal title
+ * @param {boolean} [props.dismissable=true] - Can be closed
+ * @param {Array} [props.children=[]] - Modal body content
+ * @param {string} [props.footer=''] - Footer content
+ * @param {string} [props.className=''] - Custom classes for Blazor-style customization
+ * @returns {HTMLElement} Modal element
+ */
+export function Modal({ id = '', title = '', dismissable = true, children = [], footer = '', className = '' }) {
   // Extract footer from children if not provided as prop
   let mainContent = children;
   let footerContent = footer;
@@ -17,8 +35,8 @@ export function Modal({ id = '', title = '', dismissable = true, children = [], 
 
     if (footerSlotIndex !== -1) {
       const footerSlotNode = children[footerSlotIndex];
-      // Use innerHTML if present, or just the content if it's a wrapper
-      footerContent = footerSlotNode.innerHTML;
+      // SECURITY FIX: Sanitize innerHTML to prevent XSS attacks
+      footerContent = sanitizeHtml(footerSlotNode.innerHTML);
 
       // Remove valid footer slot from mainContent
       // crucial: filter using the exact index found
@@ -26,22 +44,32 @@ export function Modal({ id = '', title = '', dismissable = true, children = [], 
     }
   }
 
+  // Resolve classes from active theme
+  const modalClass = cn(resolveClasses('modal'), 'modal fade', className);
+  const dialogClass = resolvePartClasses('modal', 'dialog') || 'modal-dialog';
+  const contentClass = resolvePartClasses('modal', 'content') || 'modal-content';
+  const headerClass = resolvePartClasses('modal', 'header') || 'modal-header';
+  const titleClass = resolvePartClasses('modal', 'title') || 'modal-title';
+  const closeClass = resolvePartClasses('modal', 'close') || 'btn-close';
+  const bodyClass = resolvePartClasses('modal', 'body') || 'modal-body';
+  const footerClass = resolvePartClasses('modal', 'footer') || 'modal-footer';
+
   const template = () => `
-    <div class="modal fade" id="${id}" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="${id}-label" aria-hidden="true" data-ref="modalRoot">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
+    <div class="${modalClass}" id="${escapeHtml(id)}" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="${escapeHtml(id)}-label" aria-hidden="true" data-ref="modalRoot">
+      <div class="${dialogClass}" role="document">
+        <div class="${contentClass}">
 
           ${title ? `
-          <div class="modal-header">
-            <h5 class="modal-title" id="${id}-label">${title}</h5>
-            ${dismissable ? '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>' : ''}
+          <div class="${headerClass}">
+            <h5 class="${titleClass}" id="${escapeHtml(id)}-label">${escapeHtml(title)}</h5>
+            ${dismissable ? `<button type="button" class="${closeClass}" data-bs-dismiss="modal" aria-label="Close"></button>` : ''}
           </div>
           ` : ''}
 
-          <div class="modal-body" data-slot></div>
+          <div class="${bodyClass}" data-slot></div>
 
           ${footerContent ? `
-          <div class="modal-footer">
+          <div class="${footerClass}">
             ${footerContent}
           </div>
           ` : ''}

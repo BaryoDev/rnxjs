@@ -1,9 +1,13 @@
 /**
- * Skeleton Component for rnxJS
- * Loading placeholder with animated shimmer effect
+ * Skeleton Component for rnxJS - CSS Framework Agnostic
+ *
+ * Works with any registered theme (Bootstrap, Tailwind, custom).
+ * Loading placeholder with animated shimmer effect.
  */
 
 import { createComponent } from '../../utils/createComponent.js';
+import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
+import { cn } from '../../utils/classNames.js';
 
 /**
  * Create a skeleton/placeholder for loading states
@@ -52,6 +56,8 @@ export function Skeleton({
      * Template function
      */
     const template = () => {
+        // Resolve classes from active theme
+        const skeletonBaseClass = resolveClasses('skeleton');
         const animClass = `skeleton-${animation}`;
 
         switch (variant) {

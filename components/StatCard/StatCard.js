@@ -1,10 +1,14 @@
 /**
- * StatCard Component for rnxJS
- * Dashboard statistic card with value, trend, and icon
+ * StatCard Component for rnxJS - CSS Framework Agnostic
+ *
+ * Works with any registered theme (Bootstrap, Tailwind, custom).
+ * Dashboard statistic card with value, trend, and icon.
  */
 
 import { createComponent } from '../../utils/createComponent.js';
 import { escapeHtml } from '../../utils/security.js';
+import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
+import { cn } from '../../utils/classNames.js';
 
 /**
  * Create a statistic card for dashboard displays
@@ -49,6 +53,14 @@ export function StatCard({
      * Template function
      */
     const template = () => {
+        // Resolve classes from active theme
+        const cardClass = cn(
+            resolveClasses('statcard', { variant }),
+            `card stat-card bg-${variant}`,
+            onclick ? 'cursor-pointer' : '',
+            className
+        );
+
         const trendColor = change
             ? change.trend === 'up'
                 ? 'text-success'
@@ -66,7 +78,7 @@ export function StatCard({
             : '';
 
         return `
-            <div class="card stat-card bg-${variant} ${onclick ? 'cursor-pointer' : ''} ${className}" data-ref="card">
+            <div class="${cardClass}" data-ref="card">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start">
                         <div class="flex-grow-1">

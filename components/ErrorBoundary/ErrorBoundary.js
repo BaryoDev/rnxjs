@@ -1,10 +1,14 @@
 /**
- * ErrorBoundary Component for rnxJS
- * Catches JavaScript errors in child components and displays fallback UI
+ * ErrorBoundary Component for rnxJS - CSS Framework Agnostic
+ *
+ * Works with any registered theme (Bootstrap, Tailwind, custom).
+ * Catches JavaScript errors in child components and displays fallback UI.
  */
 
 import { createComponent } from '../../utils/createComponent.js';
 import { errorTracking } from '../../utils/errorTracking.ts';
+import { resolveClasses } from '../../utils/ThemeProvider.js';
+import { cn } from '../../utils/classNames.js';
 
 /**
  * Create an error boundary component
