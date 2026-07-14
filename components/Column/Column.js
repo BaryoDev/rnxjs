@@ -32,7 +32,7 @@ export function Column({
   children = '',
   alignSelf = '',
   className = ''
-}) {
+} = {}) {
   // Resolve base column classes from theme
   const columnClass = cn(
     resolveClasses('column', {

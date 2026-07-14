@@ -32,7 +32,7 @@ export function Container({
   size = '',
   children = '',
   className = ''
-}) {
+} = {}) {
   const isFluid = fluid === true || fluid === 'true';
 
   // Resolve classes from active theme

@@ -12,7 +12,8 @@ import { escapeHtml } from '../../utils/security.js';
  * @param {Object} props - Component properties
  * @param {Array} [props.links=[]] - Navigation links [{label, icon, href, active, onclick}]
  * @param {boolean} [props.isOpen=false] - Whether drawer is open
- * @param {Function} [props.onClose] - Called when backdrop is clicked
+ * @param {Function} [props.onClose] - Called when backdrop is clicked or Escape is pressed
+ * @param {string} [props.title='Menu'] - Drawer header title
  * @param {string} [props.className=''] - Custom classes for Blazor-style customization
  * @returns {HTMLElement} NavigationDrawer element
  *
@@ -30,8 +31,9 @@ export function NavigationDrawer({
   links = [],
   isOpen = false,
   onClose,
+  title = 'Menu',
   className = ''
-}) {
+} = {}) {
   // Resolve classes from active theme
   const drawerClass = cn(
     resolveClasses('navigationdrawer'),
@@ -41,32 +43,32 @@ export function NavigationDrawer({
   );
 
   const headerClass = resolvePartClasses('navigationdrawer', 'header');
-  const navClass = resolvePartClasses('navigationdrawer', 'nav');
-  const linkClass = resolvePartClasses('navigationdrawer', 'link');
-  const activeClass = resolvePartClasses('navigationdrawer', 'active');
-  const backdropClass = resolvePartClasses('navigationdrawer', 'backdrop');
+  const titleClass = resolvePartClasses('navigationdrawer', 'title');
+  const bodyClass = resolvePartClasses('navigationdrawer', 'body');
+  const overlayClass = resolvePartClasses('navigationdrawer', 'overlay');
 
   const template = ({ isOpen, links }) => `
     <div>
-       <div class="${drawerClass}" data-ref="drawer">
+       <div class="${drawerClass}" data-ref="drawer" role="dialog" aria-modal="true" aria-label="${escapeHtml(title)}" tabindex="-1"${isOpen ? '' : ' aria-hidden="true"'}>
           <div class="${headerClass || 'p-3 mb-3'}">
-             <h5 class="m-0">Menu</h5>
+             <h5 class="${titleClass || 'm-0'}">${escapeHtml(title)}</h5>
           </div>
-          <div class="${navClass || 'nav flex-column'}">
+          <nav class="${bodyClass || 'nav flex-column'}" aria-label="Drawer">
              ${links.map((link, idx) => `
                <a href="${escapeHtml(link.href || '#')}"
-                  class="${linkClass || 'm3-drawer-link'} ${link.active ? (activeClass || 'active') : ''}"
+                  class="${cn('m3-drawer-link', link.active ? 'active' : '')}"
                   data-index="${idx}"
                   data-ref="link-${idx}"
                   data-rnx-ignore="true"
+                  ${link.active ? 'aria-current="page"' : ''}
                >
-                  ${link.icon ? `<i class="bi bi-${escapeHtml(link.icon)} me-2 mr-2"></i>` : ''}
+                  ${link.icon ? `<i class="bi bi-${escapeHtml(link.icon)}" aria-hidden="true"></i> ` : ''}
                   ${escapeHtml(link.label)}
                </a>
              `).join('')}
-          </div>
+          </nav>
        </div>
-       ${isOpen ? `<div class="${backdropClass || 'modal-backdrop fade show'}" style="z-index: 1040" data-ref="backdrop"></div>` : ''}
+       ${isOpen ? `<div class="${overlayClass || 'modal-backdrop fade show'}"${overlayClass ? '' : ' style="z-index: 1040"'} data-ref="backdrop" aria-hidden="true"></div>` : ''}
     </div>
   `;
 
@@ -81,7 +83,21 @@ export function NavigationDrawer({
         if (onClose) onClose();
       };
       comp.refs.backdrop.addEventListener('click', backdropHandler);
-      handlers.push({ element: comp.refs.backdrop, handler: backdropHandler, event: 'click' });
+      handlers.push({ target: comp.refs.backdrop, handler: backdropHandler, event: 'click' });
+    }
+
+    // Escape-to-close while open
+    if (isOpen && onClose) {
+      const escapeHandler = (e) => {
+        if (e.key === 'Escape') onClose();
+      };
+      document.addEventListener('keydown', escapeHandler);
+      handlers.push({ target: document, handler: escapeHandler, event: 'keydown' });
+    }
+
+    // Move focus into the drawer when opened
+    if (isOpen && comp.refs.drawer && !comp.refs.drawer.contains(document.activeElement)) {
+      comp.refs.drawer.focus();
     }
 
     // Bind link clicks if they have onclick handlers in the data
@@ -93,14 +109,14 @@ export function NavigationDrawer({
           link.onclick(e);
         };
         linkRef.addEventListener('click', linkHandler);
-        handlers.push({ element: linkRef, handler: linkHandler, event: 'click' });
+        handlers.push({ target: linkRef, handler: linkHandler, event: 'click' });
       }
     });
 
     // Cleanup
     return () => {
-      handlers.forEach(({ element, handler, event }) => {
-        element.removeEventListener(event, handler);
+      handlers.forEach(({ target, handler, event }) => {
+        target.removeEventListener(event, handler);
       });
     };
   });

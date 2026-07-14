@@ -9,7 +9,7 @@ import { escapeHtml } from '../../utils/security.js';
  * Works with any registered theme (Bootstrap, Tailwind, custom).
  * Supports Blazor-style class customization via the className prop.
  *
- * @param {Object} props - Component properties
+ * @param {Object} [props={}] - Component properties
  * @param {string} [props.type='border'] - Spinner type (border, grow)
  * @param {string} [props.size='md'] - Spinner size (sm, md, lg)
  * @param {string} [props.variant='primary'] - Color variant for the spinner
@@ -35,7 +35,7 @@ export function Spinner({
   variant = 'primary',
   label = '',
   className = ''
-}) {
+} = {}) {
   // Resolve classes from active theme
   const spinnerClass = cn(
     resolveClasses('spinner', {
@@ -48,7 +48,7 @@ export function Spinner({
   );
 
   const template = () => `
-    <div class="${spinnerClass}" role="status">
+    <div class="${escapeHtml(spinnerClass)}" role="status" aria-label="${escapeHtml(label || 'Loading...')}">
       <span class="visually-hidden sr-only">${escapeHtml(label || 'Loading...')}</span>
     </div>
   `;

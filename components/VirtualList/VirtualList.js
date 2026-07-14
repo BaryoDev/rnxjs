@@ -7,7 +7,7 @@
  */
 
 import { createComponent } from '../../utils/createComponent.js';
-import { escapeHtml } from '../../utils/security.js';
+import { escapeHtml, escapeAttribute } from '../../utils/security.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 
@@ -62,7 +62,7 @@ import { cn } from '../../utils/classNames.js';
  *   })
  * });
  */
-export function VirtualList(options) {
+export function VirtualList(options = {}) {
     const {
         items = [],
         itemHeight = 40,
@@ -78,7 +78,7 @@ export function VirtualList(options) {
 
     // Validate render function
     if (!renderItem && !renderItemSafe) {
-        throw new TypeError('[rnxJS] VirtualList: Either renderItem or renderItemSafe must be provided');
+        throw new TypeError('[rnxJS] VirtualList: renderItem must be a function (or provide renderItemSafe)');
     }
 
     if (renderItem && typeof renderItem !== 'function') {
@@ -93,9 +93,12 @@ export function VirtualList(options) {
         console.warn('[rnxJS] VirtualList: items must be an array');
     }
 
+    // Current items (mutable so state updates and refresh() re-render correctly)
+    let currentItems = Array.isArray(items) ? items : [];
+
     // Calculate dimensions
     const containerHeight = height || `${visibleCount * itemHeight}px`;
-    const totalHeight = items.length * itemHeight;
+    const getTotalHeight = () => currentItems.length * itemHeight;
 
     // Component state
     let scrollTop = 0;
@@ -108,7 +111,7 @@ export function VirtualList(options) {
     const calculateVisibleRange = () => {
         startIndex = Math.max(0, Math.floor(scrollTop / itemHeight) - bufferSize);
         endIndex = Math.min(
-            items.length,
+            currentItems.length,
             Math.ceil((scrollTop + parseInt(containerHeight)) / itemHeight) + bufferSize
         );
     };
@@ -119,9 +122,14 @@ export function VirtualList(options) {
     const renderVisibleItems = () => {
         calculateVisibleRange();
 
+        const itemPartClass = cn(
+            resolvePartClasses('virtuallist', 'item'),
+            'rnx-virtual-list-item'
+        );
+
         const itemsHtml = [];
         for (let i = startIndex; i < endIndex; i++) {
-            const item = items[i];
+            const item = currentItems[i];
             if (!item) continue;
 
             const offsetTop = i * itemHeight;
@@ -149,8 +157,11 @@ export function VirtualList(options) {
 
             itemsHtml.push(`
                 <div
-                    class="rnx-virtual-list-item"
+                    class="${itemPartClass}"
                     data-index="${i}"
+                    role="listitem"
+                    aria-setsize="${currentItems.length}"
+                    aria-posinset="${i + 1}"
                     style="
                         position: absolute;
                         top: ${offsetTop}px;
@@ -177,14 +188,17 @@ export function VirtualList(options) {
             'rnx-virtual-list',
             className
         );
-        const contentClass = resolvePartClasses('virtuallist', 'content') || 'rnx-virtual-list-content';
+        const contentClass = cn(
+            resolvePartClasses('virtuallist', 'container'),
+            'rnx-virtual-list-content'
+        );
 
         return `
             <div
                 class="${containerClass}"
                 data-ref="container"
                 style="
-                    height: ${containerHeight};
+                    height: ${escapeAttribute(containerHeight)};
                     overflow-y: auto;
                     position: relative;
                 "
@@ -192,8 +206,9 @@ export function VirtualList(options) {
                 <div
                     class="${contentClass}"
                     data-ref="content"
+                    role="list"
                     style="
-                        height: ${totalHeight}px;
+                        height: ${getTotalHeight()}px;
                         position: relative;
                     "
                 >
@@ -211,7 +226,7 @@ export function VirtualList(options) {
         endIndex: 0
     });
 
-    // Set up scroll handler
+    // Set up scroll handler (removed with stored reference in cleanup)
     component.useEffect((el) => {
         const container = el.refs.container;
         if (!container) return;
@@ -263,8 +278,9 @@ export function VirtualList(options) {
         component.useEffect(() => {
             const unsubscribe = state.subscribe(itemsPath, () => {
                 // Items changed, re-render
+                currentItems = Array.isArray(state[itemsPath]) ? state[itemsPath] : [];
                 component.setState({
-                    items: state[itemsPath] || []
+                    items: currentItems
                 });
             });
 
@@ -290,7 +306,7 @@ export function VirtualList(options) {
     component.scrollToBottom = () => {
         const container = component.refs.container;
         if (container) {
-            container.scrollTop = totalHeight;
+            container.scrollTop = getTotalHeight();
         }
     };
 
@@ -301,8 +317,9 @@ export function VirtualList(options) {
     });
 
     component.refresh = () => {
+        currentItems = Array.isArray(options.items) ? options.items : [];
         component.setState({
-            items: options.items || []
+            items: currentItems
         });
     };
 

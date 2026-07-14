@@ -1,6 +1,7 @@
 import { createComponent } from '../../utils/createComponent.js';
 import { resolveClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
+import { escapeHtml } from '../../utils/security.js';
 
 /**
  * Button Component - CSS Framework Agnostic
@@ -8,7 +9,7 @@ import { cn } from '../../utils/classNames.js';
  * Works with any registered theme (Bootstrap, Tailwind, custom).
  * Supports Blazor-style class customization via the className prop.
  *
- * @param {Object} props - Component properties
+ * @param {Object} [props={}] - Component properties
  * @param {string} [props.label=''] - Button text label
  * @param {string} [props.variant='filled'] - Button variant (filled, outlined, text, elevated, tonal, primary, secondary, success, danger, warning, info, light, dark)
  * @param {string} [props.size=''] - Button size (sm, md, lg)
@@ -43,7 +44,7 @@ export function Button({
   className = '',
   children,
   ...rest
-}) {
+} = {}) {
   // Resolve classes from active theme
   const btnClass = cn(
     resolveClasses('button', {
@@ -55,23 +56,33 @@ export function Button({
     className // User classes applied last (highest priority)
   );
 
-  const clickAttr = (typeof onclick === 'string') ? `onclick="${onclick}"` : '';
+  const iconClass = cn(resolveClasses('icon'), icon ? `bi bi-${icon}` : '');
 
-  // Create attribute string from rest props
-  const restAttrs = Object.entries(rest).map(([key, value]) => `${key}="${value}"`).join(' ');
+  const clickAttr = (typeof onclick === 'string') ? `onclick="${escapeHtml(onclick)}"` : '';
+
+  // Icon-only buttons need an accessible name
+  const needsAriaLabel = icon && !label && !rest['aria-label'] && !rest['aria-labelledby'];
+  const ariaLabelAttr = needsAriaLabel ? `aria-label="${escapeHtml(icon)}"` : '';
+
+  // Create attribute string from rest props (drop unsafe attribute names)
+  const restAttrs = Object.entries(rest)
+    .filter(([key]) => /^[a-zA-Z][a-zA-Z0-9:_-]*$/.test(key))
+    .map(([key, value]) => `${key}="${escapeHtml(value)}"`)
+    .join(' ');
 
   const template = () => `
     <button
-      class="${btnClass}"
+      class="${escapeHtml(btnClass)}"
       type="button"
       data-ref="btn"
       data-rnx-ignore="true"
       ${disabled ? 'disabled' : ''}
+      ${ariaLabelAttr}
       ${clickAttr}
       ${restAttrs}
     >
-      ${icon ? `<i class="bi bi-${icon} me-2"></i>` : ''}
-      ${label}
+      ${icon ? `<i class="${escapeHtml(iconClass)}" aria-hidden="true"></i>` : ''}
+      ${escapeHtml(label)}
       <span data-slot></span>
     </button>
   `;

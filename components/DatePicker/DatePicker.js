@@ -11,18 +11,34 @@ import { escapeHtml } from '../../utils/security.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 
+let datePickerUid = 0;
+
+const chevronLeftSvg = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="10 3 5 8 10 13"></polyline></svg>';
+const chevronRightSvg = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="6 3 11 8 6 13"></polyline></svg>';
+const calendarSvg = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true" focusable="false"><rect x="1.5" y="2.5" width="13" height="12" rx="1.5"></rect><line x1="1.5" y1="6" x2="14.5" y2="6"></line><line x1="5" y1="1" x2="5" y2="4"></line><line x1="11" y1="1" x2="11" y2="4"></line></svg>';
+
+/**
+ * Resolve just the state classes for a component (without its base classes)
+ */
+const stateClasses = (component, state) => {
+    const base = resolveClasses(component);
+    const withState = resolveClasses(component, { [state]: true });
+    return withState.startsWith(base) ? withState.slice(base.length).trim() : withState;
+};
+
 /**
  * Create a date picker with calendar popup
  *
- * @param {Object} options - Configuration options
- * @param {string} options.label - Input label
- * @param {string} options.value - Initial date value (YYYY-MM-DD format)
- * @param {string} options.format - Date format (default: 'YYYY-MM-DD')
- * @param {string} options.min - Minimum date (YYYY-MM-DD)
- * @param {string} options.max - Maximum date (YYYY-MM-DD)
- * @param {Array} options.disabledDates - Array of disabled dates (YYYY-MM-DD format)
- * @param {Function} options.onchange - Change callback: (date) => {}
- * @param {string} options.className - Additional CSS classes
+ * @param {Object} [options={}] - Configuration options
+ * @param {string} [options.label] - Input label (associated via for/id)
+ * @param {string} [options.value] - Initial date value (YYYY-MM-DD format)
+ * @param {string} [options.format] - Date format (default: 'YYYY-MM-DD')
+ * @param {string} [options.min] - Minimum date (YYYY-MM-DD)
+ * @param {string} [options.max] - Maximum date (YYYY-MM-DD)
+ * @param {Array} [options.disabledDates] - Array of disabled dates (YYYY-MM-DD format)
+ * @param {Function} [options.onchange] - Change callback: (date) => {}
+ * @param {string} [options.id] - Input HTML id attribute (auto-generated if omitted)
+ * @param {string} [options.className] - Additional CSS classes
  * @returns {HTMLElement} DatePicker component
  *
  * @example
@@ -41,8 +57,9 @@ export function DatePicker({
     max = null,
     disabledDates = [],
     onchange,
+    id,
     className = ''
-}) {
+} = {}) {
     // Check if mobile (use native picker)
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
@@ -55,6 +72,7 @@ export function DatePicker({
             min,
             max,
             onchange,
+            id,
             className
         });
     }
@@ -62,6 +80,8 @@ export function DatePicker({
     let isOpen = false;
     let selectedDate = value;
     let currentMonth = new Date();
+
+    const finalId = id || `datepicker-${++datePickerUid}`;
 
     /**
      * Parse date string to Date object
@@ -103,27 +123,34 @@ export function DatePicker({
         const daysInMonth = lastDay.getDate();
         const startingDayOfWeek = firstDay.getDay();
 
+        const headerClass = cn(resolvePartClasses('datepicker', 'header'), 'datepicker-header');
+        const navBtnClass = resolveClasses('button', { variant: 'secondary', size: 'sm' });
+        const dayClass = resolvePartClasses('datepicker', 'day') || resolveClasses('button', { variant: 'light', size: 'sm' });
+        const daySelectedClass = stateClasses('datepicker', 'selected') || resolveClasses('button', { variant: 'primary', size: 'sm' });
+        const dayTodayClass = stateClasses('datepicker', 'today');
+        const todayStr = formatDate(new Date());
+
         let html = `
             <div class="datepicker-calendar">
-                <div class="datepicker-header d-flex justify-content-between align-items-center p-2">
-                    <button class="btn btn-sm btn-outline-secondary datepicker-prev" type="button">
-                        <i class="bi bi-chevron-left"></i>
+                <div class="${headerClass}" style="display: flex; align-items: center; justify-content: space-between;">
+                    <button class="${navBtnClass} datepicker-prev" type="button" aria-label="Previous month">
+                        ${chevronLeftSvg}
                     </button>
-                    <span class="fw-bold">${year} - ${String(month + 1).padStart(2, '0')}</span>
-                    <button class="btn btn-sm btn-outline-secondary datepicker-next" type="button">
-                        <i class="bi bi-chevron-right"></i>
+                    <span class="datepicker-title" aria-live="polite">${year} - ${String(month + 1).padStart(2, '0')}</span>
+                    <button class="${navBtnClass} datepicker-next" type="button" aria-label="Next month">
+                        ${chevronRightSvg}
                     </button>
                 </div>
-                <table class="w-100 mb-0">
+                <table class="datepicker-grid" style="width: 100%; border-collapse: collapse;">
                     <thead>
                         <tr>
-                            <th class="text-center text-muted small">Su</th>
-                            <th class="text-center text-muted small">Mo</th>
-                            <th class="text-center text-muted small">Tu</th>
-                            <th class="text-center text-muted small">We</th>
-                            <th class="text-center text-muted small">Th</th>
-                            <th class="text-center text-muted small">Fr</th>
-                            <th class="text-center text-muted small">Sa</th>
+                            <th class="datepicker-weekday" scope="col"><abbr title="Sunday">Su</abbr></th>
+                            <th class="datepicker-weekday" scope="col"><abbr title="Monday">Mo</abbr></th>
+                            <th class="datepicker-weekday" scope="col"><abbr title="Tuesday">Tu</abbr></th>
+                            <th class="datepicker-weekday" scope="col"><abbr title="Wednesday">We</abbr></th>
+                            <th class="datepicker-weekday" scope="col"><abbr title="Thursday">Th</abbr></th>
+                            <th class="datepicker-weekday" scope="col"><abbr title="Friday">Fr</abbr></th>
+                            <th class="datepicker-weekday" scope="col"><abbr title="Saturday">Sa</abbr></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -139,13 +166,15 @@ export function DatePicker({
                     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                     const disabled = isDisabled(dateStr);
                     const isSelected = dateStr === selectedDate;
+                    const isToday = dateStr === todayStr;
 
                     html += `
-                        <td class="text-center p-1">
+                        <td style="text-align: center; padding: 1px;">
                             <button
                                 type="button"
-                                class="btn btn-sm w-100 datepicker-day ${isSelected ? 'btn-primary' : 'btn-light'} ${disabled ? 'disabled' : ''}"
+                                class="${cn(dayClass, isToday ? dayTodayClass : '', isSelected ? daySelectedClass : '')} datepicker-day ${disabled ? 'disabled' : ''}"
                                 data-date="${dateStr}"
+                                ${isSelected ? 'aria-pressed="true"' : ''}
                                 ${disabled ? 'disabled' : ''}
                             >
                                 ${day}
@@ -174,28 +203,37 @@ export function DatePicker({
     const template = () => {
         // Resolve classes from active theme
         const wrapperClass = cn(resolveClasses('datepicker'), 'datepicker-wrapper', className);
-        const inputClass = resolvePartClasses('datepicker', 'input') || 'form-control datepicker-input';
+        const labelClass = resolvePartClasses('input', 'label');
+        const inputClass = cn(resolvePartClasses('datepicker', 'input'), 'datepicker-input');
+        const calendarClass = cn(resolvePartClasses('datepicker', 'calendar'), 'datepicker-dropdown');
+        const triggerClass = resolveClasses('button', { variant: 'secondary' });
 
         return `
             <div class="${wrapperClass}" data-ref="wrapper">
-                <div class="mb-2">
-                    <label class="form-label">${escapeHtml(label)}</label>
-                    <div class="input-group">
+                <div class="datepicker-field-group">
+                    ${label ? `<label class="${labelClass}" for="${escapeHtml(finalId)}">${escapeHtml(label)}</label>` : ''}
+                    <div class="datepicker-field" style="display: flex; align-items: center; gap: 0.5rem;">
                         <input
                             type="text"
-                            class="form-control datepicker-input"
-                            value="${selectedDate}"
+                            id="${escapeHtml(finalId)}"
+                            class="${inputClass}"
+                            value="${escapeHtml(selectedDate)}"
                             placeholder="YYYY-MM-DD"
                             readonly
+                            aria-haspopup="dialog"
+                            aria-expanded="${isOpen ? 'true' : 'false'}"
                             data-ref="input"
                         />
-                        <button class="btn btn-outline-secondary" type="button" data-ref="triggerBtn">
-                            <i class="bi bi-calendar"></i>
+                        <button class="${triggerClass} datepicker-toggle" type="button"
+                            aria-label="${isOpen ? 'Close calendar' : 'Open calendar'}"
+                            aria-expanded="${isOpen ? 'true' : 'false'}"
+                            data-ref="triggerBtn">
+                            ${calendarSvg}
                         </button>
                     </div>
                 </div>
                 ${isOpen ? `
-                    <div class="datepicker-dropdown card shadow-sm" data-ref="dropdown">
+                    <div class="${calendarClass}" role="dialog" aria-modal="false" aria-label="Choose date" data-ref="dropdown">
                         ${renderCalendar()}
                     </div>
                 ` : ''}
@@ -211,13 +249,19 @@ export function DatePicker({
     });
 
     /**
-     * Setup event listeners
+     * Setup event listeners (all removed again in the returned cleanup)
      */
     component.useEffect((el) => {
+        const cleanups = [];
+        const on = (target, event, handler) => {
+            target.addEventListener(event, handler);
+            cleanups.push(() => target.removeEventListener(event, handler));
+        };
+
         // Toggle dropdown
         const trigger = el.refs.triggerBtn;
         if (trigger) {
-            trigger.addEventListener('click', () => {
+            on(trigger, 'click', () => {
                 isOpen = !isOpen;
                 component.setState({ isOpen });
             });
@@ -226,8 +270,8 @@ export function DatePicker({
         // Date selection
         if (el.refs.dropdown) {
             el.refs.dropdown.querySelectorAll('.datepicker-day:not(:disabled)').forEach((btn) => {
-                btn.addEventListener('click', (e) => {
-                    selectedDate = e.target.dataset.date;
+                on(btn, 'click', () => {
+                    selectedDate = btn.dataset.date;
                     isOpen = false;
                     component.setState({ isOpen, selectedDate });
                     if (onchange) {
@@ -237,34 +281,42 @@ export function DatePicker({
             });
 
             // Month navigation
-            el.refs.dropdown.querySelector('.datepicker-prev')?.addEventListener('click', () => {
-                currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1);
-                component.setState({ currentMonth });
-            });
+            const prevBtn = el.refs.dropdown.querySelector('.datepicker-prev');
+            if (prevBtn) {
+                on(prevBtn, 'click', () => {
+                    currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1);
+                    component.setState({ currentMonth });
+                });
+            }
 
-            el.refs.dropdown.querySelector('.datepicker-next')?.addEventListener('click', () => {
-                currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1);
-                component.setState({ currentMonth });
-            });
+            const nextBtn = el.refs.dropdown.querySelector('.datepicker-next');
+            if (nextBtn) {
+                on(nextBtn, 'click', () => {
+                    currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1);
+                    component.setState({ currentMonth });
+                });
+            }
         }
 
         // Close on outside click
         const handleOutsideClick = (e) => {
-            if (!el.contains(e.target)) {
+            if (isOpen && !el.contains(e.target)) {
                 isOpen = false;
                 component.setState({ isOpen });
             }
         };
+        on(document, 'click', handleOutsideClick);
 
-        if (isOpen) {
-            setTimeout(() => {
-                document.addEventListener('click', handleOutsideClick);
-            }, 0);
+        // Dismiss calendar with Escape
+        const handleKeydown = (e) => {
+            if (e.key === 'Escape' && isOpen) {
+                isOpen = false;
+                component.setState({ isOpen });
+            }
+        };
+        on(document, 'keydown', handleKeydown);
 
-            return () => {
-                document.removeEventListener('click', handleOutsideClick);
-            };
-        }
+        return () => cleanups.forEach(fn => fn());
     });
 
     // Export methods

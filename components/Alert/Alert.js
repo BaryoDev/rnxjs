@@ -1,5 +1,5 @@
 import { createComponent } from '../../utils/createComponent.js';
-import { resolveClasses } from '../../utils/ThemeProvider.js';
+import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 import { escapeHtml } from '../../utils/security.js';
 
@@ -9,7 +9,7 @@ import { escapeHtml } from '../../utils/security.js';
  * Works with any registered theme (Bootstrap, Tailwind, custom).
  * Supports Blazor-style class customization via the className prop.
  *
- * @param {Object} props - Component properties
+ * @param {Object} [props={}] - Component properties
  * @param {string} [props.variant='primary'] - Alert variant (primary, secondary, success, danger, warning, info, light, dark)
  * @param {boolean} [props.dismissible=false] - Dismissible alert with close button
  * @param {string} [props.children=''] - Alert content (children via slot)
@@ -35,7 +35,7 @@ export function Alert({
   children = '',
   className = '',
   id = ''
-}) {
+} = {}) {
   const isDismissible = dismissible === true || dismissible === 'true';
 
   // Resolve classes from active theme
@@ -47,11 +47,25 @@ export function Alert({
     className // User classes applied last (highest priority)
   );
 
+  // Alert has no close part in themes; reuse the closest part (modal close)
+  const closeClass = resolvePartClasses('modal', 'close') || 'btn-close';
+
   const template = () => `
-    <div ${id ? `id="${escapeHtml(id)}"` : ''} class="${alertClass}" role="alert" data-slot>
-      ${isDismissible ? '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" data-rnx-ignore="true"></button>' : ''}
+    <div ${id ? `id="${escapeHtml(id)}"` : ''} class="${escapeHtml(alertClass)}" role="alert" data-slot>
+      ${isDismissible ? `<button type="button" class="${escapeHtml(closeClass)}" data-ref="close" data-bs-dismiss="alert" aria-label="Close" data-rnx-ignore="true"></button>` : ''}
     </div>
   `;
 
-  return createComponent(template, { variant, dismissible, children, className, id });
+  const alert = createComponent(template, { variant, dismissible, children, className, id });
+
+  alert.useEffect((el) => {
+    const closeBtn = el.refs && el.refs.close;
+    if (!closeBtn) return;
+
+    const handler = () => el.remove();
+    closeBtn.addEventListener('click', handler);
+    return () => closeBtn.removeEventListener('click', handler);
+  });
+
+  return alert;
 }

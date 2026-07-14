@@ -37,7 +37,7 @@ export function Card({
   variant = 'outlined',
   children = '',
   className = ''
-}) {
+} = {}) {
   // Resolve classes from active theme
   const cardClass = cn(
     resolveClasses('card', { variant }),

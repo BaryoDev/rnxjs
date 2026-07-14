@@ -7,7 +7,7 @@ import { cn } from '../../utils/classNames.js';
  * Dropdown Component - CSS Framework Agnostic
  *
  * Works with any registered theme (Bootstrap, Tailwind, custom).
- * Accessible dropdown menu with keyboard navigation.
+ * Accessible dropdown menu (WAI-ARIA menu pattern) with keyboard navigation.
  *
  * @param {Object} props - Component properties
  * @param {string} [props.label='Menu'] - Trigger button label
@@ -36,150 +36,130 @@ export const Dropdown = (props = {}) => {
 
     let isOpen = false;
 
-    const component = createComponent({
-        render() {
-            // Resolve classes from active theme
-            const dropdownClass = cn(
-                resolveClasses('dropdown', { variant, disabled }),
-                className
-            );
-            const triggerClass = resolvePartClasses('dropdown', 'trigger') || 'dropdown-trigger';
-            const iconWrapperClass = resolvePartClasses('dropdown', 'icon') || 'dropdown-icon';
-            const labelClass = resolvePartClasses('dropdown', 'label') || 'dropdown-label';
-            const arrowClass = resolvePartClasses('dropdown', 'arrow') || 'dropdown-arrow';
-            const menuClass = cn(
-                resolvePartClasses('dropdown', 'menu') || 'dropdown-menu',
-                `dropdown-${position}`
-            );
-            const listClass = resolvePartClasses('dropdown', 'list') || 'dropdown-list';
-            const itemClass = resolvePartClasses('dropdown', 'item') || 'dropdown-item';
-            const dividerClass = resolvePartClasses('dropdown', 'divider') || 'dropdown-divider';
-            const linkClass = resolvePartClasses('dropdown', 'link') || 'dropdown-item-link';
-            const itemIconClass = resolvePartClasses('dropdown', 'itemIcon') || 'dropdown-item-icon';
-            const itemTextClass = resolvePartClasses('dropdown', 'itemText') || 'dropdown-item-text';
-            const badgeClass = resolvePartClasses('dropdown', 'badge') || 'dropdown-item-badge';
+    // Resolve classes from active theme
+    const dropdownClass = cn(
+        resolveClasses('dropdown', { disabled }),
+        className
+    );
+    const triggerClass = cn(resolvePartClasses('dropdown', 'toggle'), 'dropdown-trigger');
+    const iconWrapperClass = resolvePartClasses('dropdown', 'icon') || 'dropdown-icon';
+    const labelClass = resolvePartClasses('dropdown', 'label') || 'dropdown-label';
+    const arrowClass = resolvePartClasses('dropdown', 'arrow') || 'dropdown-arrow';
+    const menuClass = cn(
+        resolvePartClasses('dropdown', 'menu'),
+        'dropdown-menu',
+        `dropdown-${position}`
+    );
+    const listClass = resolvePartClasses('dropdown', 'list') || 'dropdown-list';
+    const dividerClass = cn(resolvePartClasses('dropdown', 'divider'), 'dropdown-divider');
+    const linkClass = cn(resolvePartClasses('dropdown', 'item'), 'dropdown-item-link');
+    const itemIconClass = resolvePartClasses('dropdown', 'itemIcon') || 'dropdown-item-icon';
+    const itemTextClass = resolvePartClasses('dropdown', 'itemText') || 'dropdown-item-text';
+    const badgeClass = resolvePartClasses('dropdown', 'badge') || 'dropdown-item-badge';
 
-            const container = document.createElement('div');
-            container.className = dropdownClass;
-            container.setAttribute('data-ref', 'dropdown');
+    const renderItem = (item, index) => {
+        if (item.divider) {
+            return `<li class="${dividerClass}" role="separator"></li>`;
+        }
 
-            const button = document.createElement('button');
-            button.className = triggerClass;
-            button.setAttribute('aria-haspopup', 'true');
-            button.setAttribute('aria-expanded', 'false');
-            button.disabled = disabled;
-            button.innerHTML = `
+        return `
+            <li class="${cn('dropdown-item', item.disabled ? 'disabled' : '', item.active ? 'active' : '')}" role="none" data-index="${index}">
+                <a href="${escapeHtml(item.href || '#')}" class="${linkClass}" role="menuitem" tabindex="-1"${item.disabled ? ' aria-disabled="true"' : ''} data-item-id="${escapeHtml(item.id || '')}">
+                    ${item.icon ? `<span class="${itemIconClass}" aria-hidden="true">${escapeHtml(item.icon)}</span>` : ''}
+                    <span class="${itemTextClass}">${escapeHtml(item.label)}</span>
+                    ${item.badge ? `<span class="${badgeClass}">${escapeHtml(item.badge)}</span>` : ''}
+                </a>
+            </li>
+        `;
+    };
+
+    const template = () => `
+        <div class="${dropdownClass}" data-ref="dropdown">
+            <button type="button" class="${triggerClass}" aria-haspopup="menu" aria-expanded="false"${disabled ? ' disabled' : ''}>
                 ${icon ? `<span class="${iconWrapperClass}">${escapeHtml(icon)}</span>` : ''}
                 <span class="${labelClass}">${escapeHtml(label)}</span>
-                <span class="${arrowClass}">
+                <span class="${arrowClass}" aria-hidden="true">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
                 </span>
-            `;
+            </button>
+            <div class="${menuClass}" data-ref="dropdown-menu" role="menu" style="display: none;">
+                <ul class="${listClass}" role="none" style="list-style: none; margin: 0; padding: 0;">
+                    ${items.map(renderItem).join('')}
+                </ul>
+            </div>
+        </div>
+    `;
 
-            const menu = document.createElement('div');
-            menu.className = menuClass;
-            menu.setAttribute('data-ref', 'dropdown-menu');
-            menu.style.display = 'none';
+    const component = createComponent(template, { label, position, disabled });
 
-            const list = document.createElement('ul');
-            list.className = listClass;
+    component.useEffect((el) => {
+        const trigger = el.querySelector('.dropdown-trigger');
+        const container = el;
 
-            items.forEach((item, index) => {
-                if (item.divider) {
-                    const divider = document.createElement('li');
-                    divider.className = dividerClass;
-                    list.appendChild(divider);
-                    return;
-                }
+        // MEMORY LEAK FIX: Store handler references for proper cleanup
+        const handlers = {
+            triggerClick: null,
+            triggerKeydown: null,
+            documentClick: null,
+            itemClicks: [],
+            menuItemKeydowns: []
+        };
 
-                const li = document.createElement('li');
-                li.className = cn(itemClass, item.disabled ? 'disabled' : '', item.active ? 'active' : '');
-                li.setAttribute('data-index', index);
-                li.innerHTML = `
-                    <a href="${escapeHtml(item.href || '#')}" class="${linkClass}" data-item-id="${escapeHtml(item.id || '')}">
-                        ${item.icon ? `<span class="${itemIconClass}">${escapeHtml(item.icon)}</span>` : ''}
-                        <span class="${itemTextClass}">${escapeHtml(item.label)}</span>
-                        ${item.badge ? `<span class="${badgeClass}">${escapeHtml(item.badge)}</span>` : ''}
-                    </a>
-                `;
-                list.appendChild(li);
-            });
-
-            menu.appendChild(list);
-
-            container.appendChild(button);
-            container.appendChild(menu);
-
-            return container;
-        },
-
-        useEffect(component) {
-            const trigger = component.querySelector('.dropdown-trigger');
-            const menu = component.querySelector('[data-ref="dropdown-menu"]');
-            const container = component.querySelector('[data-ref="dropdown"]');
-
-            // MEMORY LEAK FIX: Store handler references for proper cleanup
-            const handlers = {
-                triggerClick: null,
-                triggerKeydown: null,
-                documentClick: null,
-                itemClicks: [],
-                menuItemKeydowns: []
+        // Handle trigger clicks
+        if (trigger) {
+            handlers.triggerClick = (e) => {
+                e.stopPropagation();
+                toggle();
             };
+            trigger.addEventListener('click', handlers.triggerClick);
+        }
 
-            // Handle trigger clicks
-            if (trigger) {
-                handlers.triggerClick = (e) => {
+        // Handle item clicks
+        const itemElements = el.querySelectorAll('.dropdown-item:not(.disabled)');
+        itemElements.forEach(item => {
+            const link = item.querySelector('.dropdown-item-link');
+            if (link) {
+                const clickHandler = (e) => {
+                    e.preventDefault();
                     e.stopPropagation();
-                    toggle();
-                };
-                trigger.addEventListener('click', handlers.triggerClick);
-            }
 
-            // Handle item clicks
-            const items = component.querySelectorAll('.dropdown-item:not(.disabled)');
-            items.forEach(item => {
-                const link = item.querySelector('.dropdown-item-link');
-                if (link) {
-                    const clickHandler = (e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
+                    const itemId = link.getAttribute('data-item-id');
+                    const itemIndex = parseInt(item.getAttribute('data-index'));
 
-                        const itemId = link.getAttribute('data-item-id');
-                        const itemIndex = parseInt(item.getAttribute('data-index'));
+                    // Update active state
+                    el.querySelectorAll('.dropdown-item.active').forEach(activeEl => {
+                        activeEl.classList.remove('active');
+                    });
+                    item.classList.add('active');
 
-                        // Update active state
-                        component.querySelectorAll('.dropdown-item.active').forEach(el => {
-                            el.classList.remove('active');
+                    if (onSelect) {
+                        onSelect({
+                            id: itemId,
+                            label: link.querySelector('.dropdown-item-text')?.textContent.trim() || '',
+                            index: itemIndex
                         });
-                        item.classList.add('active');
+                    }
 
-                        if (onSelect) {
-                            onSelect({
-                                id: itemId,
-                                label: link.querySelector('.dropdown-item-text')?.textContent || '',
-                                index: itemIndex
-                            });
-                        }
-
-                        close();
-                    };
-                    link.addEventListener('click', clickHandler);
-                    handlers.itemClicks.push({ element: link, handler: clickHandler });
-                }
-            });
-
-            // Close on outside click
-            handlers.documentClick = (e) => {
-                if (!container.contains(e.target) && isOpen) {
                     close();
-                }
-            };
-            document.addEventListener('click', handlers.documentClick);
+                    if (trigger) trigger.focus();
+                };
+                link.addEventListener('click', clickHandler);
+                handlers.itemClicks.push({ element: link, handler: clickHandler });
+            }
+        });
 
-            // Keyboard navigation
+        // Close on outside click
+        handlers.documentClick = (e) => {
+            if (!container.contains(e.target) && isOpen) {
+                close();
+            }
+        };
+        document.addEventListener('click', handlers.documentClick);
+
+        // Keyboard navigation
+        if (trigger) {
             handlers.triggerKeydown = (e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
@@ -188,59 +168,63 @@ export const Dropdown = (props = {}) => {
                 if (e.key === 'ArrowDown') {
                     e.preventDefault();
                     open();
-                    const firstItem = component.querySelector('.dropdown-item:not(.disabled)');
+                    const firstItem = el.querySelector('.dropdown-item:not(.disabled) .dropdown-item-link');
                     if (firstItem) {
-                        firstItem.querySelector('.dropdown-item-link').focus();
+                        firstItem.focus();
                     }
+                }
+                if (e.key === 'Escape' && isOpen) {
+                    e.preventDefault();
+                    close();
                 }
             };
             trigger.addEventListener('keydown', handlers.triggerKeydown);
+        }
 
-            // Keyboard navigation in menu
-            const menuItems = component.querySelectorAll('.dropdown-item-link');
-            menuItems.forEach((item, index) => {
-                const keydownHandler = (e) => {
-                    if (e.key === 'ArrowDown') {
-                        e.preventDefault();
-                        if (index < menuItems.length - 1) {
-                            menuItems[index + 1].focus();
-                        }
-                    } else if (e.key === 'ArrowUp') {
-                        e.preventDefault();
-                        if (index > 0) {
-                            menuItems[index - 1].focus();
-                        } else {
-                            trigger.focus();
-                        }
-                    } else if (e.key === 'Escape') {
-                        e.preventDefault();
-                        close();
+        // Keyboard navigation in menu
+        const menuItems = el.querySelectorAll('.dropdown-item:not(.disabled) .dropdown-item-link');
+        menuItems.forEach((item, index) => {
+            const keydownHandler = (e) => {
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    if (index < menuItems.length - 1) {
+                        menuItems[index + 1].focus();
+                    }
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    if (index > 0) {
+                        menuItems[index - 1].focus();
+                    } else if (trigger) {
                         trigger.focus();
                     }
-                };
-                item.addEventListener('keydown', keydownHandler);
-                handlers.menuItemKeydowns.push({ element: item, handler: keydownHandler });
-            });
-
-            // MEMORY LEAK FIX: Proper cleanup with stored handler references
-            return () => {
-                if (trigger && handlers.triggerClick) {
-                    trigger.removeEventListener('click', handlers.triggerClick);
+                } else if (e.key === 'Escape') {
+                    e.preventDefault();
+                    close();
+                    if (trigger) trigger.focus();
                 }
-                if (trigger && handlers.triggerKeydown) {
-                    trigger.removeEventListener('keydown', handlers.triggerKeydown);
-                }
-                handlers.itemClicks.forEach(({ element, handler }) => {
-                    element.removeEventListener('click', handler);
-                });
-                if (handlers.documentClick) {
-                    document.removeEventListener('click', handlers.documentClick);
-                }
-                handlers.menuItemKeydowns.forEach(({ element, handler }) => {
-                    element.removeEventListener('keydown', handler);
-                });
             };
-        }
+            item.addEventListener('keydown', keydownHandler);
+            handlers.menuItemKeydowns.push({ element: item, handler: keydownHandler });
+        });
+
+        // MEMORY LEAK FIX: Proper cleanup with stored handler references
+        return () => {
+            if (trigger && handlers.triggerClick) {
+                trigger.removeEventListener('click', handlers.triggerClick);
+            }
+            if (trigger && handlers.triggerKeydown) {
+                trigger.removeEventListener('keydown', handlers.triggerKeydown);
+            }
+            handlers.itemClicks.forEach(({ element, handler }) => {
+                element.removeEventListener('click', handler);
+            });
+            if (handlers.documentClick) {
+                document.removeEventListener('click', handlers.documentClick);
+            }
+            handlers.menuItemKeydowns.forEach(({ element, handler }) => {
+                element.removeEventListener('keydown', handler);
+            });
+        };
     });
 
     const open = () => {

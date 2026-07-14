@@ -7,8 +7,14 @@
 
 import { createComponent } from '../../utils/createComponent.js';
 import { escapeHtml } from '../../utils/security.js';
-import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
+import themeProvider, { resolveClasses, resolvePartClasses, resolveUtility } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
+
+const themeState = (component, state) => {
+    const theme = themeProvider.getTheme();
+    return (theme && theme.components[component] && theme.components[component].states &&
+        theme.components[component].states[state]) || '';
+};
 
 /**
  * Create a data table with sorting, filtering, and pagination
@@ -23,6 +29,7 @@ import { cn } from '../../utils/classNames.js';
  * @param {boolean} options.loading - Show loading state (default: false)
  * @param {string} options.error - Error message to display (default: null)
  * @param {string} options.emptyMessage - Message when no data (default: 'No data available')
+ * @param {string} options.ariaLabel - Accessible label for the table region (default: 'Data table')
  * @param {Function} options.onSort - Callback on sort change
  * @param {Function} options.onFilter - Callback on filter change
  * @param {Function} options.onPageChange - Callback on page change
@@ -57,20 +64,26 @@ export function DataTable({
     loading = false,
     error = null,
     emptyMessage = 'No data available',
+    ariaLabel = 'Data table',
     onSort,
     onFilter,
     onPageChange,
     onSelectionChange,
     onRowClick,
     className = ''
-}) {
-    // Validate inputs
-    if (!Array.isArray(columns) || columns.length === 0) {
-        throw new Error('DataTable: columns must be a non-empty array');
+} = {}) {
+    if (!Array.isArray(columns)) {
+        columns = [];
     }
 
     if (!Array.isArray(rows)) {
         rows = [];
+    }
+
+    // Columns are required whenever there is data to display;
+    // with no data at all, render an empty table instead of throwing
+    if (columns.length === 0 && rows.length > 0) {
+        throw new Error('DataTable: columns must be a non-empty array');
     }
 
     // Component state
@@ -79,6 +92,8 @@ export function DataTable({
     let sortDirection = 'asc';
     let filterQuery = '';
     let selectedRows = new Set();
+
+    const colSpan = Math.max(columns.length, 1) + (selectable ? 1 : 0);
 
     /**
      * Filter rows based on query
@@ -148,34 +163,47 @@ export function DataTable({
      * Render table header
      */
     const renderHeader = () => {
+        const headClass = resolvePartClasses('datatable', 'head');
+        const thClass = resolvePartClasses('datatable', 'th');
+        const checkboxClass = resolveClasses('checkbox');
+
         return `
-            <thead>
+            <thead class="${headClass}">
                 <tr>
                     ${selectable ? `
-                        <th class="datatable-checkbox" style="width: 40px;">
-                            <input type="checkbox" class="form-check-input" data-ref="selectAll" />
+                        <th scope="col" class="${cn(thClass, 'datatable-checkbox')}" style="width: 40px;">
+                            <input type="checkbox" class="${checkboxClass}" data-ref="selectAll" aria-label="Select all rows" />
                         </th>
                     ` : ''}
-                    ${columns.map(col => `
+                    ${columns.map(col => {
+                        const isSortable = Boolean(col.sortable);
+                        const isSorted = sortColumn === col.key;
+                        const ariaSort = isSortable
+                            ? ` aria-sort="${isSorted ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}"`
+                            : '';
+                        return `
                         <th
-                            class="datatable-header ${col.sortable ? 'sortable' : ''} ${sortColumn === col.key ? `sorted-${sortDirection}` : ''}"
-                            data-column="${col.key}"
-                            style="${col.width ? `width: ${col.width};` : ''}"
+                            scope="col"
+                            class="${cn(thClass, 'datatable-header', isSortable ? 'sortable' : '', isSorted ? `sorted-${sortDirection}` : '')}"
+                            data-column="${escapeHtml(col.key)}"
+                            ${isSortable ? 'tabindex="0"' : ''}${ariaSort}
+                            style="${col.width ? `width: ${escapeHtml(col.width)};` : ''}"
                         >
-                            <div class="d-flex align-items-center justify-content-between">
+                            <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
                                 <span>${escapeHtml(col.label)}</span>
-                                ${col.sortable ? `
-                                    <i class="bi ${
-                                        sortColumn === col.key
+                                ${isSortable ? `
+                                    <i aria-hidden="true" class="bi ${
+                                        isSorted
                                             ? sortDirection === 'asc'
                                                 ? 'bi-sort-up'
                                                 : 'bi-sort-down'
                                             : 'bi-arrow-down-up'
-                                    } ms-2 opacity-50"></i>
+                                    }" style="opacity: 0.5;"></i>
                                 ` : ''}
                             </div>
                         </th>
-                    `).join('')}
+                    `;
+                    }).join('')}
                 </tr>
             </thead>
         `;
@@ -185,12 +213,18 @@ export function DataTable({
      * Render table body
      */
     const renderBody = () => {
+        const bodyClass = resolvePartClasses('datatable', 'body');
+        const rowClass = resolvePartClasses('datatable', 'row');
+        const tdClass = resolvePartClasses('datatable', 'td') || resolvePartClasses('datatable', 'cell');
+        const checkboxClass = resolveClasses('checkbox');
+        const centered = 'text-align: center; padding: 1.5rem 0.5rem;';
+
         if (loading) {
             return `
-                <tbody>
+                <tbody class="${bodyClass}">
                     <tr>
-                        <td colspan="${columns.length + (selectable ? 1 : 0)}" class="text-center py-4">
-                            <div class="spinner-border spinner-border-sm text-primary" role="status">
+                        <td colspan="${colSpan}" style="${centered}">
+                            <div class="${cn(resolveClasses('spinner', { variant: 'border', size: 'sm' }), 'spinner-border')}" role="status">
                                 <span class="visually-hidden">Loading...</span>
                             </div>
                         </td>
@@ -201,10 +235,10 @@ export function DataTable({
 
         if (error) {
             return `
-                <tbody>
+                <tbody class="${bodyClass}">
                     <tr>
-                        <td colspan="${columns.length + (selectable ? 1 : 0)}" class="text-center text-danger py-4">
-                            <i class="bi bi-exclamation-triangle me-2"></i>
+                        <td colspan="${colSpan}" class="${resolveUtility('text', 'danger')}" style="${centered}" role="alert">
+                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                             ${escapeHtml(error)}
                         </td>
                     </tr>
@@ -215,9 +249,9 @@ export function DataTable({
         const displayData = getDisplayData();
         if (displayData.length === 0) {
             return `
-                <tbody>
+                <tbody class="${bodyClass}">
                     <tr>
-                        <td colspan="${columns.length + (selectable ? 1 : 0)}" class="text-center text-muted py-4">
+                        <td colspan="${colSpan}" class="${resolveUtility('text', 'muted')}" style="${centered}">
                             ${escapeHtml(emptyMessage)}
                         </td>
                     </tr>
@@ -226,25 +260,27 @@ export function DataTable({
         }
 
         return `
-            <tbody>
+            <tbody class="${bodyClass}">
                 ${displayData.map((row, idx) => `
                     <tr
-                        class="datatable-row ${selectedRows.has(idx) ? 'table-active' : ''}"
+                        class="${cn(rowClass, 'datatable-row', selectedRows.has(idx) ? 'table-active' : '')}"
                         data-row-index="${idx}"
-                        data-row-id="${row.id || idx}"
+                        data-row-id="${escapeHtml(String(row.id ?? idx))}"
+                        ${selectedRows.has(idx) ? 'aria-selected="true"' : ''}
                     >
                         ${selectable ? `
-                            <td class="datatable-checkbox">
+                            <td class="${cn(tdClass, 'datatable-checkbox')}">
                                 <input
                                     type="checkbox"
-                                    class="form-check-input datatable-row-checkbox"
+                                    class="${cn(checkboxClass, 'datatable-row-checkbox')}"
                                     data-row-index="${idx}"
+                                    aria-label="Select row"
                                     ${selectedRows.has(idx) ? 'checked' : ''}
                                 />
                             </td>
                         ` : ''}
                         ${columns.map(col => `
-                            <td data-column="${col.key}">
+                            <td class="${tdClass}" data-column="${escapeHtml(col.key)}">
                                 ${escapeHtml(String(row[col.key] || ''))}
                             </td>
                         `).join('')}
@@ -265,27 +301,33 @@ export function DataTable({
             return '';
         }
 
+        const listClass = cn(resolveClasses('pagination', { size: 'sm' }));
+        const itemClass = resolvePartClasses('pagination', 'item');
+        const linkClass = resolvePartClasses('pagination', 'link');
+        const activeState = themeState('pagination', 'active') || 'active';
+        const disabledState = themeState('pagination', 'disabled') || 'disabled';
+
         return `
-            <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
-                <small class="text-muted">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-top: 1rem;">
+                <small class="${resolveUtility('text', 'muted')}">
                     Showing ${(currentPage - 1) * pageSize + 1}–${Math.min(currentPage * pageSize, totalRows)}
                     of ${totalRows} results
                 </small>
                 <nav aria-label="Table pagination">
-                    <ul class="pagination pagination-sm mb-0">
-                        <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
-                            <button class="page-link datatable-prev-page" ${currentPage === 1 ? 'disabled' : ''}>
-                                <i class="bi bi-chevron-left"></i>
+                    <ul class="${listClass}" style="margin-bottom: 0; list-style: none;">
+                        <li class="${cn(itemClass, currentPage === 1 ? disabledState : '')}">
+                            <button type="button" class="${cn(linkClass, 'datatable-prev-page')}" aria-label="Previous page" ${currentPage === 1 ? 'disabled aria-disabled="true"' : ''}>
+                                <i class="bi bi-chevron-left" aria-hidden="true"></i>
                             </button>
                         </li>
-                        <li class="page-item active">
-                            <span class="page-link">
+                        <li class="${cn(itemClass, activeState)}" aria-current="page">
+                            <span class="${cn(linkClass, activeState)}">
                                 Page ${currentPage} of ${totalPages}
                             </span>
                         </li>
-                        <li class="page-item ${currentPage >= totalPages ? 'disabled' : ''}">
-                            <button class="page-link datatable-next-page" ${currentPage >= totalPages ? 'disabled' : ''}>
-                                <i class="bi bi-chevron-right"></i>
+                        <li class="${cn(itemClass, currentPage >= totalPages ? disabledState : '')}">
+                            <button type="button" class="${cn(linkClass, 'datatable-next-page')}" aria-label="Next page" ${currentPage >= totalPages ? 'disabled aria-disabled="true"' : ''}>
+                                <i class="bi bi-chevron-right" aria-hidden="true"></i>
                             </button>
                         </li>
                     </ul>
@@ -303,11 +345,12 @@ export function DataTable({
         }
 
         return `
-            <div class="mb-3">
+            <div style="margin-bottom: 1rem;">
                 <input
                     type="text"
-                    class="form-control form-control-sm datatable-search"
+                    class="${cn(resolveClasses('input', { size: 'sm' }), 'datatable-search')}"
                     placeholder="Search all columns..."
+                    aria-label="Filter table"
                     value="${escapeHtml(filterQuery)}"
                     data-ref="searchInput"
                 />
@@ -320,18 +363,17 @@ export function DataTable({
      */
     const template = () => {
         // Resolve classes from active theme
-        const containerClass = cn(
-            resolveClasses('datatable'),
-            'datatable-container',
-            className
+        const containerClass = cn('datatable-container', className);
+        const tableWrapperClass = cn(
+            resolvePartClasses('datatable', 'wrapper'),
+            'table-responsive'
         );
-        const tableWrapperClass = resolvePartClasses('datatable', 'wrapper') || 'table-responsive';
-        const tableClass = resolvePartClasses('datatable', 'table') || 'table table-hover table-sm datatable';
+        const tableClass = cn(resolveClasses('datatable'), 'datatable');
 
         return `
             <div class="${containerClass}">
                 ${renderFilterBar()}
-                <div class="${tableWrapperClass}">
+                <div class="${tableWrapperClass}" role="region" aria-label="${escapeHtml(ariaLabel)}" tabindex="0">
                     <table class="${tableClass}">
                         ${renderHeader()}
                         ${renderBody()}
@@ -373,7 +415,7 @@ export function DataTable({
 
         // Sorting
         el.querySelectorAll('th.sortable').forEach(header => {
-            header.addEventListener('click', () => {
+            const doSort = () => {
                 const column = header.dataset.column;
 
                 if (sortColumn === column) {
@@ -394,6 +436,14 @@ export function DataTable({
 
                 if (onSort) {
                     onSort(column, sortDirection);
+                }
+            };
+
+            header.addEventListener('click', doSort);
+            header.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    doSort();
                 }
             });
         });
@@ -490,10 +540,9 @@ export function DataTable({
             });
         }
 
-        // Return cleanup function
-        return () => {
-            // Cleanup event listeners (handled by component auto-cleanup)
-        };
+        // Listeners are attached to elements replaced on re-render;
+        // they are released with the old DOM subtree.
+        return () => {};
     });
 
     // Export utility methods

@@ -6,39 +6,39 @@
  */
 
 import { createComponent } from '../../utils/createComponent.js';
-import { escapeHtml } from '../../utils/security.js';
+import { escapeHtml, escapeAttribute } from '../../utils/security.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 
 /**
  * Create an empty state display
  *
- * @param {Object} options - Configuration options
- * @param {string} options.icon - Bootstrap icon name (default: 'inbox')
- * @param {string} options.title - Title text (default: 'No data available')
- * @param {string} options.message - Optional descriptive message
- * @param {string} options.actionLabel - Optional action button label
- * @param {Function} options.onAction - Action button click handler
- * @param {string} options.className - Additional CSS classes
+ * @param {Object} [options] - Configuration options
+ * @param {string} [options.icon='inbox'] - Bootstrap icon name
+ * @param {string} [options.title='Nothing here yet'] - Title text
+ * @param {string} [options.message] - Optional descriptive message
+ * @param {string} [options.actionLabel] - Optional action button label
+ * @param {Function} [options.onAction] - Action button click handler
+ * @param {string} [options.className] - Additional CSS classes
  * @returns {HTMLElement} EmptyState component
  *
  * @example
  * const empty = EmptyState({
  *   icon: 'inbox',
  *   title: 'No items yet',
- *   message: 'Get started by creating your first item',
+ *   message: 'Create your first item to get started.',
  *   actionLabel: 'Create Item',
  *   onAction: () => console.log('Creating item...')
  * });
  */
 export function EmptyState({
     icon = 'inbox',
-    title = 'No data available',
+    title = 'Nothing here yet',
     message = '',
     actionLabel = '',
     onAction,
     className = ''
-}) {
+} = {}) {
     /**
      * Template function
      */
@@ -46,22 +46,39 @@ export function EmptyState({
         // Resolve classes from active theme
         const containerClass = cn(
             resolveClasses('emptystate'),
-            'empty-state text-center py-5',
+            'empty-state',
             className
         );
-        const buttonClass = resolvePartClasses('emptystate', 'button') || 'btn btn-primary';
+        const iconClass = cn(
+            resolvePartClasses('emptystate', 'icon'),
+            'empty-state-icon'
+        );
+        const titleClass = cn(
+            resolvePartClasses('emptystate', 'title'),
+            'empty-state-title'
+        );
+        const descriptionClass = cn(
+            resolvePartClasses('emptystate', 'description'),
+            'empty-state-description'
+        );
+        const buttonClass = cn(
+            resolvePartClasses('emptystate', 'action') || resolveClasses('button', { variant: 'primary' }),
+            'empty-state-action'
+        );
 
         return `
             <div class="${containerClass}" data-ref="container">
-                <div class="mb-4">
-                    <i class="bi bi-${icon} d-block" style="font-size: 3rem; color: #ccc;"></i>
-                </div>
-                <h4 class="text-muted mb-2">${escapeHtml(title)}</h4>
+                ${icon ? `
+                    <div class="${iconClass}" aria-hidden="true">
+                        <i class="bi bi-${escapeAttribute(icon)}" style="font-size: 3rem;"></i>
+                    </div>
+                ` : ''}
+                <h4 class="${titleClass}">${escapeHtml(title)}</h4>
                 ${message ? `
-                    <p class="text-muted mb-4">${escapeHtml(message)}</p>
+                    <p class="${descriptionClass}">${escapeHtml(message)}</p>
                 ` : ''}
                 ${actionLabel ? `
-                    <button class="${buttonClass} empty-state-action" data-ref="actionBtn">
+                    <button type="button" class="${buttonClass}" data-ref="actionBtn">
                         ${escapeHtml(actionLabel)}
                     </button>
                 ` : ''}

@@ -5,6 +5,8 @@ import { sanitizeHtml, escapeHtml } from '../../utils/security.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 
+let modalIdCounter = 0;
+
 /**
  * Modal Component - CSS Framework Agnostic
  *
@@ -12,20 +14,21 @@ import { cn } from '../../utils/classNames.js';
  * Accessible dialog with focus trap and screen reader support.
  *
  * @param {Object} props - Component properties
- * @param {string} [props.id=''] - Modal ID for targeting
+ * @param {string} [props.id=''] - Modal ID for targeting (auto-generated if omitted)
  * @param {string} [props.title=''] - Modal title
  * @param {boolean} [props.dismissable=true] - Can be closed
  * @param {Array} [props.children=[]] - Modal body content
- * @param {string} [props.footer=''] - Footer content
+ * @param {string} [props.footer=''] - Footer content (sanitized before insertion)
  * @param {string} [props.className=''] - Custom classes for Blazor-style customization
  * @returns {HTMLElement} Modal element
  */
-export function Modal({ id = '', title = '', dismissable = true, children = [], footer = '', className = '' }) {
+export function Modal({ id = '', title = '', dismissable = true, children = [], footer = '', className = '' } = {}) {
+  const modalId = id || `rnx-modal-${++modalIdCounter}`;
+
   // Extract footer from children if not provided as prop
   let mainContent = children;
-  let footerContent = footer;
-
-
+  // SECURITY: footer HTML (prop or slot) is always sanitized before insertion
+  let footerContent = footer ? sanitizeHtml(footer) : '';
 
   if (Array.isArray(children)) {
     // Find index of element with slot="footer"
@@ -35,7 +38,6 @@ export function Modal({ id = '', title = '', dismissable = true, children = [], 
 
     if (footerSlotIndex !== -1) {
       const footerSlotNode = children[footerSlotIndex];
-      // SECURITY FIX: Sanitize innerHTML to prevent XSS attacks
       footerContent = sanitizeHtml(footerSlotNode.innerHTML);
 
       // Remove valid footer slot from mainContent
@@ -45,7 +47,7 @@ export function Modal({ id = '', title = '', dismissable = true, children = [], 
   }
 
   // Resolve classes from active theme
-  const modalClass = cn(resolveClasses('modal'), 'modal fade', className);
+  const modalClass = cn(resolveClasses('modal'), 'modal', className);
   const dialogClass = resolvePartClasses('modal', 'dialog') || 'modal-dialog';
   const contentClass = resolvePartClasses('modal', 'content') || 'modal-content';
   const headerClass = resolvePartClasses('modal', 'header') || 'modal-header';
@@ -55,13 +57,13 @@ export function Modal({ id = '', title = '', dismissable = true, children = [], 
   const footerClass = resolvePartClasses('modal', 'footer') || 'modal-footer';
 
   const template = () => `
-    <div class="${modalClass}" id="${escapeHtml(id)}" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="${escapeHtml(id)}-label" aria-hidden="true" data-ref="modalRoot">
-      <div class="${dialogClass}" role="document">
+    <div class="${modalClass}" id="${escapeHtml(modalId)}" tabindex="-1" role="dialog" aria-modal="true"${title ? ` aria-labelledby="${escapeHtml(modalId)}-label"` : ''} aria-hidden="true" data-ref="modalRoot">
+      <div class="${dialogClass}" role="document" data-ref="dialog">
         <div class="${contentClass}">
 
           ${title ? `
           <div class="${headerClass}">
-            <h5 class="${titleClass}" id="${escapeHtml(id)}-label">${escapeHtml(title)}</h5>
+            <h5 class="${titleClass}" id="${escapeHtml(modalId)}-label">${escapeHtml(title)}</h5>
             ${dismissable ? `<button type="button" class="${closeClass}" data-bs-dismiss="modal" aria-label="Close"></button>` : ''}
           </div>
           ` : ''}
@@ -80,7 +82,7 @@ export function Modal({ id = '', title = '', dismissable = true, children = [], 
   `;
 
   // We need to pass mainContent as children to createComponent to render it in default slot
-  const component = createComponent(template, { id, title, children: mainContent, footer: footerContent });
+  const component = createComponent(template, { id: modalId, title, children: mainContent, footer: footerContent });
 
   component.useEffect((el) => {
     // Check if Bootstrap JS is available
@@ -90,7 +92,7 @@ export function Modal({ id = '', title = '', dismissable = true, children = [], 
     }
 
     // Create focus trap for the modal dialog
-    const modalDialog = el.querySelector('.modal-dialog');
+    const modalDialog = el.querySelector('[data-ref="dialog"]');
     const focusTrap = modalDialog ? createFocusTrap(modalDialog) : null;
     let previousActiveElement = null;
 
@@ -98,11 +100,11 @@ export function Modal({ id = '', title = '', dismissable = true, children = [], 
     // We try to get existing instance or create new one
     let modalInstance = bs.Modal.getInstance(el);
     if (!modalInstance) {
-      modalInstance = new bs.Modal(el);
+      modalInstance = new bs.Modal(el, dismissable ? {} : { backdrop: 'static', keyboard: false });
     }
 
     // Handle modal shown event - activate focus trap
-    el.addEventListener('shown.bs.modal', () => {
+    const handleShown = () => {
       // Store previously focused element
       previousActiveElement = document.activeElement;
 
@@ -118,10 +120,11 @@ export function Modal({ id = '', title = '', dismissable = true, children = [], 
       if (title) {
         announce(`${title} dialog opened`, 'polite');
       }
-    });
+    };
+    el.addEventListener('shown.bs.modal', handleShown);
 
     // Handle modal hidden event - deactivate focus trap and restore focus
-    el.addEventListener('hidden.bs.modal', () => {
+    const handleHidden = () => {
       // Deactivate focus trap
       if (focusTrap) {
         focusTrap.deactivate(false); // Don't let trap restore focus, we'll do it manually
@@ -141,7 +144,8 @@ export function Modal({ id = '', title = '', dismissable = true, children = [], 
       if (title) {
         announce(`${title} dialog closed`, 'polite');
       }
-    });
+    };
+    el.addEventListener('hidden.bs.modal', handleHidden);
 
     // Handle Escape key
     const handleKeydown = (e) => {
@@ -161,6 +165,8 @@ export function Modal({ id = '', title = '', dismissable = true, children = [], 
     return () => {
       // Remove event listeners
       el.removeEventListener('keydown', handleKeydown);
+      el.removeEventListener('shown.bs.modal', handleShown);
+      el.removeEventListener('hidden.bs.modal', handleHidden);
 
       // Deactivate focus trap if active
       if (focusTrap && focusTrap.isActive()) {

@@ -45,9 +45,10 @@ export function ProgressBar({
     indeterminate = false,
     label = '',
     showValue = true,
+    showLabel = false,
     height = '1.5rem',
     className = ''
-}) {
+} = {}) {
     // Clamp value between 0 and 100
     let currentValue = Math.max(0, Math.min(value, 100));
 
@@ -56,15 +57,18 @@ export function ProgressBar({
         resolveClasses('progressbar', {
           variant: striped ? 'striped' : (animated && striped ? 'animated' : undefined)
         }),
+        'progress-bar-wrapper',
         className
     );
 
     const barClass = cn(
         resolvePartClasses('progressbar', 'bar'),
+        'progress-bar',
+        `progress-bar-${variant}`,
         `bg-${variant}`, // Color utility
-        striped ? 'progress-bar-striped bg-gradient-to-r' : '',
-        animated && striped ? 'progress-bar-animated animate-pulse' : '',
-        indeterminate ? 'progress-indeterminate' : ''
+        striped ? 'striped progress-bar-striped bg-gradient-to-r' : '',
+        animated && striped ? 'animated progress-bar-animated animate-pulse' : '',
+        indeterminate ? 'indeterminate progress-indeterminate' : ''
     );
 
     /**
@@ -90,7 +94,7 @@ export function ProgressBar({
                          aria-valuemax="100"
                          ${!indeterminate ? `style="width: ${currentValue}%"` : ''}
                     >
-                        ${showValue && !striped && !indeterminate ? `
+                        ${(showValue || showLabel) && !striped && !indeterminate ? `
                             <span class="progress-text">${currentValue}%</span>
                         ` : ''}
                     </div>

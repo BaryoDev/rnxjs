@@ -9,7 +9,7 @@ import { escapeHtml } from '../../utils/security.js';
  * Works with any registered theme (Bootstrap, Tailwind, custom).
  * Supports Blazor-style class customization via the className prop.
  *
- * @param {Object} props - Component properties
+ * @param {Object} [props={}] - Component properties
  * @param {string} [props.label=''] - Badge text content
  * @param {string} [props.variant='secondary'] - Badge variant (primary, secondary, success, danger, warning, info, light, dark)
  * @param {string} [props.size='md'] - Badge size (sm, md, lg)
@@ -35,7 +35,7 @@ export function Badge({
   size = 'md',
   pill = false,
   className = ''
-}) {
+} = {}) {
   // Resolve classes from active theme
   const badgeClass = cn(
     resolveClasses('badge', {
@@ -47,7 +47,7 @@ export function Badge({
   );
 
   const template = () => `
-    <span class="${badgeClass}">
+    <span class="${escapeHtml(badgeClass)}">
       ${escapeHtml(label)}
     </span>
   `;

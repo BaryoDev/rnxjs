@@ -34,7 +34,7 @@ export function Row({
   align = '',
   noGutters = false,
   className = ''
-}) {
+} = {}) {
   const hasNoGutters = noGutters === true || noGutters === 'true';
 
   // Resolve base row classes from theme

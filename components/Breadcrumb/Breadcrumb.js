@@ -35,7 +35,7 @@ export function Breadcrumb({
     items = [],
     separator = '/',
     className = ''
-}) {
+} = {}) {
     // Validate items
     if (!Array.isArray(items) || items.length === 0) {
         throw new Error('Breadcrumb: items must be a non-empty array');
@@ -44,13 +44,13 @@ export function Breadcrumb({
     // Resolve classes from active theme
     const breadcrumbClass = cn(
         resolveClasses('breadcrumb'),
-        'mb-0',
+        'breadcrumb',
         className
     );
 
-    const itemClass = resolvePartClasses('breadcrumb', 'item');
-    const activeClass = resolvePartClasses('breadcrumb', 'active');
-    const separatorClass = resolvePartClasses('breadcrumb', 'separator');
+    const itemClass = cn(resolvePartClasses('breadcrumb', 'item'), 'breadcrumb-item');
+    const activeClass = cn(resolvePartClasses('breadcrumb', 'active'), 'breadcrumb-item active');
+    const separatorClass = cn(resolvePartClasses('breadcrumb', 'separator'), 'breadcrumb-separator');
 
     /**
      * Template function
@@ -59,14 +59,14 @@ export function Breadcrumb({
         return `
             <nav aria-label="breadcrumb">
                 <ol class="${breadcrumbClass}">
-                    ${items.map((item, index) => `
-                        <li class="${item.active ? activeClass : itemClass}">
+                    ${items.map((item) => `
+                        <li class="${item.active ? activeClass : itemClass}"${item.active ? ' aria-current="page"' : ''}>
                             ${item.active
                                 ? `<span>${escapeHtml(item.label)}</span>`
                                 : `<a href="${escapeHtml(item.href || '#')}">${escapeHtml(item.label)}</a>`
                             }
                         </li>
-                    `).join(`<li class="${separatorClass} mx-1">${escapeHtml(separator)}</li>`)}
+                    `).join(`<li class="${separatorClass}" aria-hidden="true">${escapeHtml(separator)}</li>`)}
                 </ol>
             </nav>
         `;
