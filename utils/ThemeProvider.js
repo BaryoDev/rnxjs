@@ -20,8 +20,9 @@ class ThemeProvider {
     this.registerTheme(bootstrapTheme);
     this.registerTheme(tailwindTheme);
 
-    // Default to Tailwind (v2.0 default)
-    this.setTheme('tailwind');
+    // Default to Bootstrap so existing apps look unchanged after upgrading;
+    // Tailwind is a one-line opt-in via setTheme('tailwind')
+    this.setTheme('bootstrap');
   }
 
   /**
