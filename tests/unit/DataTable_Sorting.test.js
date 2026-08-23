@@ -192,9 +192,10 @@ describe('DataTable Sorting', () => {
             nameHeader.click();
 
         await new Promise(resolve => setTimeout(resolve, 50));
-                expect(nameHeader.classList.contains('sorted-asc')).toBe(true);
+                const sortedHeader = container.querySelector('[data-column="name"]');
+                expect(sortedHeader.classList.contains('sorted-asc')).toBe(true);
 
-                const icon = nameHeader.querySelector('i');
+                const icon = sortedHeader.querySelector('i');
                 expect(icon.classList.contains('bi-sort-up')).toBe(true);
     });
 
@@ -214,9 +215,10 @@ describe('DataTable Sorting', () => {
                 nameHeader.click(); // Second click
 
         await new Promise(resolve => setTimeout(resolve, 50));
-                    expect(nameHeader.classList.contains('sorted-desc')).toBe(true);
+                    const sortedHeader = container.querySelector('[data-column="name"]');
+                    expect(sortedHeader.classList.contains('sorted-desc')).toBe(true);
 
-                    const icon = nameHeader.querySelector('i');
+                    const icon = sortedHeader.querySelector('i');
                     expect(icon.classList.contains('bi-sort-down')).toBe(true);
     });
 
