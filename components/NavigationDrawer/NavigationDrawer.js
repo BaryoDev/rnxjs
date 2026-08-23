@@ -1,7 +1,7 @@
 import { createComponent } from '../../utils/createComponent.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
-import { escapeHtml } from '../../utils/security.js';
+import { escapeHtml, sanitizeUrl } from '../../utils/security.js';
 
 /**
  * NavigationDrawer Component - CSS Framework Agnostic
@@ -55,7 +55,7 @@ export function NavigationDrawer({
           </div>
           <nav class="${bodyClass || 'nav flex-column'}" aria-label="Drawer">
              ${links.map((link, idx) => `
-               <a href="${escapeHtml(link.href || '#')}"
+               <a href="${escapeHtml(sanitizeUrl(link.href) || '#')}"
                   class="${cn('m3-drawer-link', link.active ? 'active' : '')}"
                   data-index="${idx}"
                   data-ref="link-${idx}"
