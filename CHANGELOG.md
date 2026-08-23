@@ -36,6 +36,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **VirtualList**: reactive item updates now recompute total height and visible range
 - **XSS**: escaped `error.message`/`error.stack` in ErrorBoundary fallback, `icon` in StatCard, `value` in DatePicker, style attributes in Skeleton, label/attribute values in Button and Badge
 
+## [1.0.0] - December 2025
+
+**The first stable release of rnxJS!**
+
+- **34 Production Components**: Complete component library with full test coverage
+- **600+ Tests**: Comprehensive test suite covering all components, reactivity, and edge cases
+- **Plugin System**: Extensible architecture with 3 official plugins (Router, Toast, Storage)
+- **Backend Integrations**: Official packages for Django, Rails, Laravel, and Express
+- **Complete Documentation**:
+  - [API Reference](./docs/API.md) with stability guarantees
+  - [Migration Guide](./docs/MIGRATION.md) for jQuery users
+  - [Quick Start](./docs/QUICK-START.md) for new users
+  - [Benchmarks](./docs/BENCHMARKS.md) vs jQuery/Vue/React
+- **Performance**: ~10KB gzipped, <100ms time to interactive
+
 ## [0.4.0] - 2025-12-26
 
 ### Enterprise Readiness
@@ -233,3 +248,271 @@ If you are using rnxJS < 0.4.0, an attacker who can control the content of `data
 3. Implement Content Security Policy headers
 
 For more information, see [SECURITY.md](./SECURITY.md).
+
+## [0.3.5] - December 2025
+
+**🛡️ Critical Stability Updates**
+- **Infinite Loop Prevention**: Implemented a recursion guard in `DataBinder`. Input elements are now flagged during updates to prevent state changes from re-triggering the input listener, fixing potential browser crashes.
+- **Component Hydration**: Added validation checks in `loadComponents` to ensure replacement nodes are valid before attempting to mount, preventing silent failures.
+- **Testing**: Added specialized regression tests for DataBinder stability and FAB rendering.
+
+## [0.3.15] - December 2025
+
+- **Docs**: Added "Quick Start" key and "Samples" links to README for better onboarding.
+
+## [0.3.4] - December 2025
+
+**🐛 Bug Fixes**
+- **Data Binding Synchronization**: Fixed a race condition where `data-bind` on vanilla HTML elements (like `<h1>`, `<p>`) would sometimes fail to populate or remain empty. Data binding is now synchronous and guaranteed to run immediately after component loading.
+- **FAB Rendering**: Fixed `<FAB>` component not rendering correctly in certain environments. It now correctly uses the reactive state and renders as a button with the `.m3-fab` class.
+
+## [0.3.3] - December 2025
+
+**🐛 Critical Bug Fixes & Improvements**
+
+- **Circular Dependency**: Fixed circular dependency in `AutoRegistry` by refactoring internal exports.
+- **Bootstrap Config**: Added `setBootstrap()` and `getBootstrap()` to manually configure Bootstrap instance (fixing issues in bundlers where `window.bootstrap` is missing).
+- **CSS Exports**: `package.json` now correctly exports `./css/*` for M3 theme imports.
+- **Button Props**: `Button` component now correctly passes data attributes (e.g., `data-bs-toggle`) to the DOM element.
+- **M3 Colors**: Adjusted M3 Secondary colors to be more neutral/gray to fit standard expectations.
+- **Docs**: Clarified `Material Symbols` dependency in README.
+
+## [0.3.0] - December 2025
+
+**🎨 Material Design 3 & New Components**
+- **Theme**: Added `bootstrap-m3-theme.css` for M3 styling overrides.
+- **New Components**: `FAB`, `NavigationDrawer`, `Switch`, `Chips`, `Slider`, `TopAppBar`, `NavigationBar`, `List`, `Search`, `SegmentedButton`, `Icon`.
+- **Updates**: `Button` (M3 variants: filled, tonal, elevated, text), `Card` (M3 variants), `Input` (floating labels).
+- **Icons**: Added `Icon` component and support for Bootstrap Icons.
+
+**🧪 Testing & Stability**
+- **Tests**: Added full Vitest suite for new components and Playwright E2E tests for the M3 Demo.
+- **Framework Fix**: Fixed critical issue in `createComponent` where state updates detached event listeners in re-rendered DOM nodes.
+
+## [0.2.2] - December 2025
+
+- **Release Bump**: Version bump to retry NPM publication.
+- **Includes**: All fixes from v0.2.1 (Col rename, validation fixes).
+
+## [0.2.1] - December 2025
+
+**🐛 Bug Fixes & Improvements**
+
+- **Component Rename**: `<Col>` renamed to `<Column>` to avoid conflict with native HTML `<col>` void element.
+- **Validation**: Fixed `onclick` and string-based event attribute validation warnings.
+- **Framework**: `createComponent` now correctly identifies root-level slots.
+- **Input**: `Input` component now passes through all unknown attributes (enabling `data-bind` support).
+
+**⚠️ Breaking Changes**
+
+- **`<Col>` is now `<Column>`**: Please update your layouts to use `<Column>` instead of `<Col>`.
+
+## [0.2.0] - December 2025
+
+**✨ New Features**
+
+- **Built-in Form Validation**: Add validation rules directly to your inputs!
+  ```html
+  <input data-bind="user.email" data-rule="required|email" />
+  <span data-bind="errors.user.email"></span>
+  ```
+  - Supported rules: `required`, `email`, `numeric`, `min:n`, `max:n`, `pattern:regex`
+  - Errors automatically populate `state.errors`
+
+- **Global IntelliSense**: Full VS Code autocompletion support for CDN users via `global.d.ts`.
+  - Just add `/// <reference types="@arnelirobles/rnxjs" />` or rely on automatic detection.
+
+**⚠️ Breaking Changes**
+
+- **Reserved State Property**: The validation system now reserves `state.errors` for validation messages. If you were using `errors` for other purposes in your state root, please rename it.
+
+## [0.1.10] - December 2025
+
+**🐛 Bug Fixes**
+
+- Fixed race condition in `useEffect` cleanup during rapid state updates.
+
+## [0.1.9] - December 2025
+
+**🎉 Major Stability Release - Production Ready!**
+
+This release focuses on **framework stabilization**, fixing 13 identified bugs, improving error handling, and adding comprehensive test coverage. The framework is now production-ready with **61 passing tests**.
+
+> [!IMPORTANT]
+> **NO BREAKING CHANGES** - All improvements are backward compatible. Existing code will continue to work without modifications.
+
+#### 🐛 Critical Bug Fixes
+
+- **Memory Leak Prevention**: Fixed memory leaks in reactive state subscriptions
+  - Added `$unsubscribeAll()` and `$destroy()` cleanup methods
+  - Automatic subscription cleanup tracking
+  - Event listeners now properly removed on component destruction
+
+- **Security Fix**: Replaced unsafe `eval()` usage in conditional rendering
+  - Implemented safer `Function` constructor with limited scope
+  - Added strict mode and proper error boundaries
+  - Protects against potential XSS vulnerabilities
+
+- **Error Boundaries**: Added comprehensive error handling
+  - Try-catch blocks in all critical operations
+  - Helpful error messages with `[rnxJS]` prefix
+  - Single component errors no longer crash the entire app
+
+#### ✨ New Features & Improvements
+
+- **Array Reactivity**: Array mutation methods now trigger reactivity
+  ```javascript
+  state.items.push(4);    // ✅ Now works!
+  state.items.pop();      // ✅ Now works!
+  state.items.splice(1, 1); // ✅ Now works!
+  ```
+
+- **Input Validation**: Enhanced data binding with validation
+  - Path format validation
+  - State object validation
+  - Helpful error messages for invalid inputs
+
+- **Type Coercion**: Number inputs now return actual numbers
+  ```html
+  <input type="number" data-bind="age" />
+  <!-- state.age will be a number, not a string! -->
+  ```
+
+- **Circular Reference Protection**: Handles circular references safely
+  - WeakSet tracking to prevent infinite loops
+  - Warnings when circular references detected
+
+- **Performance Improvements**: Proxy caching for better performance
+  - Reuses proxies instead of creating new ones
+  - Significant improvement for deeply nested objects
+
+- **Lifecycle Hooks**: New `onUnmount()` hook for cleanup
+  ```javascript
+  component.onUnmount(() => {
+    // Cleanup code here
+  });
+  component.destroy(); // Manually trigger cleanup
+  ```
+
+- **Data Binding Cleanup**: New `unbindData()` function
+  ```javascript
+  unbindData(element); // Remove all bindings
+  ```
+
+#### 🧪 Testing
+
+- **61 comprehensive tests** covering all core functionality
+- Test framework: Vitest with happy-dom
+- Full coverage for: reactive state, components, data binding
+- Edge cases and error scenarios tested
+
+#### 📦 New Package Scripts
+
+```json
+{
+  "test": "vitest run",
+  "test:watch": "vitest",
+  "test:ui": "vitest --ui",
+  "test:coverage": "vitest run --coverage"
+}
+```
+
+#### 🔧 Internal Improvements
+
+- Better focus preservation in component re-renders
+- Improved error messages and logging
+- Code quality improvements
+- Removed duplicate code from examples
+
+## [0.1.8] - November 2025
+
+**🐛 Bug Fixes**
+
+- Fixed a `TypeError` in `createReactiveState` when using array spread syntax (e.g., `[...state.array]`) or other Symbol-based operations.
+
+## [0.1.7] - November 2025
+
+**✨ New Features**
+
+- **Reactive Data Binding**: Automatic two-way data binding with `data-bind` attribute
+  ```html
+  <input data-bind="username" />
+  <p>Hello, <span data-bind="username"></span>!</p>
+  
+  <script>
+    const state = rnx.createReactiveState({ username: '' });
+    rnx.loadComponents(document, state);
+  </script>
+  ```
+
+- **`createReactiveState()`**: Create reactive state objects with Proxy-based observation
+  ```javascript
+  const state = rnx.createReactiveState({
+    user: { name: '', email: '' }
+  });
+  
+  // Subscribe to changes
+  state.subscribe('user.email', (newValue) => {
+    console.log('Email changed:', newValue);
+  });
+  ```
+
+- **`bindData()`**: Manually bind data to DOM elements
+  ```javascript
+  rnx.bindData(document.getElementById('form'), state);
+  ```
+
+**🔧 Improvements**
+
+- Fixed `autoRegisterComponents()` to work correctly in global bundle context
+- Added lazy loading for DataBinder to reduce bundle size when not used
+- Updated README with comprehensive reactive binding documentation
+
+**📦 API Additions**
+
+- `rnx.createReactiveState(initialState)` - Create reactive state
+- `rnx.bindData(rootElement, state)` - Bind data to elements
+- `loadComponents()` now accepts optional `reactiveState` parameter
+
+## [0.1.6] - October 2025
+
+**✨ Features**
+
+- Bootstrap-compatible component system
+- 19 built-in components (Button, Input, Card, Modal, etc.)
+- Automatic component registration with `autoRegisterComponents()`
+- Conditional rendering with `data-if` attribute
+- Slot-based content insertion
+- Global bundle for script tag usage
+
+**📦 Components Available**
+
+- Form: `Button`, `Input`, `Checkbox`, `Radio`, `Select`, `Textarea`, `FormGroup`
+- Layout: `Container`, `Row`, `Column`
+- UI: `Alert`, `Badge`, `Card`, `Modal`, `Spinner`, `Toast`, `Pagination`
+- Advanced: `Tabs`, `Accordion`
+
+**Example Usage**
+
+```html
+<Container>
+  <Card>
+    <Button label="Click Me" variant="primary" />
+  </Card>
+</Container>
+
+<script src="https://unpkg.com/@arnelirobles/rnxjs/dist/rnx.global.js"></script>
+<script>
+  rnx.autoRegisterComponents();
+  rnx.loadComponents();
+</script>
+```
+
+## [0.1.0 - 0.1.5]
+**Initial Release**
+
+- Core component system
+- Component registration via `registerComponent()`
+- Manual component loading
+- Bootstrap class mapping
+- ES Module support
