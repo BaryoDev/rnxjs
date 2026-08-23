@@ -24,21 +24,18 @@ describe('Tooltip Positioning', () => {
         }
     });
 
-    it('should render tooltip element', (done) => {
+    it('should render tooltip element', async () => {
         const tooltip = Tooltip({
             element: targetElement,
             content: 'Test tooltip'
         });
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const tooltipElement = document.querySelector('.tooltip');
             expect(tooltipElement).not.toBeNull();
-
-            done();
-        }, 50);
     });
 
-    it('should position tooltip on top by default', (done) => {
+    it('should position tooltip on top by default', async () => {
         const tooltip = Tooltip({
             element: targetElement,
             content: 'Test tooltip',
@@ -47,16 +44,13 @@ describe('Tooltip Positioning', () => {
 
         tooltip.show();
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const tooltipElement = document.querySelector('.tooltip');
             expect(tooltipElement).not.toBeNull();
             expect(tooltipElement.classList.contains('top')).toBe(true);
-
-            done();
-        }, 50);
     });
 
-    it('should position tooltip on bottom', (done) => {
+    it('should position tooltip on bottom', async () => {
         const tooltip = Tooltip({
             element: targetElement,
             content: 'Test tooltip',
@@ -65,15 +59,12 @@ describe('Tooltip Positioning', () => {
 
         tooltip.show();
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const tooltipElement = document.querySelector('.tooltip');
             expect(tooltipElement.classList.contains('bottom')).toBe(true);
-
-            done();
-        }, 50);
     });
 
-    it('should position tooltip on left', (done) => {
+    it('should position tooltip on left', async () => {
         const tooltip = Tooltip({
             element: targetElement,
             content: 'Test tooltip',
@@ -82,15 +73,12 @@ describe('Tooltip Positioning', () => {
 
         tooltip.show();
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const tooltipElement = document.querySelector('.tooltip');
             expect(tooltipElement.classList.contains('left')).toBe(true);
-
-            done();
-        }, 50);
     });
 
-    it('should position tooltip on right', (done) => {
+    it('should position tooltip on right', async () => {
         const tooltip = Tooltip({
             element: targetElement,
             content: 'Test tooltip',
@@ -99,15 +87,12 @@ describe('Tooltip Positioning', () => {
 
         tooltip.show();
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const tooltipElement = document.querySelector('.tooltip');
             expect(tooltipElement.classList.contains('right')).toBe(true);
-
-            done();
-        }, 50);
     });
 
-    it('should show tooltip on mouse enter', (done) => {
+    it('should show tooltip on mouse enter', async () => {
         const tooltip = Tooltip({
             element: targetElement,
             content: 'Test tooltip',
@@ -117,16 +102,13 @@ describe('Tooltip Positioning', () => {
         const mouseEnterEvent = new MouseEvent('mouseenter', { bubbles: true });
         targetElement.dispatchEvent(mouseEnterEvent);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const tooltipElement = document.querySelector('.tooltip');
             expect(tooltipElement).not.toBeNull();
             expect(tooltipElement.classList.contains('visible')).toBe(true);
-
-            done();
-        }, 50);
     });
 
-    it('should hide tooltip on mouse leave', (done) => {
+    it('should hide tooltip on mouse leave', async () => {
         const tooltip = Tooltip({
             element: targetElement,
             content: 'Test tooltip',
@@ -135,20 +117,16 @@ describe('Tooltip Positioning', () => {
 
         tooltip.show();
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const mouseLeaveEvent = new MouseEvent('mouseleave', { bubbles: true });
             targetElement.dispatchEvent(mouseLeaveEvent);
 
-            setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
                 const tooltipElement = document.querySelector('.tooltip');
                 expect(tooltipElement.classList.contains('visible')).toBe(false);
-
-                done();
-            }, 50);
-        }, 50);
     });
 
-    it('should respect delay setting', (done) => {
+    it('should respect delay setting', async () => {
         const delay = 100;
         const tooltip = Tooltip({
             element: targetElement,
@@ -161,21 +139,17 @@ describe('Tooltip Positioning', () => {
         targetElement.dispatchEvent(mouseEnterEvent);
 
         // Tooltip should not be visible immediately
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 10));
             let tooltipElement = document.querySelector('.tooltip');
             expect(tooltipElement === null || !tooltipElement.classList.contains('visible')).toBe(true);
 
             // Wait for delay
-            setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, delay + 50));
                 tooltipElement = document.querySelector('.tooltip');
                 expect(tooltipElement).not.toBeNull();
-
-                done();
-            }, delay + 50);
-        }, 10);
     });
 
-    it('should update content dynamically', (done) => {
+    it('should update content dynamically', async () => {
         const tooltip = Tooltip({
             element: targetElement,
             content: 'Initial content'
@@ -183,17 +157,14 @@ describe('Tooltip Positioning', () => {
 
         tooltip.show();
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             tooltip.setContent('Updated content');
 
             const tooltipElement = document.querySelector('.tooltip');
             expect(tooltipElement.textContent).toContain('Updated content');
-
-            done();
-        }, 50);
     });
 
-    it('should display arrow when enabled', (done) => {
+    it('should display arrow when enabled', async () => {
         const tooltip = Tooltip({
             element: targetElement,
             content: 'Test tooltip',
@@ -202,15 +173,12 @@ describe('Tooltip Positioning', () => {
 
         tooltip.show();
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const arrow = document.querySelector('.tooltip-arrow');
             expect(arrow).not.toBeNull();
-
-            done();
-        }, 50);
     });
 
-    it('should not display arrow when disabled', (done) => {
+    it('should not display arrow when disabled', async () => {
         const tooltip = Tooltip({
             element: targetElement,
             content: 'Test tooltip',
@@ -219,15 +187,12 @@ describe('Tooltip Positioning', () => {
 
         tooltip.show();
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const arrow = document.querySelector('.tooltip-arrow');
             expect(arrow).toBeNull();
-
-            done();
-        }, 50);
     });
 
-    it('should destroy tooltip and remove from DOM', (done) => {
+    it('should destroy tooltip and remove from DOM', async () => {
         const tooltip = Tooltip({
             element: targetElement,
             content: 'Test tooltip'
@@ -235,13 +200,10 @@ describe('Tooltip Positioning', () => {
 
         tooltip.show();
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             tooltip.destroy();
 
             const tooltipElement = document.querySelector('.tooltip');
             expect(tooltipElement).toBeNull();
-
-            done();
-        }, 50);
     });
 });

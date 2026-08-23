@@ -19,22 +19,19 @@ describe('Dropdown Interaction', () => {
         }
     });
 
-    it('should render dropdown trigger button', (done) => {
+    it('should render dropdown trigger button', async () => {
         const dropdown = Dropdown({
             label: 'Actions'
         });
         container.appendChild(dropdown);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const trigger = container.querySelector('.dropdown-trigger');
             expect(trigger).not.toBeNull();
             expect(trigger.textContent).toContain('Actions');
-
-            done();
-        }, 50);
     });
 
-    it('should render menu items', (done) => {
+    it('should render menu items', async () => {
         const items = [
             { id: 'edit', label: 'Edit' },
             { id: 'delete', label: 'Delete' }
@@ -43,15 +40,12 @@ describe('Dropdown Interaction', () => {
         const dropdown = Dropdown({ items });
         container.appendChild(dropdown);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const menuItems = container.querySelectorAll('.dropdown-item');
             expect(menuItems.length).toBe(items.length);
-
-            done();
-        }, 50);
     });
 
-    it('should open dropdown on trigger click', (done) => {
+    it('should open dropdown on trigger click', async () => {
         const items = [
             { id: 'edit', label: 'Edit' }
         ];
@@ -59,21 +53,17 @@ describe('Dropdown Interaction', () => {
         const dropdown = Dropdown({ items });
         container.appendChild(dropdown);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const trigger = container.querySelector('.dropdown-trigger');
             trigger.click();
 
-            setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
                 expect(dropdown.isOpen()).toBe(true);
                 const menu = container.querySelector('.dropdown-menu');
                 expect(menu.style.display).toBe('block');
-
-                done();
-            }, 50);
-        }, 50);
     });
 
-    it('should close dropdown on second click', (done) => {
+    it('should close dropdown on second click', async () => {
         const items = [
             { id: 'edit', label: 'Edit' }
         ];
@@ -81,21 +71,17 @@ describe('Dropdown Interaction', () => {
         const dropdown = Dropdown({ items });
         container.appendChild(dropdown);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const trigger = container.querySelector('.dropdown-trigger');
             trigger.click();
 
-            setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
                 trigger.click();
 
                 expect(dropdown.isOpen()).toBe(false);
-
-                done();
-            }, 50);
-        }, 50);
     });
 
-    it('should call onSelect when item is clicked', (done) => {
+    it('should call onSelect when item is clicked', async () => {
         const onSelect = vi.fn();
         const items = [
             { id: 'edit', label: 'Edit' },
@@ -105,11 +91,11 @@ describe('Dropdown Interaction', () => {
         const dropdown = Dropdown({ items, onSelect });
         container.appendChild(dropdown);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const trigger = container.querySelector('.dropdown-trigger');
             trigger.click();
 
-            setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
                 const firstItem = container.querySelector('.dropdown-item-link');
                 firstItem.click();
 
@@ -119,13 +105,9 @@ describe('Dropdown Interaction', () => {
                     label: 'Edit',
                     index: 0
                 });
-
-                done();
-            }, 50);
-        }, 50);
     });
 
-    it('should close dropdown after selecting item', (done) => {
+    it('should close dropdown after selecting item', async () => {
         const items = [
             { id: 'edit', label: 'Edit' }
         ];
@@ -133,22 +115,18 @@ describe('Dropdown Interaction', () => {
         const dropdown = Dropdown({ items });
         container.appendChild(dropdown);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const trigger = container.querySelector('.dropdown-trigger');
             trigger.click();
 
-            setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
                 const item = container.querySelector('.dropdown-item-link');
                 item.click();
 
                 expect(dropdown.isOpen()).toBe(false);
-
-                done();
-            }, 50);
-        }, 50);
     });
 
-    it('should mark selected item as active', (done) => {
+    it('should mark selected item as active', async () => {
         const items = [
             { id: 'edit', label: 'Edit' },
             { id: 'delete', label: 'Delete' }
@@ -157,25 +135,20 @@ describe('Dropdown Interaction', () => {
         const dropdown = Dropdown({ items });
         container.appendChild(dropdown);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const trigger = container.querySelector('.dropdown-trigger');
             trigger.click();
 
-            setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
                 const secondItem = container.querySelectorAll('.dropdown-item')[1];
                 secondItem.querySelector('a').click();
 
-                setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
                     const activeItem = container.querySelector('.dropdown-item.active');
                     expect(activeItem).toBe(secondItem);
-
-                    done();
-                }, 50);
-            }, 50);
-        }, 50);
     });
 
-    it('should render items with icons', (done) => {
+    it('should render items with icons', async () => {
         const items = [
             { id: 'edit', label: 'Edit', icon: '✏️' },
             { id: 'delete', label: 'Delete', icon: '🗑️' }
@@ -184,16 +157,13 @@ describe('Dropdown Interaction', () => {
         const dropdown = Dropdown({ items });
         container.appendChild(dropdown);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const icons = container.querySelectorAll('.dropdown-item-icon');
             expect(icons.length).toBe(2);
             expect(icons[0].textContent).toContain('✏️');
-
-            done();
-        }, 50);
     });
 
-    it('should render items with badges', (done) => {
+    it('should render items with badges', async () => {
         const items = [
             { id: 'notifications', label: 'Notifications', badge: '5' },
             { id: 'messages', label: 'Messages', badge: '3' }
@@ -202,16 +172,13 @@ describe('Dropdown Interaction', () => {
         const dropdown = Dropdown({ items });
         container.appendChild(dropdown);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const badges = container.querySelectorAll('.dropdown-item-badge');
             expect(badges.length).toBe(2);
             expect(badges[0].textContent).toContain('5');
-
-            done();
-        }, 50);
     });
 
-    it('should render dividers between items', (done) => {
+    it('should render dividers between items', async () => {
         const items = [
             { id: 'edit', label: 'Edit' },
             { divider: true },
@@ -221,15 +188,12 @@ describe('Dropdown Interaction', () => {
         const dropdown = Dropdown({ items });
         container.appendChild(dropdown);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const divider = container.querySelector('.dropdown-divider');
             expect(divider).not.toBeNull();
-
-            done();
-        }, 50);
     });
 
-    it('should disable specific items', (done) => {
+    it('should disable specific items', async () => {
         const items = [
             { id: 'edit', label: 'Edit' },
             { id: 'delete', label: 'Delete', disabled: true }
@@ -238,15 +202,12 @@ describe('Dropdown Interaction', () => {
         const dropdown = Dropdown({ items });
         container.appendChild(dropdown);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const disabledItem = container.querySelectorAll('.dropdown-item')[1];
             expect(disabledItem.classList.contains('disabled')).toBe(true);
-
-            done();
-        }, 50);
     });
 
-    it('should not trigger callback for disabled items', (done) => {
+    it('should not trigger callback for disabled items', async () => {
         const onSelect = vi.fn();
         const items = [
             { id: 'edit', label: 'Edit', disabled: true }
@@ -255,28 +216,24 @@ describe('Dropdown Interaction', () => {
         const dropdown = Dropdown({ items, onSelect });
         container.appendChild(dropdown);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const trigger = container.querySelector('.dropdown-trigger');
             trigger.click();
 
-            setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
                 const disabledItem = container.querySelector('.dropdown-item-link');
                 if (disabledItem) {
                     disabledItem.click();
                 }
 
                 expect(onSelect).not.toHaveBeenCalled();
-
-                done();
-            }, 50);
-        }, 50);
     });
 
-    it('should support different positions', (done) => {
+    it('should support different positions', async () => {
         const positions = ['bottom-left', 'bottom-right', 'top-left', 'top-right'];
         let completed = 0;
 
-        positions.forEach((position) => {
+        for (const position of positions) {
             const div = document.createElement('div');
             container.appendChild(div);
 
@@ -286,19 +243,18 @@ describe('Dropdown Interaction', () => {
             });
             div.appendChild(dropdown);
 
-            setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
                 const menu = div.querySelector('.dropdown-menu');
                 expect(menu.classList.contains(`dropdown-${position}`)).toBe(true);
 
                 completed++;
                 if (completed === positions.length) {
-                    done();
                 }
-            }, 50);
-        });
+
+        }
     });
 
-    it('should handle keyboard navigation', (done) => {
+    it('should handle keyboard navigation', async () => {
         const items = [
             { id: 'item1', label: 'Item 1' },
             { id: 'item2', label: 'Item 2' }
@@ -307,7 +263,7 @@ describe('Dropdown Interaction', () => {
         const dropdown = Dropdown({ items });
         container.appendChild(dropdown);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const trigger = container.querySelector('.dropdown-trigger');
 
             const enterEvent = new KeyboardEvent('keydown', {
@@ -316,15 +272,11 @@ describe('Dropdown Interaction', () => {
             });
             trigger.dispatchEvent(enterEvent);
 
-            setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
                 expect(dropdown.isOpen()).toBe(true);
-
-                done();
-            }, 50);
-        }, 50);
     });
 
-    it('should close dropdown on outside click', (done) => {
+    it('should close dropdown on outside click', async () => {
         const items = [
             { id: 'edit', label: 'Edit' }
         ];
@@ -332,11 +284,11 @@ describe('Dropdown Interaction', () => {
         const dropdown = Dropdown({ items });
         container.appendChild(dropdown);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const trigger = container.querySelector('.dropdown-trigger');
             trigger.click();
 
-            setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
                 const outsideElement = document.createElement('div');
                 document.body.appendChild(outsideElement);
 
@@ -346,30 +298,23 @@ describe('Dropdown Interaction', () => {
                 });
                 outsideElement.dispatchEvent(clickEvent);
 
-                setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
                     expect(dropdown.isOpen()).toBe(false);
 
                     document.body.removeChild(outsideElement);
-                    done();
-                }, 50);
-            }, 50);
-        }, 50);
     });
 
-    it('should toggle dropdown programmatically', (done) => {
+    it('should toggle dropdown programmatically', async () => {
         const dropdown = Dropdown({
             items: [{ id: 'test', label: 'Test' }]
         });
         container.appendChild(dropdown);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             dropdown.toggle();
             expect(dropdown.isOpen()).toBe(true);
 
             dropdown.toggle();
             expect(dropdown.isOpen()).toBe(false);
-
-            done();
-        }, 50);
     });
 });
