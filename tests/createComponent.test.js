@@ -85,7 +85,7 @@ describe('createComponent', () => {
     });
 
     describe('Focus Preservation', () => {
-        it('should preserve focus on re-render', (done) => {
+        it('should preserve focus on re-render', async () => {
             const template = (state) => `
         <div>
           <input data-ref="input" value="${state.value}" />
@@ -99,43 +99,36 @@ describe('createComponent', () => {
 
             component.setState({ value: 'updated' });
 
-            setTimeout(() => {
-                expect(document.activeElement.tagName).toBe('INPUT');
-                document.body.removeChild(document.body.lastChild);
-                done();
-            }, 50);
+            await new Promise(resolve => setTimeout(resolve, 50));
+            expect(document.activeElement.tagName).toBe('INPUT');
+            document.body.removeChild(document.body.lastChild);
         });
     });
 
     describe('useEffect Hook', () => {
-        it('should call effect after component renders', (done) => {
+        it('should call effect after component renders', async () => {
             const template = () => '<div>Test</div>';
             const component = createComponent(template);
             const effectFn = vi.fn();
 
             component.useEffect(effectFn);
 
-            setTimeout(() => {
-                expect(effectFn).toHaveBeenCalledWith(component);
-                done();
-            }, 50);
+            await new Promise(resolve => setTimeout(resolve, 50));
+            expect(effectFn).toHaveBeenCalledWith(component);
         });
 
-        it('should call cleanup function on re-render', (done) => {
+        it('should call cleanup function on re-render', async () => {
             const template = (state) => `<div>${state.count}</div>`;
             const component = createComponent(template, { count: 0 });
             const cleanup = vi.fn();
 
             component.useEffect(() => cleanup);
 
-            setTimeout(() => {
-                component.setState({ count: 1 });
+            await new Promise(resolve => setTimeout(resolve, 50));
+            component.setState({ count: 1 });
 
-                setTimeout(() => {
-                    expect(cleanup).toHaveBeenCalled();
-                    done();
-                }, 50);
-            }, 50);
+            await new Promise(resolve => setTimeout(resolve, 50));
+            expect(cleanup).toHaveBeenCalled();
         });
 
         it('should validate effect function', () => {
@@ -242,7 +235,7 @@ describe('createComponent', () => {
     });
 
     describe('Cleanup', () => {
-        it('should cleanup all resources on destroy', (done) => {
+        it('should cleanup all resources on destroy', async () => {
             const component = createComponent(() => '<div data-ref="test"></div>');
             const effectCleanup = vi.fn();
             const unmountCleanup = vi.fn();
@@ -251,14 +244,12 @@ describe('createComponent', () => {
             component.onUnmount(unmountCleanup);
 
             // Wait for effect to run
-            setTimeout(() => {
-                component.destroy();
+            await new Promise(resolve => setTimeout(resolve, 20));
+            component.destroy();
 
-                expect(effectCleanup).toHaveBeenCalled();
-                expect(unmountCleanup).toHaveBeenCalled();
-                expect(Object.keys(component.refs).length).toBe(0);
-                done();
-            }, 20);
+            expect(effectCleanup).toHaveBeenCalled();
+            expect(unmountCleanup).toHaveBeenCalled();
+            expect(Object.keys(component.refs).length).toBe(0);
         });
     });
 });

@@ -81,20 +81,18 @@ describe('Storage Plugin', () => {
       manager.use(plugin);
     });
 
-    it('should persist single path', (done) => {
+    it('should persist single path', async () => {
       const state = createReactiveState({ theme: 'light' });
 
       window.rnx.storage.persist(state, 'app', ['theme']);
 
-      setTimeout(() => {
-        const stored = mockStorage.getItem('test_app');
-        expect(stored).toBeDefined();
-        expect(JSON.parse(stored)).toEqual({ theme: 'light' });
-        done();
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    const stored = mockStorage.getItem('test_app');
+    expect(stored).toBeDefined();
+    expect(JSON.parse(stored)).toEqual({ theme: 'light' });
     });
 
-    it('should persist multiple paths', (done) => {
+    it('should persist multiple paths', async () => {
       const state = createReactiveState({
         theme: 'dark',
         notifications: true,
@@ -103,18 +101,16 @@ describe('Storage Plugin', () => {
 
       window.rnx.storage.persist(state, 'settings', ['theme', 'notifications', 'language']);
 
-      setTimeout(() => {
-        const stored = JSON.parse(mockStorage.getItem('test_settings'));
-        expect(stored).toEqual({
-          theme: 'dark',
-          notifications: true,
-          language: 'en'
-        });
-        done();
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    const stored = JSON.parse(mockStorage.getItem('test_settings'));
+    expect(stored).toEqual({
+      theme: 'dark',
+      notifications: true,
+      language: 'en'
+    });
     });
 
-    it('should persist all paths when none specified', (done) => {
+    it('should persist all paths when none specified', async () => {
       const state = createReactiveState({
         color: 'blue',
         size: 'large'
@@ -122,12 +118,10 @@ describe('Storage Plugin', () => {
 
       window.rnx.storage.persist(state, 'props');
 
-      setTimeout(() => {
-        const stored = JSON.parse(mockStorage.getItem('test_props'));
-        expect(stored.color).toBe('blue');
-        expect(stored.size).toBe('large');
-        done();
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    const stored = JSON.parse(mockStorage.getItem('test_props'));
+    expect(stored.color).toBe('blue');
+    expect(stored.size).toBe('large');
     });
   });
 
@@ -182,47 +176,41 @@ describe('Storage Plugin', () => {
       manager.use(plugin);
     });
 
-    it('should save on state change', (done) => {
+    it('should save on state change', async () => {
       const state = createReactiveState({ count: 0 });
       window.rnx.storage.persist(state, 'counter', ['count']);
 
       state.count = 5;
 
-      setTimeout(() => {
-        const stored = JSON.parse(mockStorage.getItem('test_counter'));
-        expect(stored.count).toBe(5);
-        done();
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    const stored = JSON.parse(mockStorage.getItem('test_counter'));
+    expect(stored.count).toBe(5);
     });
 
-    it('should save multiple changes', (done) => {
+    it('should save multiple changes', async () => {
       const state = createReactiveState({ a: 1, b: 2 });
       window.rnx.storage.persist(state, 'data', ['a', 'b']);
 
       state.a = 10;
       state.b = 20;
 
-      setTimeout(() => {
-        const stored = JSON.parse(mockStorage.getItem('test_data'));
-        expect(stored.a).toBe(10);
-        expect(stored.b).toBe(20);
-        done();
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    const stored = JSON.parse(mockStorage.getItem('test_data'));
+    expect(stored.a).toBe(10);
+    expect(stored.b).toBe(20);
     });
 
-    it('should only save specified paths', (done) => {
+    it('should only save specified paths', async () => {
       const state = createReactiveState({ x: 1, y: 2, z: 3 });
       window.rnx.storage.persist(state, 'partial', ['x', 'y']);
 
       state.z = 999; // Not in persist list
 
-      setTimeout(() => {
-        const stored = JSON.parse(mockStorage.getItem('test_partial'));
-        expect(stored.x).toBe(1);
-        expect(stored.y).toBe(2);
-        // z should not be in stored (or be its previous value)
-        done();
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    const stored = JSON.parse(mockStorage.getItem('test_partial'));
+    expect(stored.x).toBe(1);
+    expect(stored.y).toBe(2);
+    // z should not be in stored (or be its previous value)
     });
   });
 
@@ -276,7 +264,7 @@ describe('Storage Plugin', () => {
       manager.use(plugin);
     });
 
-    it('should persist nested objects', (done) => {
+    it('should persist nested objects', async () => {
       const state = createReactiveState({
         user: {
           name: 'John',
@@ -286,29 +274,25 @@ describe('Storage Plugin', () => {
 
       window.rnx.storage.persist(state, 'user', ['user']);
 
-      setTimeout(() => {
-        const stored = JSON.parse(mockStorage.getItem('test_user'));
-        expect(stored.user.name).toBe('John');
-        expect(stored.user.email).toBe('john@example.com');
-        done();
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    const stored = JSON.parse(mockStorage.getItem('test_user'));
+    expect(stored.user.name).toBe('John');
+    expect(stored.user.email).toBe('john@example.com');
     });
 
-    it('should persist arrays', (done) => {
+    it('should persist arrays', async () => {
       const state = createReactiveState({
         items: [1, 2, 3, 4, 5]
       });
 
       window.rnx.storage.persist(state, 'list', ['items']);
 
-      setTimeout(() => {
-        const stored = JSON.parse(mockStorage.getItem('test_list'));
-        expect(stored.items).toEqual([1, 2, 3, 4, 5]);
-        done();
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    const stored = JSON.parse(mockStorage.getItem('test_list'));
+    expect(stored.items).toEqual([1, 2, 3, 4, 5]);
     });
 
-    it('should handle deeply nested changes', (done) => {
+    it('should handle deeply nested changes', async () => {
       const state = createReactiveState({
         config: {
           api: {
@@ -322,11 +306,9 @@ describe('Storage Plugin', () => {
 
       state.config.api.timeout = 10000;
 
-      setTimeout(() => {
-        const stored = JSON.parse(mockStorage.getItem('test_config'));
-        expect(stored.config.api.timeout).toBe(10000);
-        done();
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    const stored = JSON.parse(mockStorage.getItem('test_config'));
+    expect(stored.config.api.timeout).toBe(10000);
     });
   });
 

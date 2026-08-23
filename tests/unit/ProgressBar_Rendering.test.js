@@ -19,79 +19,69 @@ describe('ProgressBar Rendering', () => {
         }
     });
 
-    it('should render progress bar with default props', (done) => {
+    it('should render progress bar with default props', async () => {
         const progress = ProgressBar();
         container.appendChild(progress);
 
-        setTimeout(() => {
-            const wrapper = container.querySelector('.progress-bar-wrapper');
-            expect(wrapper).not.toBeNull();
+        await new Promise(resolve => setTimeout(resolve, 50));
+        const wrapper = container.querySelector('.progress-bar-wrapper');
+        expect(wrapper).not.toBeNull();
 
-            const bar = container.querySelector('.progress-bar');
-            expect(bar).not.toBeNull();
+        const bar = container.querySelector('.progress-bar');
+        expect(bar).not.toBeNull();
 
-            done();
-        }, 50);
     });
 
-    it('should render with initial value', (done) => {
+    it('should render with initial value', async () => {
         const progress = ProgressBar({
             value: 50
         });
         container.appendChild(progress);
 
-        setTimeout(() => {
-            const bar = container.querySelector('.progress-bar');
-            const width = bar.style.width;
-            expect(width).toBe('50%');
+        await new Promise(resolve => setTimeout(resolve, 50));
+        const bar = container.querySelector('.progress-bar');
+        const width = bar.style.width;
+        expect(width).toBe('50%');
 
-            done();
-        }, 50);
     });
 
-    it('should clamp value between 0 and 100', (done) => {
+    it('should clamp value between 0 and 100', async () => {
         const progress = ProgressBar({ value: 150 });
         container.appendChild(progress);
 
-        setTimeout(() => {
-            const bar = container.querySelector('.progress-bar');
-            expect(bar.style.width).toBe('100%');
+        await new Promise(resolve => setTimeout(resolve, 50));
+        const bar = container.querySelector('.progress-bar');
+        expect(bar.style.width).toBe('100%');
 
-            done();
-        }, 50);
     });
 
-    it('should render with color variant', (done) => {
+    it('should render with color variant', async () => {
         const progress = ProgressBar({
             value: 50,
             variant: 'success'
         });
         container.appendChild(progress);
 
-        setTimeout(() => {
-            const bar = container.querySelector('.progress-bar');
-            expect(bar.classList.contains('progress-bar-success')).toBe(true);
+        await new Promise(resolve => setTimeout(resolve, 50));
+        const bar = container.querySelector('.progress-bar');
+        expect(bar.classList.contains('progress-bar-success')).toBe(true);
 
-            done();
-        }, 50);
     });
 
-    it('should render striped pattern', (done) => {
+    it('should render striped pattern', async () => {
         const progress = ProgressBar({
             value: 50,
             striped: true
         });
         container.appendChild(progress);
 
-        setTimeout(() => {
-            const bar = container.querySelector('.progress-bar');
-            expect(bar.classList.contains('striped')).toBe(true);
+        await new Promise(resolve => setTimeout(resolve, 50));
+        const bar = container.querySelector('.progress-bar');
+        expect(bar.classList.contains('striped')).toBe(true);
 
-            done();
-        }, 50);
     });
 
-    it('should apply animated class when striped and animated', (done) => {
+    it('should apply animated class when striped and animated', async () => {
         const progress = ProgressBar({
             value: 50,
             striped: true,
@@ -99,34 +89,30 @@ describe('ProgressBar Rendering', () => {
         });
         container.appendChild(progress);
 
-        setTimeout(() => {
-            const bar = container.querySelector('.progress-bar');
-            expect(bar.classList.contains('striped')).toBe(true);
-            expect(bar.classList.contains('animated')).toBe(true);
+        await new Promise(resolve => setTimeout(resolve, 50));
+        const bar = container.querySelector('.progress-bar');
+        expect(bar.classList.contains('striped')).toBe(true);
+        expect(bar.classList.contains('animated')).toBe(true);
 
-            done();
-        }, 50);
     });
 
-    it('should render indeterminate state', (done) => {
+    it('should render indeterminate state', async () => {
         const progress = ProgressBar({
             indeterminate: true
         });
         container.appendChild(progress);
 
-        setTimeout(() => {
-            const bar = container.querySelector('.progress-bar');
-            expect(bar.classList.contains('indeterminate')).toBe(true);
+        await new Promise(resolve => setTimeout(resolve, 50));
+        const bar = container.querySelector('.progress-bar');
+        expect(bar.classList.contains('indeterminate')).toBe(true);
 
-            done();
-        }, 50);
     });
 
-    it('should render all color variants', (done) => {
+    it('should render all color variants', async () => {
         const variants = ['primary', 'success', 'danger', 'warning', 'info'];
         let completed = 0;
 
-        variants.forEach((variant) => {
+        for (const variant of variants) {
             const div = document.createElement('div');
             container.appendChild(div);
 
@@ -136,45 +122,39 @@ describe('ProgressBar Rendering', () => {
             });
             div.appendChild(progress);
 
-            setTimeout(() => {
-                const bar = div.querySelector('.progress-bar');
-                expect(bar.classList.contains(`progress-bar-${variant}`)).toBe(true);
+            await new Promise(resolve => setTimeout(resolve, 50));
+            const bar = div.querySelector('.progress-bar');
+            expect(bar.classList.contains(`progress-bar-${variant}`)).toBe(true);
 
-                completed++;
-                if (completed === variants.length) {
-                    done();
-                }
-            }, 50);
-        });
+            completed++;
+            if (completed === variants.length) {
+            }
+        }
     });
 
-    it('should display percentage text', (done) => {
+    it('should display percentage text', async () => {
         const progress = ProgressBar({
             value: 75,
             showLabel: true
         });
         container.appendChild(progress);
 
-        setTimeout(() => {
-            const bar = container.querySelector('.progress-bar');
-            expect(bar.textContent).toMatch(/75|%/);
+        await new Promise(resolve => setTimeout(resolve, 50));
+        const bar = container.querySelector('.progress-bar');
+        expect(bar.textContent).toMatch(/75|%/);
 
-            done();
-        }, 50);
     });
 
-    it('should handle height prop', (done) => {
+    it('should handle height prop', async () => {
         const progress = ProgressBar({
             value: 50,
             height: '20px'
         });
         container.appendChild(progress);
 
-        setTimeout(() => {
-            const wrapper = container.querySelector('.progress-bar-wrapper');
-            expect(wrapper.style.height).toBe('20px');
+        await new Promise(resolve => setTimeout(resolve, 50));
+        const wrapper = container.querySelector('.progress-bar-wrapper');
+        expect(wrapper.style.height).toBe('20px');
 
-            done();
-        }, 50);
     });
 });
