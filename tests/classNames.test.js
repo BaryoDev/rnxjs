@@ -83,6 +83,85 @@ describe('cn', () => {
         });
     });
 
+    describe('prefix families that share a stem but not a property', () => {
+        it('separates text-overflow from text colour', () => {
+            expect(cn('text-ellipsis text-slate-500')).toBe('text-ellipsis text-slate-500');
+            expect(cn('text-clip text-slate-500')).toBe('text-clip text-slate-500');
+        });
+
+        it('separates border-collapse from border colour', () => {
+            expect(cn('border-collapse border-slate-200'))
+                .toBe('border-collapse border-slate-200');
+            expect(cn('border-separate border-spacing-2 border-slate-200'))
+                .toBe('border-separate border-spacing-2 border-slate-200');
+        });
+
+        it('separates background position, clip, origin and blend from colour', () => {
+            expect(cn('bg-white bg-center bg-clip-padding'))
+                .toBe('bg-white bg-center bg-clip-padding');
+            expect(cn('bg-white bg-origin-border bg-blend-multiply'))
+                .toBe('bg-white bg-origin-border bg-blend-multiply');
+        });
+
+        it('separates object-fit from object-position', () => {
+            expect(cn('object-cover object-center')).toBe('object-cover object-center');
+        });
+
+        it('separates shadow size from shadow colour', () => {
+            expect(cn('shadow-lg shadow-indigo-500/50')).toBe('shadow-lg shadow-indigo-500/50');
+        });
+
+        it('separates the scale axes', () => {
+            expect(cn('scale-x-100 scale-y-50')).toBe('scale-x-100 scale-y-50');
+        });
+
+        it('separates divide reverse from divide width', () => {
+            expect(cn('divide-y-2 divide-y-reverse')).toBe('divide-y-2 divide-y-reverse');
+        });
+
+        it('separates ring opacity from ring colour', () => {
+            expect(cn('ring-indigo-500 ring-opacity-50')).toBe('ring-indigo-500 ring-opacity-50');
+        });
+
+        it('still merges within a single property', () => {
+            expect(cn('align-top align-middle')).toBe('align-middle');
+            expect(cn('object-cover object-contain')).toBe('object-contain');
+            expect(cn('shadow-sm shadow-lg')).toBe('shadow-lg');
+            expect(cn('bg-center bg-top')).toBe('bg-top');
+        });
+    });
+
+    describe('Bootstrap flexbox and breakpoint classes', () => {
+        it('treats flex-column as a direction, not a flex shorthand', () => {
+            expect(cn('d-flex flex-column flex-grow-1'))
+                .toBe('d-flex flex-column flex-grow-1');
+            expect(cn('flex-column-reverse flex-shrink-0 flex-fill'))
+                .toBe('flex-column-reverse flex-shrink-0 flex-fill');
+        });
+
+        it('merges opposing flex directions across both spellings', () => {
+            expect(cn('flex-row flex-column')).toBe('flex-column');
+            expect(cn('flex-grow-0 flex-grow-1')).toBe('flex-grow-1');
+        });
+
+        it('separates align-items, align-self and align-content', () => {
+            expect(cn('d-flex align-items-center align-self-end align-content-between'))
+                .toBe('d-flex align-items-center align-self-end align-content-between');
+        });
+
+        it('never merges across a responsive breakpoint infix', () => {
+            // Different media queries — collapsing them would drop a breakpoint.
+            expect(cn('m-3 m-md-5')).toBe('m-3 m-md-5');
+            expect(cn('flex-sm-row flex-md-column')).toBe('flex-sm-row flex-md-column');
+            expect(cn('d-none d-lg-block')).toBe('d-none d-lg-block');
+        });
+
+        it('does not mistake a trailing size suffix for a breakpoint infix', () => {
+            expect(cn('max-w-screen-sm max-w-screen-lg')).toBe('max-w-screen-lg');
+            expect(cn('btn btn-primary btn-sm')).toBe('btn btn-primary btn-sm');
+        });
+    });
+
     describe('variant prefixes', () => {
         it('scopes conflicts to a single variant', () => {
             expect(cn('bg-white hover:bg-slate-50')).toBe('bg-white hover:bg-slate-50');

@@ -26,6 +26,12 @@ const DISPLAY = new Set([
 const POSITION = new Set(['static', 'fixed', 'absolute', 'relative', 'sticky']);
 const TEXT_ALIGN = new Set(['left', 'center', 'right', 'justify', 'start', 'end']);
 const TEXT_WRAP = new Set(['wrap', 'nowrap', 'balance', 'pretty']);
+const TEXT_OVERFLOW = new Set(['ellipsis', 'clip']);
+const VERTICAL_ALIGN = new Set([
+  'baseline', 'top', 'middle', 'bottom', 'text-top', 'text-bottom', 'sub', 'super'
+]);
+const OBJECT_FIT = new Set(['contain', 'cover', 'fill', 'none', 'scale-down']);
+const SHADOW_SIZE = new Set(['sm', 'md', 'lg', 'xl', '2xl', 'inner', 'none']);
 const TEXT_TRANSFORM = new Set(['uppercase', 'lowercase', 'capitalize', 'normal-case']);
 const TEXT_DECORATION = new Set(['underline', 'overline', 'line-through', 'no-underline']);
 const FONT_SIZE = new Set([
@@ -50,6 +56,10 @@ const BG_ATTACHMENT = new Set(['fixed', 'local', 'scroll']);
 const BG_SIZE = new Set(['auto', 'cover', 'contain']);
 const BG_REPEAT = new Set([
   'repeat', 'no-repeat', 'repeat-x', 'repeat-y', 'repeat-round', 'repeat-space'
+]);
+const BG_POSITION = new Set([
+  'bottom', 'center', 'left', 'right', 'top',
+  'left-bottom', 'left-top', 'right-bottom', 'right-top'
 ]);
 
 const JUSTIFY_CONTENT = new Set([
@@ -127,6 +137,13 @@ function getGroup(raw) {
   const negative = base.startsWith('-');
   const bare = negative ? base.slice(1) : base;
 
+  // Bootstrap encodes breakpoints as an infix (`flex-md-column`, `m-lg-3`)
+  // rather than a variant prefix. Two such classes target different media
+  // queries and must never collapse into each other, so leave them ungrouped.
+  if (!bare.includes('[') && /^[a-z]+(?:-[a-z]+)*?-(?:sm|md|lg|xl|xxl)-/.test(bare)) {
+    return null;
+  }
+
   // --- standalone keywords -------------------------------------------------
   if (DISPLAY.has(bare)) return 'display';
   if (POSITION.has(bare)) return 'position';
@@ -158,7 +175,9 @@ function getGroup(raw) {
   if (v !== null) {
     if (TEXT_ALIGN.has(v)) return 'text-align';
     if (TEXT_WRAP.has(v)) return 'text-wrap';
+    if (TEXT_OVERFLOW.has(v)) return 'text-overflow';
     if (v.startsWith('opacity-')) return 'text-opacity';
+    if (v.startsWith('shadow')) return 'text-shadow';
     if (FONT_SIZE.has(v)) return 'font-size';
     if (isArbitrary(v)) return isArbitraryColor(v) ? 'text-color' : 'font-size';
     return 'text-color';
@@ -176,6 +195,7 @@ function getGroup(raw) {
   v = after(bare, 'border-');
   if (v !== null) {
     if (LINE_STYLE.has(v)) return 'border-style';
+    if (v === 'collapse' || v === 'separate') return 'border-collapse';
     if (isNumeric(v) || isArbitrary(v)) return 'border-w';
     if (v.startsWith('spacing-')) return 'border-spacing';
     const side = v.match(/^([a-z]+)(?:-(.*))?$/);
@@ -195,7 +215,8 @@ function getGroup(raw) {
   v = after(bare, 'divide-');
   if (v !== null) {
     const axis = v.match(/^([xy])(?:-|$)/);
-    if (axis) return `divide-w-${axis[1]}`;
+    // `divide-y-reverse` flips the border side; it does not set a width.
+    if (axis) return v.endsWith('-reverse') ? `divide-reverse-${axis[1]}` : `divide-w-${axis[1]}`;
     if (LINE_STYLE.has(v)) return 'divide-style';
     return 'divide-color';
   }
@@ -204,6 +225,7 @@ function getGroup(raw) {
   v = after(bare, 'ring-');
   if (v !== null) {
     if (v === 'inset') return 'ring-inset';
+    if (v.startsWith('opacity-')) return 'ring-opacity';
     if (isNumeric(v) || isArbitrary(v)) return 'ring-w';
     const offset = after(v, 'offset-');
     if (offset !== null) {
@@ -226,6 +248,11 @@ function getGroup(raw) {
     if (BG_ATTACHMENT.has(v)) return 'bg-attachment';
     if (BG_SIZE.has(v)) return 'bg-size';
     if (BG_REPEAT.has(v)) return 'bg-repeat';
+    if (BG_POSITION.has(v)) return 'bg-position';
+    if (v.startsWith('clip-')) return 'bg-clip';
+    if (v.startsWith('origin-')) return 'bg-origin';
+    if (v.startsWith('blend-')) return 'bg-blend';
+    if (v.startsWith('opacity-')) return 'bg-opacity';
     if (v === 'none' || v.startsWith('gradient-') || v.startsWith('linear-') ||
         v.startsWith('radial-') || v.startsWith('conic-')) {
       return 'bg-image';
@@ -241,8 +268,14 @@ function getGroup(raw) {
   }
 
   // --- flexbox / grid ------------------------------------------------------
-  if (/^flex-(row|row-reverse|col|col-reverse)$/.test(bare)) return 'flex-direction';
+  // `col`/`col-reverse` are Tailwind; `column`/`column-reverse` are Bootstrap.
+  if (/^flex-(row|row-reverse|col|col-reverse|column|column-reverse)$/.test(bare)) {
+    return 'flex-direction';
+  }
   if (/^flex-(wrap|wrap-reverse|nowrap)$/.test(bare)) return 'flex-wrap';
+  // Bootstrap spells these `flex-grow-1` / `flex-shrink-0`.
+  if (/^flex-grow(-.+)?$/.test(bare)) return 'grow';
+  if (/^flex-shrink(-.+)?$/.test(bare)) return 'shrink';
   if (bare.startsWith('flex-')) return 'flex';
   if (/^grow(-.+)?$/.test(bare)) return 'grow';
   if (/^shrink(-.+)?$/.test(bare)) return 'shrink';
@@ -270,7 +303,10 @@ function getGroup(raw) {
   if (bare.startsWith('overflow-')) return 'overflow';
   if (bare.startsWith('z-')) return 'z';
   if (bare.startsWith('opacity-')) return 'opacity';
-  if (bare.startsWith('shadow-')) return 'shadow';
+  v = after(bare, 'shadow-');
+  if (v !== null) {
+    return SHADOW_SIZE.has(v) || isNumeric(v) || isArbitrary(v) ? 'shadow' : 'shadow-color';
+  }
   if (bare.startsWith('animate-')) return 'animate';
   if (bare.startsWith('duration-')) return 'duration';
   if (bare.startsWith('delay-')) return 'delay';
@@ -284,9 +320,18 @@ function getGroup(raw) {
   if (bare.startsWith('pointer-events-')) return 'pointer-events';
   if (bare.startsWith('appearance-')) return 'appearance';
   if (bare.startsWith('accent-')) return 'accent';
-  if (bare.startsWith('object-')) return 'object';
-  if (bare.startsWith('align-')) return 'vertical-align';
+  v = after(bare, 'object-');
+  if (v !== null) return OBJECT_FIT.has(v) ? 'object-fit' : 'object-position';
+  // Bootstrap's `align-items-*` / `align-self-*` / `align-content-*` are flexbox
+  // properties, not vertical-align — they share a prefix and nothing else.
+  if (bare.startsWith('align-items-')) return 'align-items';
+  if (bare.startsWith('align-self-')) return 'align-self';
+  if (bare.startsWith('align-content-')) return 'align-content';
+  v = after(bare, 'align-');
+  if (v !== null) return VERTICAL_ALIGN.has(v) ? 'vertical-align' : null;
   if (bare.startsWith('rotate-')) return 'rotate';
+  if (bare.startsWith('scale-x-')) return 'scale-x';
+  if (bare.startsWith('scale-y-')) return 'scale-y';
   if (bare.startsWith('scale-')) return 'scale';
   if (bare.startsWith('translate-x-')) return 'translate-x';
   if (bare.startsWith('translate-y-')) return 'translate-y';
