@@ -53,6 +53,7 @@ export const Dropdown = (props = {}) => {
     const listClass = resolvePartClasses('dropdown', 'list') || 'dropdown-list';
     const dividerClass = cn(resolvePartClasses('dropdown', 'divider'), 'dropdown-divider');
     const linkClass = cn(resolvePartClasses('dropdown', 'item'), 'dropdown-item-link');
+    const itemWrapperClass = resolvePartClasses('dropdown', 'itemWrapper') || 'dropdown-item-wrapper';
     const itemIconClass = resolvePartClasses('dropdown', 'itemIcon') || 'dropdown-item-icon';
     const itemTextClass = resolvePartClasses('dropdown', 'itemText') || 'dropdown-item-text';
     const badgeClass = resolvePartClasses('dropdown', 'badge') || 'dropdown-item-badge';
@@ -63,8 +64,8 @@ export const Dropdown = (props = {}) => {
         }
 
         return `
-            <li class="${cn('dropdown-item', item.disabled ? 'disabled' : '', item.active ? 'active' : '')}" role="none" data-index="${index}">
-                <a href="${escapeHtml(item.href || '#')}" class="${linkClass}" role="menuitem" tabindex="-1"${item.disabled ? ' aria-disabled="true"' : ''} data-item-id="${escapeHtml(item.id || '')}">
+            <li class="${cn(itemWrapperClass, item.disabled ? 'disabled' : '', item.active ? 'active' : '')}" role="none" data-index="${index}">
+                <a href="${escapeHtml(item.href || '#')}" class="${cn(linkClass, item.disabled ? 'disabled' : '', item.active ? 'active' : '')}" role="menuitem" tabindex="-1"${item.disabled ? ' aria-disabled="true"' : ''} data-item-id="${escapeHtml(item.id || '')}">
                     ${item.icon ? `<span class="${itemIconClass}" aria-hidden="true">${escapeHtml(item.icon)}</span>` : ''}
                     <span class="${itemTextClass}">${escapeHtml(item.label)}</span>
                     ${item.badge ? `<span class="${badgeClass}">${escapeHtml(item.badge)}</span>` : ''}
@@ -117,7 +118,7 @@ export const Dropdown = (props = {}) => {
         }
 
         // Handle item clicks
-        const itemElements = el.querySelectorAll('.dropdown-item:not(.disabled)');
+        const itemElements = el.querySelectorAll('.dropdown-item-wrapper:not(.disabled)');
         itemElements.forEach(item => {
             const link = item.querySelector('.dropdown-item-link');
             if (link) {
@@ -129,10 +130,12 @@ export const Dropdown = (props = {}) => {
                     const itemIndex = parseInt(item.getAttribute('data-index'));
 
                     // Update active state
-                    el.querySelectorAll('.dropdown-item.active').forEach(activeEl => {
+                    el.querySelectorAll('.dropdown-item-wrapper.active').forEach(activeEl => {
                         activeEl.classList.remove('active');
+                        activeEl.querySelector('.dropdown-item-link')?.classList.remove('active');
                     });
                     item.classList.add('active');
+                    link.classList.add('active');
 
                     if (onSelect) {
                         onSelect({
@@ -168,7 +171,7 @@ export const Dropdown = (props = {}) => {
                 if (e.key === 'ArrowDown') {
                     e.preventDefault();
                     open();
-                    const firstItem = el.querySelector('.dropdown-item:not(.disabled) .dropdown-item-link');
+                    const firstItem = el.querySelector('.dropdown-item-wrapper:not(.disabled) .dropdown-item-link');
                     if (firstItem) {
                         firstItem.focus();
                     }
@@ -182,7 +185,7 @@ export const Dropdown = (props = {}) => {
         }
 
         // Keyboard navigation in menu
-        const menuItems = el.querySelectorAll('.dropdown-item:not(.disabled) .dropdown-item-link');
+        const menuItems = el.querySelectorAll('.dropdown-item-wrapper:not(.disabled) .dropdown-item-link');
         menuItems.forEach((item, index) => {
             const keydownHandler = (e) => {
                 if (e.key === 'ArrowDown') {

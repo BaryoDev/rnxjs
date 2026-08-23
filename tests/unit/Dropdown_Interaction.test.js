@@ -140,8 +140,9 @@ describe('Dropdown Interaction', () => {
             trigger.click();
 
         await new Promise(resolve => setTimeout(resolve, 50));
+                // .dropdown-item is the anchor itself, matching Bootstrap's markup
                 const secondItem = container.querySelectorAll('.dropdown-item')[1];
-                secondItem.querySelector('a').click();
+                secondItem.click();
 
         await new Promise(resolve => setTimeout(resolve, 50));
                     const activeItem = container.querySelector('.dropdown-item.active');
