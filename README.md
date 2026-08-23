@@ -443,7 +443,7 @@ When using the `icon` prop in components like `Button`, `FAB`, `Icon`, etc., sim
 
 ## Project status
 
-- **Tests**: 696 tests across 39 files, running in under 4 seconds. 689 pass; 7 are known failures with open issues against them ([#22](https://github.com/BaryoDev/rnxjs/issues/22), [#23](https://github.com/BaryoDev/rnxjs/issues/23), [#24](https://github.com/BaryoDev/rnxjs/issues/24), [#25](https://github.com/BaryoDev/rnxjs/issues/25)).
+- **Tests**: 696 tests across 39 files, running in under 4 seconds. 690 pass; 6 are known failures with open issues against them ([#23](https://github.com/BaryoDev/rnxjs/issues/23), [#24](https://github.com/BaryoDev/rnxjs/issues/24), [#25](https://github.com/BaryoDev/rnxjs/issues/25)).
 - **CI**: not yet running the suite on pull requests. Tracked in [#2](https://github.com/BaryoDev/rnxjs/issues/2).
 - **Browser support**: all modern browsers (Chrome, Firefox, Safari, Edge).
 - **Dependencies**: the CDN build needs only Bootstrap CSS.
@@ -463,7 +463,7 @@ There is also a CLI scaffolder, [`create-rnxjs-app`](https://www.npmjs.com/packa
 
 Issues labelled [`good first issue`](https://github.com/BaryoDev/rnxjs/labels/good%20first%20issue) carry the file, the line, and the actual failing assertion, so they are pickable without rediscovering anything.
 
-Before opening a pull request, run `npm test`. Note the 7 known failures above; if your change adds an eighth, that one is yours.
+Before opening a pull request, run `npm test`. Note the 6 known failures above; if your change adds an eighth, that one is yours.
 
 Full changelog: [CHANGELOG.md](./CHANGELOG.md)
 
