@@ -33,7 +33,9 @@ out/
 *.bak
 
 # Dependency lock files
-package-lock.json
+# package-lock.json is committed on purpose: CI runs `npm ci`, and the publish
+# job builds the artifact that ships to npm. Without it every build resolved
+# dependencies fresh and no two builds were guaranteed to match.
 yarn.lock
 
 # Testing
