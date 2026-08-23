@@ -1,36 +1,44 @@
-name: Publish to npm
+name: CI
 
 on:
-  release:
-    types: [created]
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  publish:
+  verify:
     runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [20, 22]
+
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: ${{ matrix.node }}
           cache: npm
-          registry-url: https://registry.npmjs.org/
 
+      # `ci` over `install` so a lockfile that has drifted from package.json
+      # fails here rather than silently resolving something different.
       - run: npm ci
 
-      # The suite has to pass before anything reaches npm. Until this existed
-      # the publish path ran install, build, publish, and nothing else.
       - name: Test
         run: npm test
 
       - name: Build
         run: npm run build
 
+      # After the build, so this checks what the build actually emitted rather
+      # than what the source would have exported.
       - name: Entry points resolve
         run: |
           node -e "const m=require('./index.js'); if(!Object.keys(m).length) throw new Error('index.js exported nothing')"
           node --input-type=module -e "import('./dist/rnx.esm.js').then(m=>{if(!Object.keys(m).length) throw new Error('dist/rnx.esm.js exported nothing')})"
-
-      - run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
