@@ -6,7 +6,7 @@
  */
 
 import { createComponent } from '../../utils/createComponent.js';
-import { errorTracking } from '../../utils/errorTracking.ts';
+import { errorTracking } from '../../utils/errorTracking.js';
 import { escapeHtml } from '../../utils/security.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';

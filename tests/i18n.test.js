@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { i18n, t, setupI18nBinding } from '../utils/i18n.ts';
+import { i18n, t, setupI18nBinding } from '../utils/i18n.js';
 import { bindI18n, unbindI18n, translateElement } from '../framework/i18nBinder.js';
 import { createReactiveState } from '../utils/createReactiveState.ts';
 

@@ -3,7 +3,7 @@
  * Automatically translates elements with data-i18n attributes
  */
 
-import { i18n } from '../utils/i18n.ts';
+import { i18n } from '../utils/i18n.js';
 
 /**
  * Get nested value from object using dot notation

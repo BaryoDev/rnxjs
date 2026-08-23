@@ -1,6 +1,6 @@
 import { createComponent } from '../../utils/createComponent.js';
 import { bs } from '../../utils/bootstrap.js';
-import { createFocusTrap, announce } from '../../utils/a11y.ts';
+import { createFocusTrap, announce } from '../../utils/a11y.js';
 import { sanitizeHtml, escapeHtml } from '../../utils/security.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
