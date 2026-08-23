@@ -1,5 +1,5 @@
 import { createComponent } from '../../utils/createComponent.js';
-import { escapeHtml } from '../../utils/security.js';
+import { escapeHtml, sanitizeUrl } from '../../utils/security.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 
@@ -65,7 +65,7 @@ export const Dropdown = (props = {}) => {
 
         return `
             <li class="${cn(itemWrapperClass, item.disabled ? 'disabled' : '', item.active ? 'active' : '')}" role="none" data-index="${index}">
-                <a href="${escapeHtml(item.href || '#')}" class="${cn(linkClass, item.disabled ? 'disabled' : '', item.active ? 'active' : '')}" role="menuitem" tabindex="-1"${item.disabled ? ' aria-disabled="true"' : ''} data-item-id="${escapeHtml(item.id || '')}">
+                <a href="${escapeHtml(sanitizeUrl(item.href) || '#')}" class="${cn(linkClass, item.disabled ? 'disabled' : '', item.active ? 'active' : '')}" role="menuitem" tabindex="-1"${item.disabled ? ' aria-disabled="true"' : ''} data-item-id="${escapeHtml(item.id || '')}">
                     ${item.icon ? `<span class="${itemIconClass}" aria-hidden="true">${escapeHtml(item.icon)}</span>` : ''}
                     <span class="${itemTextClass}">${escapeHtml(item.label)}</span>
                     ${item.badge ? `<span class="${badgeClass}">${escapeHtml(item.badge)}</span>` : ''}

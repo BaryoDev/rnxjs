@@ -1,7 +1,7 @@
 import { createComponent } from '../../utils/createComponent.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
-import { escapeHtml } from '../../utils/security.js';
+import { escapeHtml, sanitizeUrl } from '../../utils/security.js';
 
 let sidebarUid = 0;
 
@@ -102,7 +102,7 @@ export const Sidebar = (props = {}) => {
                                 const childActive = child.active || (child.id && child.id === currentActiveItem);
                                 return `
                                     <li class="${cn(subitemClass, childActive ? 'active' : '')}">
-                                        <a href="${escapeHtml(child.href || '#')}" class="${subitemLinkClass}" data-item-id="${escapeHtml(child.id || '')}"${childActive ? ' aria-current="page"' : ''}>
+                                        <a href="${escapeHtml(sanitizeUrl(child.href) || '#')}" class="${subitemLinkClass}" data-item-id="${escapeHtml(child.id || '')}"${childActive ? ' aria-current="page"' : ''}>
                                             ${renderIcon(child.icon)}
                                             <span class="${itemTextClass}" style="${textStyle}">${escapeHtml(child.label)}</span>
                                         </a>
@@ -116,7 +116,7 @@ export const Sidebar = (props = {}) => {
 
             return `
                 <li class="${cn(itemClass, isActive ? 'active' : '')}">
-                    <a href="${escapeHtml(item.href || '#')}" class="${linkClass}" data-item-id="${escapeHtml(item.id || '')}"${isActive ? ' aria-current="page"' : ''}>
+                    <a href="${escapeHtml(sanitizeUrl(item.href) || '#')}" class="${linkClass}" data-item-id="${escapeHtml(item.id || '')}"${isActive ? ' aria-current="page"' : ''}>
                         ${renderIcon(item.icon)}
                         <span class="${itemTextClass}" style="${textStyle}">${escapeHtml(item.label)}</span>
                     </a>

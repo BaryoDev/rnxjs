@@ -8,7 +8,7 @@
 import { createComponent } from '../../utils/createComponent.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
-import { escapeHtml } from '../../utils/security.js';
+import { escapeHtml, sanitizeUrl } from '../../utils/security.js';
 
 /**
  * Create a breadcrumb navigation component
@@ -63,7 +63,7 @@ export function Breadcrumb({
                         <li class="${item.active ? activeClass : itemClass}"${item.active ? ' aria-current="page"' : ''}>
                             ${item.active
                                 ? `<span>${escapeHtml(item.label)}</span>`
-                                : `<a href="${escapeHtml(item.href || '#')}">${escapeHtml(item.label)}</a>`
+                                : `<a href="${escapeHtml(sanitizeUrl(item.href) || '#')}">${escapeHtml(item.label)}</a>`
                             }
                         </li>
                     `).join(`<li class="${separatorClass}" aria-hidden="true">${escapeHtml(separator)}</li>`)}
