@@ -303,7 +303,10 @@ describe('DataTable Rendering', () => {
         await new Promise(resolve => setTimeout(resolve, 50));
             const tableContent = container.textContent;
             expect(tableContent).toContain('<script>');
-            expect(tableContent).not.toContain('alert("xss")');
+
+            const tableMarkup = container.innerHTML;
+            expect(tableMarkup).toContain('&lt;script&gt;');
+            expect(tableMarkup).not.toContain('<script>');
 
             const scripts = container.querySelectorAll('script');
             expect(scripts.length).toBe(0);
