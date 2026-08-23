@@ -33,7 +33,7 @@ describe('DataTable Rendering', () => {
         }
     });
 
-    it('should render table with columns and rows', (done) => {
+    it('should render table with columns and rows', async () => {
         const table = DataTable({
             columns: mockColumns,
             rows: mockRows,
@@ -42,7 +42,7 @@ describe('DataTable Rendering', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const tableElement = container.querySelector('table.datatable');
             expect(tableElement).not.toBeNull();
 
@@ -51,12 +51,9 @@ describe('DataTable Rendering', () => {
 
             const rows = container.querySelectorAll('tbody tr');
             expect(rows.length).toBe(mockRows.length);
-
-            done();
-        }, 50);
     });
 
-    it('should render correct column headers', (done) => {
+    it('should render correct column headers', async () => {
         const table = DataTable({
             columns: mockColumns,
             rows: mockRows
@@ -64,7 +61,7 @@ describe('DataTable Rendering', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const headers = container.querySelectorAll('thead th');
             const headerTexts = Array.from(headers).map(h => h.textContent.trim());
 
@@ -72,12 +69,9 @@ describe('DataTable Rendering', () => {
             expect(headerTexts).toContain('Name');
             expect(headerTexts).toContain('Email');
             expect(headerTexts).toContain('Role');
-
-            done();
-        }, 50);
     });
 
-    it('should render correct data in cells', (done) => {
+    it('should render correct data in cells', async () => {
         const table = DataTable({
             columns: mockColumns,
             rows: mockRows
@@ -85,7 +79,7 @@ describe('DataTable Rendering', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const cells = container.querySelectorAll('tbody td');
             const cellTexts = Array.from(cells).map(c => c.textContent.trim());
 
@@ -93,12 +87,9 @@ describe('DataTable Rendering', () => {
             expect(cellTexts).toContain('John Doe');
             expect(cellTexts).toContain('john@example.com');
             expect(cellTexts).toContain('Admin');
-
-            done();
-        }, 50);
     });
 
-    it('should display loading state', (done) => {
+    it('should display loading state', async () => {
         const table = DataTable({
             columns: mockColumns,
             rows: [],
@@ -107,18 +98,15 @@ describe('DataTable Rendering', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const spinner = container.querySelector('.spinner-border');
             expect(spinner).not.toBeNull();
 
             const loadingText = container.textContent;
             expect(loadingText).toContain('Loading');
-
-            done();
-        }, 50);
     });
 
-    it('should display error state', (done) => {
+    it('should display error state', async () => {
         const errorMessage = 'Failed to load data';
         const table = DataTable({
             columns: mockColumns,
@@ -128,18 +116,15 @@ describe('DataTable Rendering', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const errorDisplay = container.textContent;
             expect(errorDisplay).toContain(errorMessage);
 
             const warningIcon = container.querySelector('.bi-exclamation-triangle');
             expect(warningIcon).not.toBeNull();
-
-            done();
-        }, 50);
     });
 
-    it('should display empty message when no rows', (done) => {
+    it('should display empty message when no rows', async () => {
         const emptyMsg = 'No users found';
         const table = DataTable({
             columns: mockColumns,
@@ -149,15 +134,12 @@ describe('DataTable Rendering', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const message = container.textContent;
             expect(message).toContain(emptyMsg);
-
-            done();
-        }, 50);
     });
 
-    it('should render search filter when filterable', (done) => {
+    it('should render search filter when filterable', async () => {
         const table = DataTable({
             columns: mockColumns,
             rows: mockRows,
@@ -166,16 +148,13 @@ describe('DataTable Rendering', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const searchInput = container.querySelector('.datatable-search');
             expect(searchInput).not.toBeNull();
             expect(searchInput.placeholder).toContain('Search');
-
-            done();
-        }, 50);
     });
 
-    it('should not render search filter when not filterable', (done) => {
+    it('should not render search filter when not filterable', async () => {
         const table = DataTable({
             columns: mockColumns,
             rows: mockRows,
@@ -184,15 +163,12 @@ describe('DataTable Rendering', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const searchInput = container.querySelector('.datatable-search');
             expect(searchInput).toBeNull();
-
-            done();
-        }, 50);
     });
 
-    it('should render sort indicators on sortable columns', (done) => {
+    it('should render sort indicators on sortable columns', async () => {
         const table = DataTable({
             columns: mockColumns,
             rows: mockRows,
@@ -201,18 +177,15 @@ describe('DataTable Rendering', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const sortableHeaders = container.querySelectorAll('th.sortable');
             expect(sortableHeaders.length).toBeGreaterThan(0);
 
             const sortIcons = container.querySelectorAll('th.sortable i');
             expect(sortIcons.length).toBeGreaterThan(0);
-
-            done();
-        }, 50);
     });
 
-    it('should render checkboxes when selectable', (done) => {
+    it('should render checkboxes when selectable', async () => {
         const table = DataTable({
             columns: mockColumns,
             rows: mockRows,
@@ -221,18 +194,15 @@ describe('DataTable Rendering', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const selectAllCheckbox = container.querySelector('[data-ref="selectAll"]');
             expect(selectAllCheckbox).not.toBeNull();
 
             const rowCheckboxes = container.querySelectorAll('.datatable-row-checkbox');
             expect(rowCheckboxes.length).toBe(mockRows.length);
-
-            done();
-        }, 50);
     });
 
-    it('should not render checkboxes when not selectable', (done) => {
+    it('should not render checkboxes when not selectable', async () => {
         const table = DataTable({
             columns: mockColumns,
             rows: mockRows,
@@ -241,18 +211,15 @@ describe('DataTable Rendering', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const selectAllCheckbox = container.querySelector('[data-ref="selectAll"]');
             expect(selectAllCheckbox).toBeNull();
 
             const rowCheckboxes = container.querySelectorAll('.datatable-row-checkbox');
             expect(rowCheckboxes.length).toBe(0);
-
-            done();
-        }, 50);
     });
 
-    it('should render pagination when needed', (done) => {
+    it('should render pagination when needed', async () => {
         const table = DataTable({
             columns: mockColumns,
             rows: mockRows,
@@ -261,7 +228,7 @@ describe('DataTable Rendering', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const pagination = container.querySelector('nav[aria-label="Table pagination"]');
             expect(pagination).not.toBeNull();
 
@@ -269,12 +236,9 @@ describe('DataTable Rendering', () => {
             const nextBtn = container.querySelector('.datatable-next-page');
             expect(prevBtn).not.toBeNull();
             expect(nextBtn).not.toBeNull();
-
-            done();
-        }, 50);
     });
 
-    it('should hide pagination with single page', (done) => {
+    it('should hide pagination with single page', async () => {
         const table = DataTable({
             columns: mockColumns,
             rows: mockRows.slice(0, 5),
@@ -283,15 +247,12 @@ describe('DataTable Rendering', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const pagination = container.querySelector('nav[aria-label="Table pagination"]');
             expect(pagination).toBeNull();
-
-            done();
-        }, 50);
     });
 
-    it('should display row count in pagination', (done) => {
+    it('should display row count in pagination', async () => {
         const table = DataTable({
             columns: mockColumns,
             rows: mockRows,
@@ -300,17 +261,14 @@ describe('DataTable Rendering', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const paginationText = container.textContent;
             expect(paginationText).toContain('1');
             expect(paginationText).toContain('2');
             expect(paginationText).toContain('5'); // Total rows
-
-            done();
-        }, 50);
     });
 
-    it('should apply custom className', (done) => {
+    it('should apply custom className', async () => {
         const customClass = 'my-custom-table';
         const table = DataTable({
             columns: mockColumns,
@@ -320,15 +278,12 @@ describe('DataTable Rendering', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const wrapper = container.querySelector('.datatable-container');
             expect(wrapper.classList.contains(customClass)).toBe(true);
-
-            done();
-        }, 50);
     });
 
-    it('should escape HTML in data', (done) => {
+    it('should escape HTML in data', async () => {
         const maliciousData = [
             {
                 id: 1,
@@ -345,16 +300,13 @@ describe('DataTable Rendering', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const tableContent = container.textContent;
             expect(tableContent).toContain('<script>');
             expect(tableContent).not.toContain('alert("xss")');
 
             const scripts = container.querySelectorAll('script');
             expect(scripts.length).toBe(0);
-
-            done();
-        }, 50);
     });
 
     it('should handle empty columns array', () => {
@@ -374,22 +326,19 @@ describe('DataTable Rendering', () => {
         }).toThrow('columns must be a non-empty array');
     });
 
-    it('should handle undefined rows', (done) => {
+    it('should handle undefined rows', async () => {
         const table = DataTable({
             columns: mockColumns
         });
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const emptyMessage = container.textContent;
             expect(emptyMessage).toContain('No data available');
-
-            done();
-        }, 50);
     });
 
-    it('should render with default empty message', (done) => {
+    it('should render with default empty message', async () => {
         const table = DataTable({
             columns: mockColumns,
             rows: []
@@ -397,15 +346,12 @@ describe('DataTable Rendering', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const message = container.textContent;
             expect(message).toContain('No data available');
-
-            done();
-        }, 50);
     });
 
-    it('should render responsive wrapper', (done) => {
+    it('should render responsive wrapper', async () => {
         const table = DataTable({
             columns: mockColumns,
             rows: mockRows
@@ -413,15 +359,12 @@ describe('DataTable Rendering', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const responsive = container.querySelector('.table-responsive');
             expect(responsive).not.toBeNull();
-
-            done();
-        }, 50);
     });
 
-    it('should properly structure table HTML', (done) => {
+    it('should properly structure table HTML', async () => {
         const table = DataTable({
             columns: mockColumns,
             rows: mockRows
@@ -429,7 +372,7 @@ describe('DataTable Rendering', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const thead = container.querySelector('table > thead');
             const tbody = container.querySelector('table > tbody');
 
@@ -441,8 +384,5 @@ describe('DataTable Rendering', () => {
 
             expect(theadRows.length).toBe(1);
             expect(tbodyRows.length).toBe(mockRows.length);
-
-            done();
-        }, 50);
     });
 });

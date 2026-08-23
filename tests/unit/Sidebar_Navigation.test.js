@@ -19,7 +19,7 @@ describe('Sidebar Navigation', () => {
         }
     });
 
-    it('should render sidebar with menu items', (done) => {
+    it('should render sidebar with menu items', async () => {
         const items = [
             { id: 'home', label: 'Home', href: '#/' },
             { id: 'about', label: 'About', href: '#/about' }
@@ -28,18 +28,15 @@ describe('Sidebar Navigation', () => {
         const sidebar = Sidebar({ items });
         container.appendChild(sidebar);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const sidebarElement = container.querySelector('.sidebar');
             expect(sidebarElement).not.toBeNull();
 
             const menuItems = container.querySelectorAll('.sidebar-item');
             expect(menuItems.length).toBe(items.length);
-
-            done();
-        }, 50);
     });
 
-    it('should render with nested menu items', (done) => {
+    it('should render with nested menu items', async () => {
         const items = [
             {
                 id: 'settings',
@@ -54,7 +51,7 @@ describe('Sidebar Navigation', () => {
         const sidebar = Sidebar({ items });
         container.appendChild(sidebar);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const parentItem = container.querySelector('.sidebar-parent');
             expect(parentItem).not.toBeNull();
 
@@ -63,16 +60,13 @@ describe('Sidebar Navigation', () => {
 
             const subItems = container.querySelectorAll('.sidebar-subitem');
             expect(subItems.length).toBe(2);
-
-            done();
-        }, 50);
     });
 
-    it('should toggle sidebar open/closed', (done) => {
+    it('should toggle sidebar open/closed', async () => {
         const sidebar = Sidebar({ defaultOpen: true });
         container.appendChild(sidebar);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             expect(sidebar.isOpen()).toBe(true);
 
             sidebar.toggle();
@@ -80,12 +74,9 @@ describe('Sidebar Navigation', () => {
 
             sidebar.toggle();
             expect(sidebar.isOpen()).toBe(true);
-
-            done();
-        }, 50);
     });
 
-    it('should hide text when sidebar is collapsed', (done) => {
+    it('should hide text when sidebar is collapsed', async () => {
         const items = [
             { id: 'home', label: 'Home', href: '#/' }
         ];
@@ -96,22 +87,18 @@ describe('Sidebar Navigation', () => {
         });
         container.appendChild(sidebar);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const textElements = container.querySelectorAll('.sidebar-item-text');
             const initialDisplay = textElements[0]?.style.display;
 
             sidebar.toggle();
 
-            setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
                 const textElementsAfter = container.querySelectorAll('.sidebar-item-text');
                 expect(textElementsAfter[0]?.style.display).toBe('none');
-
-                done();
-            }, 50);
-        }, 50);
     });
 
-    it('should track active menu item', (done) => {
+    it('should track active menu item', async () => {
         const items = [
             { id: 'home', label: 'Home', href: '#/' },
             { id: 'about', label: 'About', href: '#/about' }
@@ -120,23 +107,19 @@ describe('Sidebar Navigation', () => {
         const sidebar = Sidebar({ items, activeItem: 'home' });
         container.appendChild(sidebar);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const activeItem = container.querySelector('.sidebar-item.active');
             expect(activeItem).not.toBeNull();
 
             sidebar.setActiveItem('about');
 
-            setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
                 const updatedActive = container.querySelector('.sidebar-item.active');
                 const aboutLink = updatedActive?.querySelector('[data-item-id="about"]');
                 expect(aboutLink).not.toBeNull();
-
-                done();
-            }, 50);
-        }, 50);
     });
 
-    it('should call onItemClick callback', (done) => {
+    it('should call onItemClick callback', async () => {
         const onItemClick = vi.fn();
         const items = [
             { id: 'home', label: 'Home', href: '#/' }
@@ -145,23 +128,19 @@ describe('Sidebar Navigation', () => {
         const sidebar = Sidebar({ items, onItemClick });
         container.appendChild(sidebar);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const itemBtn = container.querySelector('.sidebar-item-btn');
             itemBtn.click();
 
-            setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
                 expect(onItemClick).toHaveBeenCalled();
                 expect(onItemClick).toHaveBeenCalledWith({
                     id: 'home',
                     label: 'Home'
                 });
-
-                done();
-            }, 50);
-        }, 50);
     });
 
-    it('should expand/collapse submenu', (done) => {
+    it('should expand/collapse submenu', async () => {
         const items = [
             {
                 id: 'settings',
@@ -175,23 +154,19 @@ describe('Sidebar Navigation', () => {
         const sidebar = Sidebar({ items });
         container.appendChild(sidebar);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const submenu = container.querySelector('.sidebar-submenu');
             const initialDisplay = submenu.style.display;
 
             const toggleBtn = container.querySelector('.sidebar-parent-toggle button');
             toggleBtn.click();
 
-            setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
                 const submenuAfter = container.querySelector('.sidebar-submenu');
                 expect(submenuAfter.style.display).not.toBe(initialDisplay);
-
-                done();
-            }, 50);
-        }, 50);
     });
 
-    it('should render with dark mode', (done) => {
+    it('should render with dark mode', async () => {
         const items = [
             { id: 'home', label: 'Home', href: '#/' }
         ];
@@ -199,15 +174,12 @@ describe('Sidebar Navigation', () => {
         const sidebar = Sidebar({ items, darkMode: true });
         container.appendChild(sidebar);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const sidebarElement = container.querySelector('.sidebar');
             expect(sidebarElement.classList.contains('sidebar-dark')).toBe(true);
-
-            done();
-        }, 50);
     });
 
-    it('should render with custom width', (done) => {
+    it('should render with custom width', async () => {
         const customWidth = '300px';
         const items = [
             { id: 'home', label: 'Home', href: '#/' }
@@ -216,15 +188,12 @@ describe('Sidebar Navigation', () => {
         const sidebar = Sidebar({ items, width: customWidth });
         container.appendChild(sidebar);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const sidebarElement = container.querySelector('.sidebar');
             expect(sidebarElement.style.width).toBe(customWidth);
-
-            done();
-        }, 50);
     });
 
-    it('should render menu items with icons', (done) => {
+    it('should render menu items with icons', async () => {
         const items = [
             { id: 'home', label: 'Home', icon: '🏠', href: '#/' }
         ];
@@ -232,12 +201,9 @@ describe('Sidebar Navigation', () => {
         const sidebar = Sidebar({ items });
         container.appendChild(sidebar);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const icon = container.querySelector('.sidebar-icon');
             expect(icon).not.toBeNull();
             expect(icon.textContent).toContain('🏠');
-
-            done();
-        }, 50);
     });
 });

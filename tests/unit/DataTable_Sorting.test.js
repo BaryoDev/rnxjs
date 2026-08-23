@@ -32,7 +32,7 @@ describe('DataTable Sorting', () => {
         }
     });
 
-    it('should sort ascending on first click', (done) => {
+    it('should sort ascending on first click', async () => {
         const table = DataTable({
             columns: mockColumns,
             rows: mockRows,
@@ -41,21 +41,18 @@ describe('DataTable Sorting', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const nameHeader = container.querySelector('[data-column="name"]');
             nameHeader.click();
 
-            setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
                 const cells = container.querySelectorAll('tbody td[data-column="name"]');
                 const names = Array.from(cells).map(c => c.textContent.trim());
 
                 expect(names).toEqual(['Alice', 'Bob', 'Charlie']);
-                done();
-            }, 50);
-        }, 50);
     });
 
-    it('should sort descending on second click', (done) => {
+    it('should sort descending on second click', async () => {
         const table = DataTable({
             columns: mockColumns,
             rows: mockRows,
@@ -64,28 +61,24 @@ describe('DataTable Sorting', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const nameHeader = container.querySelector('[data-column="name"]');
 
             // First click - ascending
             nameHeader.click();
 
-            setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
                 // Second click - descending
                 nameHeader.click();
 
-                setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
                     const cells = container.querySelectorAll('tbody td[data-column="name"]');
                     const names = Array.from(cells).map(c => c.textContent.trim());
 
                     expect(names).toEqual(['Charlie', 'Bob', 'Alice']);
-                    done();
-                }, 50);
-            }, 50);
-        }, 50);
     });
 
-    it('should toggle sort direction', (done) => {
+    it('should toggle sort direction', async () => {
         const table = DataTable({
             columns: mockColumns,
             rows: mockRows
@@ -93,7 +86,7 @@ describe('DataTable Sorting', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const idHeader = container.querySelector('[data-column="id"]');
 
             // First sort: ascending
@@ -103,12 +96,9 @@ describe('DataTable Sorting', () => {
             // Second sort: descending
             idHeader.click();
             expect(table.getSortDirection()).toBe('desc');
-
-            done();
-        }, 50);
     });
 
-    it('should sort numeric columns correctly', (done) => {
+    it('should sort numeric columns correctly', async () => {
         const table = DataTable({
             columns: mockColumns,
             rows: mockRows
@@ -116,21 +106,18 @@ describe('DataTable Sorting', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const ageHeader = container.querySelector('[data-column="age"]');
             ageHeader.click();
 
-            setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
                 const cells = container.querySelectorAll('tbody td[data-column="age"]');
                 const ages = Array.from(cells).map(c => parseInt(c.textContent.trim()));
 
                 expect(ages).toEqual([28, 32, 35]);
-                done();
-            }, 50);
-        }, 50);
     });
 
-    it('should change sort column', (done) => {
+    it('should change sort column', async () => {
         const table = DataTable({
             columns: mockColumns,
             rows: mockRows
@@ -138,7 +125,7 @@ describe('DataTable Sorting', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const nameHeader = container.querySelector('[data-column="name"]');
             const ageHeader = container.querySelector('[data-column="age"]');
 
@@ -146,17 +133,13 @@ describe('DataTable Sorting', () => {
             nameHeader.click();
             expect(table.getSortColumn()).toBe('name');
 
-            setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
                 // Sort by age (changes sort column)
                 ageHeader.click();
                 expect(table.getSortColumn()).toBe('age');
-
-                done();
-            }, 50);
-        }, 50);
     });
 
-    it('should not sort non-sortable columns', (done) => {
+    it('should not sort non-sortable columns', async () => {
         const table = DataTable({
             columns: mockColumns,
             rows: mockRows
@@ -164,19 +147,16 @@ describe('DataTable Sorting', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const roleHeader = container.querySelector('[data-column="role"]');
             expect(roleHeader.classList.contains('sortable')).toBe(false);
 
             // Clicking should not trigger sort
             roleHeader.click();
             expect(table.getSortColumn()).toBeNull();
-
-            done();
-        }, 50);
     });
 
-    it('should call onSort callback', (done) => {
+    it('should call onSort callback', async () => {
         const onSort = vi.fn();
         const table = DataTable({
             columns: mockColumns,
@@ -186,24 +166,20 @@ describe('DataTable Sorting', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const nameHeader = container.querySelector('[data-column="name"]');
             nameHeader.click();
 
-            setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
                 expect(onSort).toHaveBeenCalledWith('name', 'asc');
 
                 nameHeader.click();
 
-                setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
                     expect(onSort).toHaveBeenCalledWith('name', 'desc');
-                    done();
-                }, 50);
-            }, 50);
-        }, 50);
     });
 
-    it('should display sort indicator on active column', (done) => {
+    it('should display sort indicator on active column', async () => {
         const table = DataTable({
             columns: mockColumns,
             rows: mockRows
@@ -211,22 +187,18 @@ describe('DataTable Sorting', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const nameHeader = container.querySelector('[data-column="name"]');
             nameHeader.click();
 
-            setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
                 expect(nameHeader.classList.contains('sorted-asc')).toBe(true);
 
                 const icon = nameHeader.querySelector('i');
                 expect(icon.classList.contains('bi-sort-up')).toBe(true);
-
-                done();
-            }, 50);
-        }, 50);
     });
 
-    it('should update sort indicator on descending', (done) => {
+    it('should update sort indicator on descending', async () => {
         const table = DataTable({
             columns: mockColumns,
             rows: mockRows
@@ -234,26 +206,21 @@ describe('DataTable Sorting', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const nameHeader = container.querySelector('[data-column="name"]');
             nameHeader.click();
 
-            setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
                 nameHeader.click(); // Second click
 
-                setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
                     expect(nameHeader.classList.contains('sorted-desc')).toBe(true);
 
                     const icon = nameHeader.querySelector('i');
                     expect(icon.classList.contains('bi-sort-down')).toBe(true);
-
-                    done();
-                }, 50);
-            }, 50);
-        }, 50);
     });
 
-    it('should reset page on sort', (done) => {
+    it('should reset page on sort', async () => {
         const manyRows = Array.from({ length: 25 }, (_, i) => ({
             id: i,
             name: ['Alice', 'Bob', 'Charlie'][i % 3],
@@ -270,28 +237,24 @@ describe('DataTable Sorting', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             // Go to page 2
             const nextBtn = container.querySelector('.datatable-next-page');
             nextBtn.click();
 
-            setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
                 expect(table.getCurrentPage()).toBe(2);
 
                 // Sort
                 const nameHeader = container.querySelector('[data-column="name"]');
                 nameHeader.click();
 
-                setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
                     // Should reset to page 1
                     expect(table.getCurrentPage()).toBe(1);
-                    done();
-                }, 50);
-            }, 50);
-        }, 50);
     });
 
-    it('should handle case-insensitive string sorting', (done) => {
+    it('should handle case-insensitive string sorting', async () => {
         const rows = [
             { id: 1, name: 'zebra', email: 'z@example.com', age: 20, role: 'User' },
             { id: 2, name: 'Apple', email: 'a@example.com', age: 25, role: 'User' },
@@ -305,24 +268,20 @@ describe('DataTable Sorting', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const nameHeader = container.querySelector('[data-column="name"]');
             nameHeader.click();
 
-            setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
                 const cells = container.querySelectorAll('tbody td[data-column="name"]');
                 const names = Array.from(cells).map(c => c.textContent.trim());
 
                 expect(names[0].toLowerCase()).toBe('apple');
                 expect(names[1].toLowerCase()).toBe('banana');
                 expect(names[2].toLowerCase()).toBe('zebra');
-
-                done();
-            }, 50);
-        }, 50);
     });
 
-    it('should track sort state via getSortColumn', (done) => {
+    it('should track sort state via getSortColumn', async () => {
         const table = DataTable({
             columns: mockColumns,
             rows: mockRows
@@ -330,20 +289,17 @@ describe('DataTable Sorting', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             expect(table.getSortColumn()).toBeNull();
 
             const idHeader = container.querySelector('[data-column="id"]');
             idHeader.click();
 
-            setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
                 expect(table.getSortColumn()).toBe('id');
-                done();
-            }, 50);
-        }, 50);
     });
 
-    it('should sort with null/undefined values', (done) => {
+    it('should sort with null/undefined values', async () => {
         const rows = [
             { id: 1, name: 'Alice', email: 'alice@example.com', age: 28, role: 'User' },
             { id: 2, name: null, email: 'bob@example.com', age: null, role: 'Admin' },
@@ -357,20 +313,17 @@ describe('DataTable Sorting', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const nameHeader = container.querySelector('[data-column="name"]');
             nameHeader.click();
 
-            setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
                 // Should not throw error
                 const cells = container.querySelectorAll('tbody tr');
                 expect(cells.length).toBe(3);
-                done();
-            }, 50);
-        }, 50);
     });
 
-    it('should handle sorting disabled', (done) => {
+    it('should handle sorting disabled', async () => {
         const table = DataTable({
             columns: mockColumns,
             rows: mockRows,
@@ -379,15 +332,12 @@ describe('DataTable Sorting', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const headers = container.querySelectorAll('th.sortable');
             expect(headers.length).toBe(0);
-
-            done();
-        }, 50);
     });
 
-    it('should update getSortDirection', (done) => {
+    it('should update getSortDirection', async () => {
         const table = DataTable({
             columns: mockColumns,
             rows: mockRows
@@ -395,18 +345,14 @@ describe('DataTable Sorting', () => {
 
         container.appendChild(table);
 
-        setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
             const nameHeader = container.querySelector('[data-column="name"]');
 
             nameHeader.click();
             expect(table.getSortDirection()).toBe('asc');
 
-            setTimeout(() => {
+        await new Promise(resolve => setTimeout(resolve, 50));
                 nameHeader.click();
                 expect(table.getSortDirection()).toBe('desc');
-
-                done();
-            }, 50);
-        }, 50);
     });
 });
