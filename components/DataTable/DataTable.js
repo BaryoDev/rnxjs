@@ -176,7 +176,7 @@ export function DataTable({
                         </th>
                     ` : ''}
                     ${columns.map(col => {
-                        const isSortable = Boolean(col.sortable);
+                        const isSortable = sortable && Boolean(col.sortable);
                         const isSorted = sortColumn === col.key;
                         const ariaSort = isSortable
                             ? ` aria-sort="${isSorted ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}"`
