@@ -19,7 +19,7 @@ describe('FileUpload Validation', () => {
         }
     });
 
-    it('should reject files exceeding max size', (done) => {
+    it('should reject files exceeding max size', async () => {
         const maxSize = 1024 * 100; // 100KB
         const upload = FileUpload({
             maxSize: maxSize
@@ -27,116 +27,104 @@ describe('FileUpload Validation', () => {
 
         container.appendChild(upload);
 
-        setTimeout(() => {
-            const largeFile = new File(
-                ['x'.repeat(maxSize + 1000)],
-                'large.bin',
-                { type: 'application/octet-stream' }
-            );
+        await new Promise(resolve => setTimeout(resolve, 50));
+        const largeFile = new File(
+            ['x'.repeat(maxSize + 1000)],
+            'large.bin',
+            { type: 'application/octet-stream' }
+        );
 
-            const result = upload.addFiles([largeFile]);
+        const result = upload.addFiles([largeFile]);
 
-            expect(result.errors.length).toBeGreaterThan(0);
-            expect(result.errors[0]).toMatch(/size|exceeds/i);
+        expect(result.errors.length).toBeGreaterThan(0);
+        expect(result.errors[0]).toMatch(/size|exceeds/i);
 
-            done();
-        }, 50);
     });
 
-    it('should reject files with disallowed types', (done) => {
+    it('should reject files with disallowed types', async () => {
         const upload = FileUpload({
             accept: ['.jpg', '.png']
         });
 
         container.appendChild(upload);
 
-        setTimeout(() => {
-            const exeFile = new File(['MZ'], 'malware.exe', { type: 'application/exe' });
-            const result = upload.addFiles([exeFile]);
+        await new Promise(resolve => setTimeout(resolve, 50));
+        const exeFile = new File(['MZ'], 'malware.exe', { type: 'application/exe' });
+        const result = upload.addFiles([exeFile]);
 
-            expect(result.errors.length).toBeGreaterThan(0);
-            expect(result.errors[0]).toMatch(/type|allowed/i);
+        expect(result.errors.length).toBeGreaterThan(0);
+        expect(result.errors[0]).toMatch(/type|allowed/i);
 
-            done();
-        }, 50);
     });
 
-    it('should accept files with correct types', (done) => {
+    it('should accept files with correct types', async () => {
         const upload = FileUpload({
             accept: ['.jpg', '.png']
         });
 
         container.appendChild(upload);
 
-        setTimeout(() => {
-            const jpgFile = new File(['content'], 'image.jpg', { type: 'image/jpeg' });
-            const result = upload.addFiles([jpgFile]);
+        await new Promise(resolve => setTimeout(resolve, 50));
+        const jpgFile = new File(['content'], 'image.jpg', { type: 'image/jpeg' });
+        const result = upload.addFiles([jpgFile]);
 
-            expect(result.errors.length).toBe(0);
-            expect(result.added.length).toBe(1);
+        expect(result.errors.length).toBe(0);
+        expect(result.added.length).toBe(1);
 
-            done();
-        }, 50);
     });
 
-    it('should enforce max file count', (done) => {
+    it('should enforce max file count', async () => {
         const upload = FileUpload({
             maxFiles: 2
         });
 
         container.appendChild(upload);
 
-        setTimeout(() => {
-            const file1 = new File(['content'], 'file1.txt', { type: 'text/plain' });
-            const file2 = new File(['content'], 'file2.txt', { type: 'text/plain' });
-            const file3 = new File(['content'], 'file3.txt', { type: 'text/plain' });
+        await new Promise(resolve => setTimeout(resolve, 50));
+        const file1 = new File(['content'], 'file1.txt', { type: 'text/plain' });
+        const file2 = new File(['content'], 'file2.txt', { type: 'text/plain' });
+        const file3 = new File(['content'], 'file3.txt', { type: 'text/plain' });
 
-            upload.addFiles([file1, file2]);
-            const result = upload.addFiles([file3]);
+        upload.addFiles([file1, file2]);
+        const result = upload.addFiles([file3]);
 
-            expect(result.errors.length).toBeGreaterThan(0);
-            expect(result.errors[0]).toMatch(/maximum|count/i);
+        expect(result.errors.length).toBeGreaterThan(0);
+        expect(result.errors[0]).toMatch(/maximum|count/i);
 
-            done();
-        }, 50);
     });
 
-    it('should validate file names for path traversal', (done) => {
+    it('should validate file names for path traversal', async () => {
         const upload = FileUpload();
 
         container.appendChild(upload);
 
-        setTimeout(() => {
-            const maliciousFile = new File(['content'], '../../../etc/passwd', { type: 'text/plain' });
-            const result = upload.addFiles([maliciousFile]);
+        await new Promise(resolve => setTimeout(resolve, 50));
+        const maliciousFile = new File(['content'], '../../../etc/passwd', { type: 'text/plain' });
+        const result = upload.addFiles([maliciousFile]);
 
-            // Should either reject or sanitize
-            const files = upload.getFiles();
-            const fileName = files[0]?.name || '';
-            expect(fileName).not.toContain('..');
+        // Should either reject or sanitize
+        const files = upload.getFiles();
+        const fileName = files[0]?.name || '';
+        expect(fileName).not.toContain('..');
 
-            done();
-        }, 50);
     });
 
-    it('should reject empty files if configured', (done) => {
+    it('should reject empty files if configured', async () => {
         const upload = FileUpload({
             allowEmpty: false
         });
 
         container.appendChild(upload);
 
-        setTimeout(() => {
-            const emptyFile = new File([], 'empty.txt', { type: 'text/plain' });
-            const result = upload.addFiles([emptyFile]);
+        await new Promise(resolve => setTimeout(resolve, 50));
+        const emptyFile = new File([], 'empty.txt', { type: 'text/plain' });
+        const result = upload.addFiles([emptyFile]);
 
-            expect(result.errors.length).toBeGreaterThan(0);
+        expect(result.errors.length).toBeGreaterThan(0);
 
-            done();
-        }, 50);
     });
 
-    it('should handle multiple validation errors', (done) => {
+    it('should handle multiple validation errors', async () => {
         const upload = FileUpload({
             maxSize: 1000,
             accept: ['.jpg'],
@@ -145,21 +133,19 @@ describe('FileUpload Validation', () => {
 
         container.appendChild(upload);
 
-        setTimeout(() => {
-            const file1 = new File(
-                ['x'.repeat(2000)],
-                'large.exe',
-                { type: 'application/exe' }
-            );
-            const file2 = new File(['content'], 'image.jpg', { type: 'image/jpeg' });
+        await new Promise(resolve => setTimeout(resolve, 50));
+        const file1 = new File(
+            ['x'.repeat(2000)],
+            'large.exe',
+            { type: 'application/exe' }
+        );
+        const file2 = new File(['content'], 'image.jpg', { type: 'image/jpeg' });
 
-            const result1 = upload.addFiles([file1]);
-            expect(result1.errors.length).toBeGreaterThan(1);
+        const result1 = upload.addFiles([file1]);
+        expect(result1.errors.length).toBeGreaterThan(1);
 
-            const result2 = upload.addFiles([file2]);
-            expect(result2.errors.length).toBeGreaterThan(0);
+        const result2 = upload.addFiles([file2]);
+        expect(result2.errors.length).toBeGreaterThan(0);
 
-            done();
-        }, 50);
     });
 });

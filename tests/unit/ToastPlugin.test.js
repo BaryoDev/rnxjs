@@ -87,77 +87,63 @@ describe('Toast Plugin', () => {
       manager.use(plugin);
     });
 
-    it('should show generic toast', (done) => {
+    it('should show generic toast', async () => {
       window.rnx.toast.show('Test message');
 
-      setTimeout(() => {
-        const toast = document.querySelector('.rnx-toast');
-        expect(toast).toBeDefined();
-        expect(toast.textContent).toContain('Test message');
-        done();
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    const toast = document.querySelector('.rnx-toast');
+    expect(toast).toBeDefined();
+    expect(toast.textContent).toContain('Test message');
     });
 
-    it('should show success toast', (done) => {
+    it('should show success toast', async () => {
       window.rnx.toast.success('Success!');
 
-      setTimeout(() => {
-        const toast = document.querySelector('.rnx-toast-success');
-        expect(toast).toBeDefined();
-        expect(toast.classList.contains('rnx-toast-show')).toBe(true);
-        done();
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    const toast = document.querySelector('.rnx-toast-success');
+    expect(toast).toBeDefined();
+    expect(toast.classList.contains('rnx-toast-show')).toBe(true);
     });
 
-    it('should show error toast', (done) => {
+    it('should show error toast', async () => {
       window.rnx.toast.error('Error!');
 
-      setTimeout(() => {
-        const toast = document.querySelector('.rnx-toast-error');
-        expect(toast).toBeDefined();
-        done();
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    const toast = document.querySelector('.rnx-toast-error');
+    expect(toast).toBeDefined();
     });
 
-    it('should show warning toast', (done) => {
+    it('should show warning toast', async () => {
       window.rnx.toast.warning('Warning!');
 
-      setTimeout(() => {
-        const toast = document.querySelector('.rnx-toast-warning');
-        expect(toast).toBeDefined();
-        done();
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    const toast = document.querySelector('.rnx-toast-warning');
+    expect(toast).toBeDefined();
     });
 
-    it('should show info toast', (done) => {
+    it('should show info toast', async () => {
       window.rnx.toast.info('Info');
 
-      setTimeout(() => {
-        const toast = document.querySelector('.rnx-toast-info');
-        expect(toast).toBeDefined();
-        done();
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    const toast = document.querySelector('.rnx-toast-info');
+    expect(toast).toBeDefined();
     });
 
-    it('should escape HTML in message', (done) => {
+    it('should escape HTML in message', async () => {
       window.rnx.toast.show('<script>alert("xss")</script>');
 
-      setTimeout(() => {
-        const message = document.querySelector('.rnx-toast-message');
-        expect(message.textContent).toContain('<script>');
-        expect(message.innerHTML).not.toContain('<script>');
-        done();
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    const message = document.querySelector('.rnx-toast-message');
+    expect(message.textContent).toContain('<script>');
+    expect(message.innerHTML).not.toContain('<script>');
     });
 
-    it('should have close button', (done) => {
+    it('should have close button', async () => {
       window.rnx.toast.show('Message');
 
-      setTimeout(() => {
-        const closeBtn = document.querySelector('.rnx-toast-close');
-        expect(closeBtn).toBeDefined();
-        done();
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    const closeBtn = document.querySelector('.rnx-toast-close');
+    expect(closeBtn).toBeDefined();
     });
   });
 
@@ -167,47 +153,40 @@ describe('Toast Plugin', () => {
       manager.use(plugin);
     });
 
-    it('should remove toast on close button click', (done) => {
+    it('should remove toast on close button click', async () => {
       window.rnx.toast.show('Message');
 
-      setTimeout(() => {
-        const closeBtn = document.querySelector('.rnx-toast-close');
-        closeBtn.click();
+      await new Promise(resolve => setTimeout(resolve, 50));
+    const closeBtn = document.querySelector('.rnx-toast-close');
+    closeBtn.click();
 
-        setTimeout(() => {
-          const toast = document.querySelector('.rnx-toast');
-          expect(toast).toBeNull();
-          done();
-        }, 350); // Wait for animation
-      }, 50);
+    await new Promise(resolve => setTimeout(resolve, 350));
+  const toast = document.querySelector('.rnx-toast');
+  expect(toast).toBeNull();
+  done(); // Wait for animation
     });
 
-    it('should auto-dismiss after duration', (done) => {
+    it('should auto-dismiss after duration', async () => {
       window.rnx.toast.show('Message', 'info', 100);
 
-      setTimeout(() => {
-        const toast = document.querySelector('.rnx-toast');
-        expect(toast).toBeNull();
-        done();
-      }, 450);
+      await new Promise(resolve => setTimeout(resolve, 450));
+    const toast = document.querySelector('.rnx-toast');
+    expect(toast).toBeNull();
     });
 
-    it('should clear all toasts', (done) => {
+    it('should clear all toasts', async () => {
       window.rnx.toast.success('Message 1');
       window.rnx.toast.error('Message 2');
 
-      setTimeout(() => {
-        window.rnx.toast.clear();
+      await new Promise(resolve => setTimeout(resolve, 50));
+    window.rnx.toast.clear();
 
-        setTimeout(() => {
-          const toasts = document.querySelectorAll('.rnx-toast');
-          expect(toasts.length).toBe(0);
-          done();
-        }, 350);
-      }, 50);
+    await new Promise(resolve => setTimeout(resolve, 350));
+  const toasts = document.querySelectorAll('.rnx-toast');
+  expect(toasts.length).toBe(0);
     });
 
-    it('should not show toast beyond maxToasts', (done) => {
+    it('should not show toast beyond maxToasts', async () => {
       const plugin = toastPlugin({ duration: 10000, maxToasts: 2 });
       manager = new PluginManager();
       manager.use(plugin);
@@ -216,11 +195,9 @@ describe('Toast Plugin', () => {
       window.rnx.toast.show('Message 2');
       window.rnx.toast.show('Message 3');
 
-      setTimeout(() => {
-        const toasts = document.querySelectorAll('.rnx-toast');
-        expect(toasts.length).toBeLessThanOrEqual(2);
-        done();
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    const toasts = document.querySelectorAll('.rnx-toast');
+    expect(toasts.length).toBeLessThanOrEqual(2);
     });
   });
 
@@ -264,27 +241,23 @@ describe('Toast Plugin', () => {
       manager.use(plugin);
     });
 
-    it('should have proper ARIA attributes', (done) => {
+    it('should have proper ARIA attributes', async () => {
       window.rnx.toast.show('Accessible');
 
-      setTimeout(() => {
-        const toast = document.querySelector('.rnx-toast');
-        expect(toast.getAttribute('role')).toBe('alert');
+      await new Promise(resolve => setTimeout(resolve, 50));
+    const toast = document.querySelector('.rnx-toast');
+    expect(toast.getAttribute('role')).toBe('alert');
 
-        const container = document.querySelector('.rnx-toast-container');
-        expect(container.getAttribute('aria-live')).toBe('polite');
-        done();
-      }, 50);
+    const container = document.querySelector('.rnx-toast-container');
+    expect(container.getAttribute('aria-live')).toBe('polite');
     });
 
-    it('should have animated entrance', (done) => {
+    it('should have animated entrance', async () => {
       window.rnx.toast.show('Message');
 
-      setTimeout(() => {
-        const toast = document.querySelector('.rnx-toast');
-        expect(toast.classList.contains('rnx-toast-show')).toBe(true);
-        done();
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    const toast = document.querySelector('.rnx-toast');
+    expect(toast.classList.contains('rnx-toast-show')).toBe(true);
     });
   });
 
@@ -294,19 +267,17 @@ describe('Toast Plugin', () => {
       manager.use(plugin);
     });
 
-    it('should stack multiple toasts', (done) => {
+    it('should stack multiple toasts', async () => {
       window.rnx.toast.success('Message 1');
       window.rnx.toast.error('Message 2');
       window.rnx.toast.warning('Message 3');
 
-      setTimeout(() => {
-        const toasts = document.querySelectorAll('.rnx-toast');
-        expect(toasts.length).toBe(3);
-        done();
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    const toasts = document.querySelectorAll('.rnx-toast');
+    expect(toasts.length).toBe(3);
     });
 
-    it('should remove oldest toast when exceeding maxToasts', (done) => {
+    it('should remove oldest toast when exceeding maxToasts', async () => {
       const plugin = toastPlugin({ duration: 10000, maxToasts: 2 });
       manager = new PluginManager();
       manager.use(plugin);
@@ -314,15 +285,12 @@ describe('Toast Plugin', () => {
       window.rnx.toast.show('Message 1');
       window.rnx.toast.show('Message 2');
 
-      setTimeout(() => {
-        window.rnx.toast.show('Message 3');
+      await new Promise(resolve => setTimeout(resolve, 50));
+    window.rnx.toast.show('Message 3');
 
-        setTimeout(() => {
-          const toasts = document.querySelectorAll('.rnx-toast');
-          expect(toasts.length).toBeLessThanOrEqual(2);
-          done();
-        }, 50);
-      }, 50);
+    await new Promise(resolve => setTimeout(resolve, 50));
+  const toasts = document.querySelectorAll('.rnx-toast');
+  expect(toasts.length).toBeLessThanOrEqual(2);
     });
   });
 
@@ -332,28 +300,23 @@ describe('Toast Plugin', () => {
       manager.use(plugin);
     });
 
-    it('should use custom duration', (done) => {
+    it('should use custom duration', async () => {
       window.rnx.toast.show('Message', 'info', 200);
 
-      setTimeout(() => {
-        expect(document.querySelector('.rnx-toast')).toBeDefined();
-      }, 100);
+      await new Promise(resolve => setTimeout(resolve, 100));
+    expect(document.querySelector('.rnx-toast')).toBeDefined();
 
-      setTimeout(() => {
-        const toast = document.querySelector('.rnx-toast');
-        expect(toast).toBeNull();
-        done();
-      }, 550);
+      await new Promise(resolve => setTimeout(resolve, 550));
+    const toast = document.querySelector('.rnx-toast');
+    expect(toast).toBeNull();
     });
 
-    it('should not auto-dismiss with zero duration', (done) => {
+    it('should not auto-dismiss with zero duration', async () => {
       window.rnx.toast.show('Message', 'info', 0);
 
-      setTimeout(() => {
-        const toast = document.querySelector('.rnx-toast');
-        expect(toast).toBeDefined();
-        done();
-      }, 100);
+      await new Promise(resolve => setTimeout(resolve, 100));
+    const toast = document.querySelector('.rnx-toast');
+    expect(toast).toBeDefined();
     });
   });
 });
