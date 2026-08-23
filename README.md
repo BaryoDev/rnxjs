@@ -1,40 +1,79 @@
-
 # rnxJS
+
+**Sortable tables, date pickers, modals, and 43 more components. In a script tag, in the template you already have.**
+
+No Node. No build step. No frontend toolchain. Drop them into a Django, Rails or Laravel template, or plain HTML.
 
 [![npm version](https://img.shields.io/npm/v/@arnelirobles/rnxjs)](https://www.npmjs.com/package/@arnelirobles/rnxjs)
 [![npm downloads](https://img.shields.io/npm/dm/@arnelirobles/rnxjs)](https://www.npmjs.com/package/@arnelirobles/rnxjs)
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/@arnelirobles/rnxjs)](https://bundlephobia.com/package/@arnelirobles/rnxjs)
 [![License](https://img.shields.io/npm/l/@arnelirobles/rnxjs)](https://github.com/BaryoDev/rnxjs/blob/main/LICENSE)
-[![Tests](https://img.shields.io/badge/tests-646%20passing-brightgreen)](https://github.com/BaryoDev/rnxjs)
 
-**The Bootstrap-Native Framework for Production Apps. Now CSS-Framework-Agnostic.**
+```html
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@arnelirobles/rnxjs/dist/rnx.global.js"></script>
 
-> Build Reactive Apps without a Build Step — styled with Bootstrap, Tailwind, or your own theme.
-> Designed for Backend Developers (Django, Rails, Laravel) and Internal Tools.
+<DataTable sortable filterable></DataTable>
+```
+
+That is the whole setup. No `npm install`, no bundler, no `package.json`.
+
+## Who this is for
+
+You write Django, Rails, Laravel or Express. You need an admin screen with a sortable table and a date picker by Friday. You do not want to stand up a separate React repo, learn a build pipeline, and maintain two deployments to get there.
+
+rnxJS gives you the components without the toolchain. It renders into the templates you already serve.
+
+**Not for you if:** you are building a large single-page application. Use a real framework. rnxJS is for server-rendered apps that need interactive pieces.
 
 ---
 
-## 🚀 What's New in v2.0.0
+## The 46 components
 
-v2.0.0 makes rnxJS **CSS-framework-agnostic** while keeping full backward compatibility — existing Bootstrap apps look identical after upgrading.
+**Data and tables**
+`DataTable` `VirtualList` `List` `Pagination` `StatCard` `Search` `Autocomplete`
 
-- **🎨 Pluggable theme system** — every one of the 46 components resolves its styling through a theme. Bootstrap stays the default; switch to the built-in Tailwind theme with one line, or register your own.
-- **♿ Accessibility overhaul** — proper WAI-ARIA patterns across all components: dialog/menu/tablist/combobox/switch semantics, label association, `aria-describedby`, `aria-current`, keyboard activation, and focus-visible states.
-- **🧘 Forgiving APIs** — every component works when called with zero arguments and provides sensible defaults.
-- **🔒 Security hardening** — XSS fixes in ErrorBoundary, StatCard, DatePicker, Skeleton, and attribute handling; path-traversal validation in FileUpload.
-- **🐛 Critical fixes** — `rnx.toast.clear()` no longer freezes the tab (infinite loop), storage plugin persists immediately, Sidebar renders correctly, Tooltip works without Bootstrap JS via an imperative `show()/hide()` API.
-- **✅ 646 tests passing** — the full suite runs in under 4 seconds.
+**Forms**
+`Input` `Textarea` `Select` `Checkbox` `Radio` `Switch` `Slider` `DatePicker` `FileUpload` `FormGroup` `SegmentedButton` `Chips`
 
-### Theming in one line
+**Navigation**
+`NavigationBar` `NavigationDrawer` `Sidebar` `TopAppBar` `Breadcrumb` `Tabs` `Stepper` `Dropdown`
+
+**Feedback and state**
+`Alert` `Toast` `Modal` `Tooltip` `Spinner` `ProgressBar` `Skeleton` `EmptyState` `ErrorState` `ErrorBoundary` `Badge`
+
+**Layout**
+`Container` `Row` `Column` `Card` `Accordion`
+
+**Actions**
+`Button` `FAB` `Icon`
+
+Full reference with props and examples: [Component Library](./docs/COMPONENTS.md)
+
+---
+
+## Styling and customization
+
+Every component resolves its classes through a theme, so the same markup renders correctly under different CSS frameworks.
+
+**Override classes on one component.** Every component accepts `className`, applied last so it always wins:
+
+```html
+<Button variant="primary" label="Save" className="my-own-class" />
+```
+
+**Swap the whole skin.** Bootstrap is the default. A Tailwind theme ships alongside it:
 
 ```javascript
 import { setTheme } from '@arnelirobles/rnxjs';
+setTheme('tailwind');
+```
 
-setTheme('bootstrap');  // default — nothing changes for existing apps
-setTheme('tailwind');   // professional Tailwind design system, WCAG AA states
+**Register your own.** A theme is a map of class strings per component:
 
-// Or bring your own design system
-import { registerTheme } from '@arnelirobles/rnxjs';
+```javascript
+import { registerTheme, setTheme } from '@arnelirobles/rnxjs';
+
 registerTheme({
   name: 'my-theme',
   components: {
@@ -44,60 +83,10 @@ registerTheme({
 setTheme('my-theme');
 ```
 
-Components are theme-agnostic — the same code renders correctly under any registered theme:
-
-```html
-<Button variant="primary" label="Save changes"></Button>
-<!-- bootstrap: class="btn btn-primary" -->
-<!-- tailwind:  class="inline-flex items-center ... bg-indigo-600 text-white ..." -->
-```
+**What this is not, yet.** Themes are maps of CSS class names, not design tokens. There are no CSS custom properties, so you cannot retheme by setting a variable in your own stylesheet the way you can with shadcn. Changing a component's internal markup is also not supported except in `Autocomplete` and `VirtualList`, which accept a `renderItem` function. Both are known gaps.
 
 ---
-
-## 📚 Documentation
-
-| Guide                                                          | Description                                                       |
-| -------------------------------------------------------------- | ----------------------------------------------------------------- |
-| [**📰 v1.0.0 Release Post**](./docs/BLOG-V1.0.0.md)             | Complete overview of v1.0.0 features, benchmarks, and comparisons |
-| [**Quick Start**](./docs/QUICK-START.md)                       | Get started in 5 minutes                                          |
-| [**Component Library**](./docs/COMPONENTS.md)                  | Complete reference for all 46 components with examples            |
-| [**API Reference**](./docs/API.md)                             | Complete API documentation with stability guarantees              |
-| [**Migration Guide**](./docs/MIGRATION.md)                     | Migrate from jQuery to rnxJS                                      |
-| [**Benchmarks**](./docs/BENCHMARKS.md)                         | Performance comparisons with jQuery, Vue, React                   |
-
----
-
-## 🛡️ Production Readiness
-
-rnxJS is tested and production-ready for v1.0.0.
-
-- **Test Coverage**: 600+ tests covering core reactivity, 34 components, plugins, and edge cases.
-- **Stability**: Verified against rapid state updates, race conditions, and memory leaks.
-- **Browser Support**: Compatible with all modern browsers (Chrome, Firefox, Safari, Edge).
-- **Zero Dependencies**: CDN version only requires Bootstrap CSS.
-- **Bundle Size**: ~10KB gzipped with all 34 components included.
-
-> **Note**: rnxJS is designed as a lightweight, no-build alternative to React/Vue for backend-driven apps and internal tools. For massive, complex Single Page Applications, consider a full framework.
-
----
-
-## ⚡ Quick Start (CLI)
-
-The fastest way to start is using our CLI tool:
-[https://www.npmjs.com/package/@arnelirobles/create-rnxjs-app](https://www.npmjs.com/package/@arnelirobles/create-rnxjs-app)
-
-```bash
-npx @arnelirobles/create-rnxjs-app@latest
-```
-
-## 📂 Samples
-
-You can find working examples and samples here:
-[https://github.com/BaryoDev/rnxJS_samples](https://github.com/BaryoDev/rnxJS_samples)
-
----
-
-## 🚀 Zero to Hero: Build Your First App
+## Zero to Hero: Build Your First App
 
 Welcome to rnxJS! In this 5-minute tutorial, we'll build a reactive **Employee Directory** with a search filter. No Webpack, no Bundlers, just HTML and JS.
 
@@ -112,8 +101,8 @@ Create an `index.html` file and include Bootstrap + rnxJS.
     <title>rnxJS App</title>
     <!-- 1. Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- 2. Material Icons (Optional, for FAB/Icons) -->
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <!-- 2. Bootstrap Icons (needed for the icon prop) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <!-- 3. rnxJS M3 Theme (Optional, for Material Styling) -->
     <link href="https://cdn.jsdelivr.net/npm/@arnelirobles/rnxjs/css/bootstrap-m3-theme.css" rel="stylesheet">
 </head>
@@ -226,11 +215,11 @@ state.subscribe('searchQuery', renderList);
 renderList();
 ```
 
-🎉 **That's it!** You have a reactive app with search, Bootstrap styling, and Material components.
+🎉 **That's it!** You have a reactive app with search and Bootstrap styling.
 
 ---
 
-## 📖 Core Concepts & API
+## Core Concepts & API
 
 ### 1. Reactive State
 The heart of rnxJS is the `createReactiveState` function. It wraps your object in a Proxy to detect changes.
@@ -268,7 +257,7 @@ Add rules to inputs to populate `state.errors`.
 Rules: `required`, `email`, `numeric`, `min:5`, `max:10`, `pattern:^A.*`.
 
 ### 3. Components (`rnxJS Components`)
-rnxJS provides **34 production-ready** Bootstrap/Material components.
+rnxJS provides **46 production-ready** components.
 
 **Standard**: `<Button>`, `<Card>`, `<Modal>`, `<Alert>`, `<Badge>`, `<Spinner>`, `<Toast>`.
 **Forms**: `<Input>`, `<Checkbox>`, `<Radio>`, `<Select>`, `<Textarea>`, `<Switch>`, `<Slider>`, `<FileUpload>`.
@@ -307,7 +296,7 @@ component.onUnmount(() => {
 
 ---
 
-## 🛠 Project Structure
+## Project Structure
 
 For a clean codebase, we recommend this folder structure:
 
@@ -354,20 +343,9 @@ Use it in HTML: `<UserCard name="John" role="Dev"></UserCard>`
 
 ---
 
-## 📦 Installation Options
+## Installation Options
 
-### 1. NPM (Recommended for Vite/Webpack)
-
-```bash
-npm install @arnelirobles/rnxjs
-```
-
-```javascript
-import { createReactiveState, loadComponents } from '@arnelirobles/rnxjs';
-import '@arnelirobles/rnxjs/css/bootstrap-m3-theme.css'; // Optional M3 theme
-```
-
-### 2. CDN (No Build)
+### 1. CDN (recommended)
 
 Use `unpkg` or `jsdelivr`.
 
@@ -381,13 +359,24 @@ Use `unpkg` or `jsdelivr`.
 
 ---
 
-## 🚀 Why rnxJS?
+### 2. NPM (if you already have a bundler)
+
+```bash
+npm install @arnelirobles/rnxjs
+```
+
+```javascript
+import { createReactiveState, loadComponents } from '@arnelirobles/rnxjs';
+import '@arnelirobles/rnxjs/css/bootstrap-m3-theme.css'; // Optional M3 theme
+```
+
+## Why rnxJS?
 
 | Feature                   | rnxJS                              | jQuery   | Vue 3         | React 18   |
 | ------------------------- | ---------------------------------- | -------- | ------------- | ---------- |
-| **Bundle Size (gzipped)** | **~10KB**                          | ~30KB    | ~16KB         | ~42KB      |
+| **Bundle Size (gzipped)** | ~42KB *(includes 46 components)*   | ~30KB    | ~16KB         | ~42KB      |
 | **Zero Build Required**   | **✅ Yes**                          | ✅ Yes    | ⚠️ Recommended | ❌ Required |
-| **Built-in Components**   | **34**                             | 0        | 0             | 0          |
+| **Built-in Components**   | **46**                             | 0        | 0             | 0          |
 | **Two-Way Binding**       | **✅ Built-in**                     | ❌ Manual | ✅ v-model     | ❌ Manual   |
 | **Form Validation**       | **✅ Built-in**                     | ❌ Plugin | ❌ Library     | ❌ Library  |
 | **Learning Curve**        | **1 hour**                         | 1 hour   | 1 day         | 1 week     |
@@ -418,11 +407,23 @@ When using the `icon` prop in components like `Button`, `FAB`, `Icon`, etc., sim
 <Icon name="check-circle" color="text-success" />
 ```
 
-## ❓ Troubleshooting & FAQ
+## Documentation
+
+| Guide                                                          | Description                                                       |
+| -------------------------------------------------------------- | ----------------------------------------------------------------- |
+| [**📰 v1.0.0 Release Post**](./docs/BLOG-V1.0.0.md)             | Complete overview of v1.0.0 features, benchmarks, and comparisons |
+| [**Quick Start**](./docs/QUICK-START.md)                       | Get started in 5 minutes                                          |
+| [**Component Library**](./docs/COMPONENTS.md)                  | Complete reference for all 46 components with examples            |
+| [**API Reference**](./docs/API.md)                             | Complete API documentation with stability guarantees              |
+| [**Migration Guide**](./docs/MIGRATION.md)                     | Migrate from jQuery to rnxJS                                      |
+| [**Benchmarks**](./docs/BENCHMARKS.md)                         | Performance comparisons with jQuery, Vue, React                   |
+
+---
+## Troubleshooting & FAQ
 
 ### 1. My `<FAB>` or custom component isn't rendering
 - Ensure you have called `rnx.autoRegisterComponents()` or manually registered it via `rnx.registerComponent('FAB', FAB)`.
-- Check if you have the Material Symbols font included if icons are missing: `<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />`
+- Check that the Bootstrap Icons stylesheet is included if icons are missing. rnxJS uses Bootstrap Icons (`bi bi-*`), not Material Symbols.
 - If using `data-if`, ensure the condition evaluates to true.
 
 ### 2. Data Binding isn't working on some elements
@@ -438,341 +439,36 @@ When using the `icon` prop in components like `Button`, `FAB`, `Icon`, etc., sim
 
 ---
 
-## 📋 Changelog
+---
 
-### Version 1.0.0 (Stable Release) - December 2025
+## Project status
 
-**The first stable release of rnxJS!**
-
-- **34 Production Components**: Complete component library with full test coverage
-- **600+ Tests**: Comprehensive test suite covering all components, reactivity, and edge cases
-- **Plugin System**: Extensible architecture with 3 official plugins (Router, Toast, Storage)
-- **Backend Integrations**: Official packages for Django, Rails, Laravel, and Express
-- **Complete Documentation**:
-  - [API Reference](./docs/API.md) with stability guarantees
-  - [Migration Guide](./docs/MIGRATION.md) for jQuery users
-  - [Quick Start](./docs/QUICK-START.md) for new users
-  - [Benchmarks](./docs/BENCHMARKS.md) vs jQuery/Vue/React
-- **Performance**: ~10KB gzipped, <100ms time to interactive
+- **Tests**: 696 tests across 39 files, running in under 4 seconds. 689 pass; 7 are known failures with open issues against them ([#22](https://github.com/BaryoDev/rnxjs/issues/22), [#23](https://github.com/BaryoDev/rnxjs/issues/23), [#24](https://github.com/BaryoDev/rnxjs/issues/24), [#25](https://github.com/BaryoDev/rnxjs/issues/25)).
+- **CI**: not yet running the suite on pull requests. Tracked in [#2](https://github.com/BaryoDev/rnxjs/issues/2).
+- **Browser support**: all modern browsers (Chrome, Firefox, Safari, Edge).
+- **Dependencies**: the CDN build needs only Bootstrap CSS.
+- **Maintenance**: actively maintained, not actively expanded. The component count is deliberately frozen at 46. Bug reports and pull requests are welcome and get read.
 
 ---
 
-### Version 0.4.0 (Phase 2 Enhancement) - December 2025
+## Scaffolding and samples
 
-- **Phase 2 Components**: Added 6 advanced enhancement components (FileUpload, ProgressBar, Tooltip, Sidebar, Stepper, Dropdown)
-- **Comprehensive Testing**: 68 unit test cases + 23 performance benchmarks for Phase 2 components
-- **Production Ready**: Full test coverage with performance metrics and stability verification
-- **Component Library**: Now includes 22+ production-ready components with professional documentation
-- **CLI Enhancement**: Multi-template scaffolding with 4 templates (blank, dashboard, landing, form)
+Working examples: [rnxJS_samples](https://github.com/BaryoDev/rnxJS_samples)
+
+There is also a CLI scaffolder, [`create-rnxjs-app`](https://www.npmjs.com/package/@arnelirobles/create-rnxjs-app), if you want a project skeleton. It is not the recommended path. The script tag above is.
 
 ---
 
-### Version 0.3.16 (Release) - December 2025
+## Contributing
 
-- **Stability**: Added comprehensive stability tests for race conditions and rapid updates.
-- **Docs**: Added "Production Readiness", "Disclaimer", and improved "Troubleshooting" sections.
+Issues labelled [`good first issue`](https://github.com/BaryoDev/rnxjs/labels/good%20first%20issue) carry the file, the line, and the actual failing assertion, so they are pickable without rediscovering anything.
 
----
+Before opening a pull request, run `npm test`. Note the 7 known failures above; if your change adds an eighth, that one is yours.
 
-### Version 0.3.5 (Stability Hardening) - December 2025
-
-**🛡️ Critical Stability Updates**
-- **Infinite Loop Prevention**: Implemented a recursion guard in `DataBinder`. Input elements are now flagged during updates to prevent state changes from re-triggering the input listener, fixing potential browser crashes.
-- **Component Hydration**: Added validation checks in `loadComponents` to ensure replacement nodes are valid before attempting to mount, preventing silent failures.
-- **Testing**: Added specialized regression tests for DataBinder stability and FAB rendering.
+Full changelog: [CHANGELOG.md](./CHANGELOG.md)
 
 ---
 
-### Version 0.3.15 (Documentation Update) - December 2025
-
-- **Docs**: Added "Quick Start" key and "Samples" links to README for better onboarding.
-
----
-
-### Version 0.3.4 (Hotfix Release) - December 2025
-
-**🐛 Bug Fixes**
-- **Data Binding Synchronization**: Fixed a race condition where `data-bind` on vanilla HTML elements (like `<h1>`, `<p>`) would sometimes fail to populate or remain empty. Data binding is now synchronous and guaranteed to run immediately after component loading.
-- **FAB Rendering**: Fixed `<FAB>` component not rendering correctly in certain environments. It now correctly uses the reactive state and renders as a button with the `.m3-fab` class. 
-
----
-
-### Version 0.3.3 (Critical Fixes) - December 2025
-
-**🐛 Critical Bug Fixes & Improvements**
-
-- **Circular Dependency**: Fixed circular dependency in `AutoRegistry` by refactoring internal exports.
-- **Bootstrap Config**: Added `setBootstrap()` and `getBootstrap()` to manually configure Bootstrap instance (fixing issues in bundlers where `window.bootstrap` is missing).
-- **CSS Exports**: `package.json` now correctly exports `./css/*` for M3 theme imports.
-- **Button Props**: `Button` component now correctly passes data attributes (e.g., `data-bs-toggle`) to the DOM element.
-- **M3 Colors**: Adjusted M3 Secondary colors to be more neutral/gray to fit standard expectations.
-- **Docs**: Clarified `Material Symbols` dependency in README.
-
----
-
-### Version 0.3.0 (Material Design 3) - December 2025
-
-**🎨 Material Design 3 & New Components**
-- **Theme**: Added `bootstrap-m3-theme.css` for M3 styling overrides.
-- **New Components**: `FAB`, `NavigationDrawer`, `Switch`, `Chips`, `Slider`, `TopAppBar`, `NavigationBar`, `List`, `Search`, `SegmentedButton`, `Icon`.
-- **Updates**: `Button` (M3 variants: filled, tonal, elevated, text), `Card` (M3 variants), `Input` (floating labels).
-- **Icons**: Added `Icon` component and support for Bootstrap Icons.
-
-**🧪 Testing & Stability**
-- **Tests**: Added full Vitest suite for new components and Playwright E2E tests for the M3 Demo.
-- **Framework Fix**: Fixed critical issue in `createComponent` where state updates detached event listeners in re-rendered DOM nodes.
-
----
-
-### Version 0.2.2 (NPM Release) - December 2025
-
-- **Release Bump**: Version bump to retry NPM publication.
-- **Includes**: All fixes from v0.2.1 (Col rename, validation fixes).
-
----
-
-### Version 0.2.1 (Maintenance Release) - December 2025
-
-**🐛 Bug Fixes & Improvements**
-
-- **Component Rename**: `<Col>` renamed to `<Column>` to avoid conflict with native HTML `<col>` void element.
-- **Validation**: Fixed `onclick` and string-based event attribute validation warnings.
-- **Framework**: `createComponent` now correctly identifies root-level slots.
-- **Input**: `Input` component now passes through all unknown attributes (enabling `data-bind` support).
-
-**⚠️ Breaking Changes**
-
-- **`<Col>` is now `<Column>`**: Please update your layouts to use `<Column>` instead of `<Col>`.
-
----
-
-### Version 0.2.0 (Feature Release) - December 2025
-
-**✨ New Features**
-
-- **Built-in Form Validation**: Add validation rules directly to your inputs!
-  ```html
-  <input data-bind="user.email" data-rule="required|email" />
-  <span data-bind="errors.user.email"></span>
-  ```
-  - Supported rules: `required`, `email`, `numeric`, `min:n`, `max:n`, `pattern:regex`
-  - Errors automatically populate `state.errors`
-
-- **Global IntelliSense**: Full VS Code autocompletion support for CDN users via `global.d.ts`.
-  - Just add `/// <reference types="@arnelirobles/rnxjs" />` or rely on automatic detection.
-
-**⚠️ Breaking Changes**
-
-- **Reserved State Property**: The validation system now reserves `state.errors` for validation messages. If you were using `errors` for other purposes in your state root, please rename it.
-
----
-
-### Version 0.1.10 - December 2025
-
-**🐛 Bug Fixes**
-
-- Fixed race condition in `useEffect` cleanup during rapid state updates.
-
----
-
-### Version 0.1.9 - December 2025
-
-**🎉 Major Stability Release - Production Ready!**
-
-This release focuses on **framework stabilization**, fixing 13 identified bugs, improving error handling, and adding comprehensive test coverage. The framework is now production-ready with **61 passing tests**.
-
-> [!IMPORTANT]
-> **NO BREAKING CHANGES** - All improvements are backward compatible. Existing code will continue to work without modifications.
-
-#### 🐛 Critical Bug Fixes
-
-- **Memory Leak Prevention**: Fixed memory leaks in reactive state subscriptions
-  - Added `$unsubscribeAll()` and `$destroy()` cleanup methods
-  - Automatic subscription cleanup tracking
-  - Event listeners now properly removed on component destruction
-
-- **Security Fix**: Replaced unsafe `eval()` usage in conditional rendering
-  - Implemented safer `Function` constructor with limited scope
-  - Added strict mode and proper error boundaries
-  - Protects against potential XSS vulnerabilities
-
-- **Error Boundaries**: Added comprehensive error handling
-  - Try-catch blocks in all critical operations
-  - Helpful error messages with `[rnxJS]` prefix
-  - Single component errors no longer crash the entire app
-
-#### ✨ New Features & Improvements
-
-- **Array Reactivity**: Array mutation methods now trigger reactivity
-  ```javascript
-  state.items.push(4);    // ✅ Now works!
-  state.items.pop();      // ✅ Now works!
-  state.items.splice(1, 1); // ✅ Now works!
-  ```
-
-- **Input Validation**: Enhanced data binding with validation
-  - Path format validation
-  - State object validation
-  - Helpful error messages for invalid inputs
-
-- **Type Coercion**: Number inputs now return actual numbers
-  ```html
-  <input type="number" data-bind="age" />
-  <!-- state.age will be a number, not a string! -->
-  ```
-
-- **Circular Reference Protection**: Handles circular references safely
-  - WeakSet tracking to prevent infinite loops
-  - Warnings when circular references detected
-
-- **Performance Improvements**: Proxy caching for better performance
-  - Reuses proxies instead of creating new ones
-  - Significant improvement for deeply nested objects
-
-- **Lifecycle Hooks**: New `onUnmount()` hook for cleanup
-  ```javascript
-  component.onUnmount(() => {
-    // Cleanup code here
-  });
-  component.destroy(); // Manually trigger cleanup
-  ```
-
-- **Data Binding Cleanup**: New `unbindData()` function
-  ```javascript
-  unbindData(element); // Remove all bindings
-  ```
-
-#### 🧪 Testing
-
-- **61 comprehensive tests** covering all core functionality
-- Test framework: Vitest with happy-dom
-- Full coverage for: reactive state, components, data binding
-- Edge cases and error scenarios tested
-
-#### 📦 New Package Scripts
-
-```json
-{
-  "test": "vitest run",
-  "test:watch": "vitest",
-  "test:ui": "vitest --ui",
-  "test:coverage": "vitest run --coverage"
-}
-```
-
-#### 🔧 Internal Improvements
-
-- Better focus preservation in component re-renders
-- Improved error messages and logging
-- Code quality improvements
-- Removed duplicate code from examples
-
----
-
-### Version 0.1.8 - November 2025
-
-**🐛 Bug Fixes**
-
-- Fixed a `TypeError` in `createReactiveState` when using array spread syntax (e.g., `[...state.array]`) or other Symbol-based operations.
-
----
-
-### Version 0.1.7 - November 2025
-
-**✨ New Features**
-
-- **Reactive Data Binding**: Automatic two-way data binding with `data-bind` attribute
-  ```html
-  <input data-bind="username" />
-  <p>Hello, <span data-bind="username"></span>!</p>
-  
-  <script>
-    const state = rnx.createReactiveState({ username: '' });
-    rnx.loadComponents(document, state);
-  </script>
-  ```
-
-- **`createReactiveState()`**: Create reactive state objects with Proxy-based observation
-  ```javascript
-  const state = rnx.createReactiveState({
-    user: { name: '', email: '' }
-  });
-  
-  // Subscribe to changes
-  state.subscribe('user.email', (newValue) => {
-    console.log('Email changed:', newValue);
-  });
-  ```
-
-- **`bindData()`**: Manually bind data to DOM elements
-  ```javascript
-  rnx.bindData(document.getElementById('form'), state);
-  ```
-
-**🔧 Improvements**
-
-- Fixed `autoRegisterComponents()` to work correctly in global bundle context
-- Added lazy loading for DataBinder to reduce bundle size when not used
-- Updated README with comprehensive reactive binding documentation
-
-**📦 API Additions**
-
-- `rnx.createReactiveState(initialState)` - Create reactive state
-- `rnx.bindData(rootElement, state)` - Bind data to elements
-- `loadComponents()` now accepts optional `reactiveState` parameter
-
----
-
-### Version 0.1.6 - October 2025
-
-**✨ Features**
-
-- Bootstrap-compatible component system
-- 19 built-in components (Button, Input, Card, Modal, etc.)
-- Automatic component registration with `autoRegisterComponents()`
-- Conditional rendering with `data-if` attribute
-- Slot-based content insertion
-- Global bundle for script tag usage
-
-**📦 Components Available**
-
-- Form: `Button`, `Input`, `Checkbox`, `Radio`, `Select`, `Textarea`, `FormGroup`
-- Layout: `Container`, `Row`, `Column`
-- UI: `Alert`, `Badge`, `Card`, `Modal`, `Spinner`, `Toast`, `Pagination`
-- Advanced: `Tabs`, `Accordion`
-
-**Example Usage**
-
-```html
-<Container>
-  <Card>
-    <Button label="Click Me" variant="primary" />
-  </Card>
-</Container>
-
-<script src="https://unpkg.com/@arnelirobles/rnxjs/dist/rnx.global.js"></script>
-<script>
-  rnx.autoRegisterComponents();
-  rnx.loadComponents();
-</script>
-```
-
----
-
-### Version 0.1.0 - 0.1.5
-
-**Initial Release**
-
-- Core component system
-- Component registration via `registerComponent()`
-- Manual component loading
-- Bootstrap class mapping
-- ES Module support
-
----
-
-
-
-## 📃 License
+## License
 
 MPL-2.0 © Arnel Isiderio Robles
