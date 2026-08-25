@@ -623,8 +623,9 @@ export const tailwindTheme = {
     },
 
     fileupload: {
-      base: 'border-2 border-dashed border-slate-300 rounded-lg p-8 text-center bg-white hover:border-indigo-400 hover:bg-indigo-50/30 transition-colors duration-150 motion-reduce:transition-none',
+      base: '',
       parts: {
+        zone: 'border-2 border-dashed border-slate-300 rounded-lg p-8 text-center bg-white hover:border-indigo-400 hover:bg-indigo-50/30 transition-colors duration-150 motion-reduce:transition-none',
         input: 'hidden',
         label: 'block text-sm font-medium text-slate-700 mb-1.5',
         preview: 'mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3',

@@ -560,8 +560,9 @@ export const bootstrapTheme = {
     },
 
     fileupload: {
-      base: 'file-upload',
+      base: 'file-upload-wrapper',
       parts: {
+        zone: 'file-upload',
         input: 'form-control',
         label: 'form-label',
         preview: 'file-upload-preview'
