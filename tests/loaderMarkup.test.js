@@ -19,14 +19,23 @@ describe('loader preserves author markup', () => {
     loadComponents(d, null);
     await new Promise(r => setTimeout(r, 30));
     expect(d.firstElementChild.className).toContain('list-group-item');
+    expect(d.firstElementChild.className).toContain('list-group-item-action');
   });
   it('data-rnx-ignore opts out entirely', async () => {
     autoRegisterComponents();
     const d = document.createElement('div');
     document.body.appendChild(d);
     d.innerHTML = '<button class="mine" data-rnx-ignore>Plain</button>';
+
+    // Identity, not class name. Since a replaced element now carries its
+    // classes across, asserting className alone would pass even if the
+    // opt-out did nothing.
+    const original = d.firstElementChild;
     loadComponents(d, null);
     await new Promise(r => setTimeout(r, 30));
-    expect(d.firstElementChild.className).toBe('mine');
+
+    expect(d.firstElementChild).toBe(original);
+    expect(original.isConnected).toBe(true);
+    expect(original.className).toBe('mine');
   });
 });
