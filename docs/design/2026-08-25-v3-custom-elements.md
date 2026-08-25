@@ -103,6 +103,39 @@ root would break `css/rnx.css`, break theming, and break every existing
 
 Rendering into light DOM keeps all of that working.
 
+### How state reaches a component
+
+This is the part that does not fall out for free, and it has to be settled
+before `loadComponents()` can go away.
+
+Today the state object is handed in explicitly: `loadComponents(root, state)`.
+A custom element upgrades itself, with no opportunity to pass anything, so
+`<rnx-data-table data-bind="users">` has no route to the state it is bound to.
+
+Options, in order of preference:
+
+1. **A provider element.** State is looked up by walking ancestors, the way a
+   form control finds its form.
+
+   ```html
+   <rnx-app state="dashboard">
+     <rnx-data-table data-bind="users"></rnx-data-table>
+   </rnx-app>
+   ```
+
+   Explicit in the markup, scoped, and more than one can exist on a page.
+   Nested providers shadow outer ones.
+
+2. **A registry keyed by name**, `rnx.state('dashboard', {...})`, with
+   `<rnx-data-table state="dashboard" data-bind="users">`. Simpler, but a
+   global namespace and easy to typo silently.
+
+3. **A single default state.** Convenient and immediately limiting.
+
+Take option 1, with option 2 available for the case where the markup cannot be
+nested. Either way this needs designing and testing before the old path is
+removed, not after.
+
 ### Children become usable
 
 Because children are real DOM children of a defined element, `#48` resolves
@@ -115,8 +148,26 @@ naturally:
 </rnx-select>
 ```
 
-The element reads its own `<option>` children on `connectedCallback`. The
-`options` prop stays for people constructing in JavaScript.
+The element reads its own `<option>` children. The `options` prop stays for
+people constructing in JavaScript.
+
+**But not in `connectedCallback`.** That fires when the opening tag is parsed,
+which for server-rendered HTML is *before* the children exist. Reading them
+there sees an empty element and renders nothing, intermittently, depending on
+how the document streams. This is the classic custom-elements trap and it would
+reproduce #48 in a form that is harder to diagnose.
+
+Child collection has to be independent of parser timing:
+
+- if the element is already complete, read immediately
+- otherwise defer to the end of the current microtask, or observe with a
+  `MutationObserver` until the closing tag lands
+- re-render when children change afterwards, so a template loop adding options
+  later still works
+
+Whatever the mechanism, the test for it must render from a **parsed HTML
+string** rather than from `appendChild` calls, because building the element in
+JavaScript populates children before connection and hides the bug entirely.
 
 ## Things that will bite
 
@@ -154,8 +205,12 @@ Even so, one release of overlap costs little:
    warns.
 3. **4.0.0** deletes it.
 
-A codemod is a one-line regex per component name; worth shipping in the repo
-as `scripts/migrate-v3.mjs` rather than asking people to write it.
+A codemod is worth shipping in the repo as `scripts/migrate-v3.mjs` rather than
+asking people to write it. It is not quite a one-line regex per name: custom
+elements have **no self-closing form**, so `<Textarea />` has to become
+`<rnx-textarea></rnx-textarea>`, not `<rnx-textarea />`. A codemod that only
+renames tags would leave every self-closing usage silently swallowing the rest
+of the document, which is #47 again.
 
 ## What does not change
 

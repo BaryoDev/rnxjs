@@ -55,7 +55,7 @@
   --rnx-border-radius: 9px;
   /* Derived, so setting --rnx-border-radius alone moves buttons, inputs and
      panels together. Set these directly only if you want them to diverge. */
-  --rnx-border-radius-sm: calc(var(--rnx-border-radius) - 3px);
+  --rnx-border-radius-sm: max(0px, calc(var(--rnx-border-radius) - 3px));
   --rnx-border-radius-lg: calc(var(--rnx-border-radius) + 3px);
 
   /* type */
