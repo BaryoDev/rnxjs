@@ -69,9 +69,9 @@ export const tailwindTheme = {
         dark: 'bg-slate-900 text-white ring-slate-900'
       },
       sizes: {
-        sm: 'px-1.5 py-0.5 text-xs rounded',
-        md: 'px-2 py-0.5 text-xs rounded-md',
-        lg: 'px-2.5 py-1 text-sm rounded-md'
+        sm: 'h-8 px-1.5 text-xs rounded',
+        md: 'h-9 px-2 text-xs rounded-md',
+        lg: 'h-11 px-2.5 text-sm rounded-md'
       },
       modifiers: {
         pill: 'rounded-full'
@@ -188,9 +188,9 @@ export const tailwindTheme = {
     input: {
       base: 'w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500',
       sizes: {
-        sm: 'px-2.5 py-1.5 text-xs',
-        md: 'px-3 py-2 text-sm',
-        lg: 'px-4 py-2.5 text-base'
+        sm: 'h-8 px-2.5 text-xs',
+        md: 'h-9 px-3 text-sm',
+        lg: 'h-11 px-4 text-base'
       },
       states: {
         disabled: 'bg-slate-50 text-slate-500 cursor-not-allowed',
@@ -210,9 +210,9 @@ export const tailwindTheme = {
     textarea: {
       base: 'w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500',
       sizes: {
-        sm: 'px-2.5 py-1.5 text-xs',
-        md: 'px-3 py-2 text-sm',
-        lg: 'px-4 py-2.5 text-base'
+        sm: 'h-8 px-2.5 text-xs',
+        md: 'h-9 px-3 text-sm',
+        lg: 'h-11 px-4 text-base'
       },
       states: {
         disabled: 'bg-slate-50 text-slate-500 cursor-not-allowed',
@@ -223,9 +223,9 @@ export const tailwindTheme = {
     select: {
       base: 'w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500',
       sizes: {
-        sm: 'px-2.5 py-1.5 text-xs',
-        md: 'px-3 py-2 text-sm',
-        lg: 'px-4 py-2.5 text-base'
+        sm: 'h-8 px-2.5 text-xs',
+        md: 'h-9 px-3 text-sm',
+        lg: 'h-11 px-4 text-base'
       },
       states: {
         disabled: 'bg-slate-50 text-slate-500 cursor-not-allowed'
@@ -535,9 +535,9 @@ export const tailwindTheme = {
     pagination: {
       base: 'flex items-center gap-1',
       sizes: {
-        sm: 'text-xs',
-        md: 'text-sm',
-        lg: 'text-base'
+        sm: 'h-8 text-xs',
+        md: 'h-9 text-sm',
+        lg: 'h-11 text-base'
       },
       parts: {
         item: '',
