@@ -60,8 +60,8 @@
 
   /* type */
   --rnx-font-family: "Public Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --rnx-font-family-display: Archivo, ui-sans-serif, system-ui, sans-serif;
-  --rnx-font-family-monospace: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --rnx-font-family-display: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --rnx-font-family-monospace: "JetBrains Mono", ui-monospace, "SFMono-Regular", "Menlo", monospace;
   --rnx-font-size-base: 1rem;
   --rnx-font-size-sm: 0.875rem;
   --rnx-font-size-xs: 0.78rem;
@@ -79,8 +79,11 @@
   --rnx-spacing-lg: 1.15rem;
   --rnx-spacing-xl: 1.75rem;
 
-  /* derived, so a single --rnx-primary recolours focus rings too */
-  --rnx-focus-ring: 0 0 0 3px rgba(var(--rnx-primary-rgb), 0.14);
+  /* Derived from --rnx-primary directly. An earlier version read
+     --rnx-primary-rgb, so setting only --rnx-primary left the focus ring
+     the old colour, which is exactly the half-applied theming the README
+     promises away. */
+  --rnx-focus-ring: 0 0 0 3px color-mix(in srgb, var(--rnx-primary) 16%, transparent);
 }
 
 /* ============================================================
