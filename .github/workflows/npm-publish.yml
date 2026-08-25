@@ -4,6 +4,13 @@ on:
   release:
     types: [created]
 
+# OIDC trusted publishing. Without id-token: write GitHub never mints the
+# token, npm has nothing to verify, and the publish quietly falls back to a
+# long-lived secret, which looks identical from the outside.
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -12,9 +19,16 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
           registry-url: https://registry.npmjs.org/
+
+      # setup-node ships npm 10.x, and OIDC publishing needs 11.5.1 or newer.
+      # Without this the publish fails on a version nobody thinks to check.
+      - name: Upgrade npm for trusted publishing
+        run: |
+          npm install -g npm@latest
+          npm --version
 
       - run: npm ci
 
@@ -26,11 +40,25 @@ jobs:
       - name: Build
         run: npm run build
 
+      # After the build, so this checks what the build actually emitted rather
+      # than what the source would have exported.
       - name: Entry points resolve
         run: |
           node -e "const m=require('./index.js'); if(!Object.keys(m).length) throw new Error('index.js exported nothing')"
           node --input-type=module -e "import('./dist/rnx.esm.js').then(m=>{if(!Object.keys(m).length) throw new Error('dist/rnx.esm.js exported nothing')})"
 
-      - run: npm publish --access public
+      # The version being published must match the tag that triggered this, or
+      # a release tagged v2.1.0 can quietly publish whatever package.json says.
+      - name: Tag matches package version
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          PKG="$(node -p "require('./package.json').version")"
+          echo "tag=$TAG package.json=$PKG"
+          [ "${TAG#v}" = "$PKG" ] || { echo "::error::tag ${TAG} does not match package.json ${PKG}"; exit 1; }
+
+      # No NODE_AUTH_TOKEN. Provenance and authentication both come from the
+      # OIDC token, and npm rejects the publish if the workflow filename,
+      # repository or owner do not match the trusted publisher on the package.
+      - name: Publish
+        run: npm publish --access public --provenance
