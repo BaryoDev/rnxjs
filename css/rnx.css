@@ -53,8 +53,10 @@
   --rnx-border-color-light: #e4e9ee;
   --rnx-border-width: 1px;
   --rnx-border-radius: 9px;
-  --rnx-border-radius-sm: 6px;
-  --rnx-border-radius-lg: 12px;
+  /* Derived, so setting --rnx-border-radius alone moves buttons, inputs and
+     panels together. Set these directly only if you want them to diverge. */
+  --rnx-border-radius-sm: calc(var(--rnx-border-radius) - 3px);
+  --rnx-border-radius-lg: calc(var(--rnx-border-radius) + 3px);
 
   /* type */
   --rnx-font-family: "Public Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;

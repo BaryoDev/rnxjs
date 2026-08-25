@@ -18,6 +18,14 @@ No Node. No build step. No frontend toolchain. Drop them into a Django, Rails or
 
 That is the whole setup. No `npm install`, no bundler, no `package.json`.
 
+Link `rnx.css` as well and that markup renders like this, with no styling of
+your own:
+
+![An admin dashboard built with rnxJS: metric cards, a sortable data table and an action panel](docs/media/dashboard.png)
+
+Every screen above is rnxJS components in a plain HTML file. There is a live
+version at [playground.baryo.dev/rnxjs](https://playground.baryo.dev/rnxjs/).
+
 ## Who this is for
 
 You write Django, Rails, Laravel or Express. You need an admin screen with a sortable table and a date picker by Friday. You do not want to stand up a separate React repo, learn a build pipeline, and maintain two deployments to get there.
@@ -54,22 +62,76 @@ Full reference with props and examples: [Component Library](./docs/COMPONENTS.md
 
 ## Styling and customization
 
-Every component resolves its classes through a theme, so the same markup renders correctly under different CSS frameworks.
-
-**Override classes on one component.** Every component accepts `className`, applied last so it always wins:
+Components come unstyled by default and take their look from a stylesheet.
+Link `rnx.css` and you get a considered default without making any decisions:
 
 ```html
-<Button variant="primary" label="Save" className="my-own-class" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@arnelirobles/rnxjs/css/rnx.css" rel="stylesheet">
 ```
 
-**Swap the whole skin.** Bootstrap is the default. A Tailwind theme ships alongside it:
+Everything below is optional. Take it in the order that suits you: most people
+never get past the first step.
 
-```javascript
-import { setTheme } from '@arnelirobles/rnxjs';
-setTheme('tailwind');
+### 1. Change the colours and shapes
+
+`rnx.css` is built entirely from CSS custom properties. Set them in your own
+stylesheet, after the link above, and every one of the 46 components follows.
+No JavaScript, no build step, no forking:
+
+```css
+:root {
+  --rnx-primary: #7c3aed;
+  --rnx-border-radius: 12px;
+  --rnx-font-family: "Inter", system-ui, sans-serif;
+}
 ```
 
-**Register your own.** A theme is a map of class strings per component:
+That is the whole of theming for most projects. Buttons, tables, inputs,
+modals, the focus rings and the page furniture all recolour together.
+
+The full list lives in [`css/themes/base.css`](./css/themes/base.css). The ones
+worth knowing:
+
+| Token | Controls |
+|---|---|
+| `--rnx-primary` | the accent, everywhere |
+| `--rnx-success` `--rnx-danger` `--rnx-warning` | status colours, deliberately separate from the accent |
+| `--rnx-background` `--rnx-surface` | the page, and the panels on it |
+| `--rnx-text-primary` `--rnx-text-secondary` | ink |
+| `--rnx-border-color` `--rnx-border-radius` | lines and corners |
+| `--rnx-font-family` `--rnx-font-family-display` `--rnx-font-family-monospace` | body, headings, code |
+
+A dark theme is the same tokens under a media query:
+
+```css
+@media (prefers-color-scheme: dark) {
+  :root {
+    --rnx-background: #0f1418;
+    --rnx-surface: #161d23;
+    --rnx-text-primary: #e6ecf1;
+    --rnx-border-color: #26313a;
+  }
+}
+```
+
+### 2. Override one component
+
+Every component accepts `className`, and those classes are applied last so they
+win:
+
+```html
+<Button variant="primary" label="Save" className="my-save-button" />
+```
+
+```css
+.my-save-button { letter-spacing: 0.04em; text-transform: uppercase; }
+```
+
+### 3. Replace the class map
+
+If you are not using Bootstrap at all, a theme is a map of class strings per
+component. This is how the built-in Tailwind theme works:
 
 ```javascript
 import { registerTheme, setTheme } from '@arnelirobles/rnxjs';
@@ -77,15 +139,35 @@ import { registerTheme, setTheme } from '@arnelirobles/rnxjs';
 registerTheme({
   name: 'my-theme',
   components: {
-    button: { base: 'my-btn', variants: { primary: 'my-btn-primary' } }
+    button: {
+      base: 'my-btn',
+      variants: { primary: 'my-btn-primary' },
+      sizes: { sm: 'my-btn-sm', md: '', lg: 'my-btn-lg' }
+    }
   }
 });
 setTheme('my-theme');
 ```
 
-**What this is not, yet.** Themes are maps of CSS class names, not design tokens. There are no CSS custom properties, so you cannot retheme by setting a variable in your own stylesheet the way you can with shadcn. Changing a component's internal markup is also not supported except in `Autocomplete` and `VirtualList`, which accept a `renderItem` function. Both are known gaps.
+Components are theme-agnostic, so the same markup renders correctly under any
+registered theme:
+
+```html
+<Button variant="primary" label="Save changes"></Button>
+<!-- bootstrap: class="btn btn-primary" -->
+<!-- tailwind:  class="inline-flex items-center ... bg-indigo-600 text-white ..." -->
+```
+
+Switch with `setTheme('bootstrap')` or `setTheme('tailwind')`.
+
+### What is not supported yet
+
+Changing a component's internal markup. `Autocomplete` and `VirtualList` accept
+a `renderItem` function; nothing else does. Slots are
+[tracked separately](https://github.com/BaryoDev/rnxjs/issues/30).
 
 ---
+
 ## Zero to Hero: Build Your First App
 
 Welcome to rnxJS! In this 5-minute tutorial, we'll build a reactive **Employee Directory** with a search filter. No Webpack, no Bundlers, just HTML and JS.
