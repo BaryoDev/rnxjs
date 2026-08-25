@@ -11,7 +11,8 @@
     },
     "./dist/*": "./dist/*",
     "./css/bootstrap-m3-theme.css": "./css/bootstrap-m3-theme.css",
-    "./css/*": "./css/*"
+    "./css/*": "./css/*",
+    "./css/rnx.css": "./css/rnx.css"
   },
   "types": "index.d.ts",
   "keywords": [
