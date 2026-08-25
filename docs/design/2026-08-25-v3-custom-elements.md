@@ -157,6 +157,17 @@ there sees an empty element and renders nothing, intermittently, depending on
 how the document streams. This is the classic custom-elements trap and it would
 reproduce #48 in a form that is harder to diagnose.
 
+Two details from the spec worth having on record, because they shape the fix:
+
+- **Upgrade and parse differ.** When an existing element is upgraded, its
+  children are already present. When the parser encounters a new custom
+  element, they are not. The same callback runs in both cases, so it cannot
+  assume either.
+- **There is no `finishedParsingChildrenCallback`.** The HTML spec provides no
+  signal that an element's contents are complete, so there is nothing to wait
+  for cleanly. That is why the handling below is a set of fallbacks rather than
+  one correct hook.
+
 Child collection has to be independent of parser timing:
 
 - if the element is already complete, read immediately
