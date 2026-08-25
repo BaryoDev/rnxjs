@@ -523,7 +523,7 @@ export const tailwindTheme = {
         body: 'px-4 pb-4 text-sm text-slate-600'
       },
       states: {
-        show: 'max-h-96',
+        show: 'max-h-[10000px]',
         hide: 'max-h-0',
         expanded: 'rotate-180'
       },
