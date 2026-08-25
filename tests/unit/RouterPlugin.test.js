@@ -8,6 +8,10 @@ describe('Router Plugin', () => {
   let container;
 
   beforeEach(() => {
+    // window.location persists across tests in a file, so a route pushed by an
+    // earlier test would still match here and mask defaultRoute handling.
+    window.history.replaceState({}, '', '/');
+
     // Setup DOM
     container = document.createElement('div');
     document.body.appendChild(container);
@@ -76,54 +80,44 @@ describe('Router Plugin', () => {
       manager.use(plugin);
     });
 
-    it('should match exact routes', (done) => {
+    it('should match exact routes', async () => {
       window.rnxRouter.push('/');
 
-      setTimeout(() => {
-        expect(window.rnxRouter.currentRoute()).toBe('home');
-        done();
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    expect(window.rnxRouter.currentRoute()).toBe('home');
     });
 
-    it('should match parameterized routes', (done) => {
+    it('should match parameterized routes', async () => {
       window.rnxRouter.push('/users/123');
 
-      setTimeout(() => {
-        expect(window.rnxRouter.currentRoute()).toBe('userDetail');
-        expect(window.rnxRouter.params()).toEqual({ id: '123' });
-        done();
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    expect(window.rnxRouter.currentRoute()).toBe('userDetail');
+    expect(window.rnxRouter.params()).toEqual({ id: '123' });
     });
 
-    it('should extract multiple parameters', (done) => {
+    it('should extract multiple parameters', async () => {
       window.rnxRouter.push('/users/123/posts/456');
 
-      setTimeout(() => {
-        expect(window.rnxRouter.currentRoute()).toBe('postDetail');
-        expect(window.rnxRouter.params()).toEqual({
-          id: '123',
-          postId: '456'
-        });
-        done();
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    expect(window.rnxRouter.currentRoute()).toBe('postDetail');
+    expect(window.rnxRouter.params()).toEqual({
+      id: '123',
+      postId: '456'
+    });
     });
 
-    it('should return 404 for unknown routes', (done) => {
+    it('should return 404 for unknown routes', async () => {
       window.rnxRouter.push('/unknown/path');
 
-      setTimeout(() => {
-        expect(window.rnxRouter.currentRoute()).toBe('404');
-        done();
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    expect(window.rnxRouter.currentRoute()).toBe('404');
     });
 
-    it('should handle special characters in params', (done) => {
+    it('should handle special characters in params', async () => {
       window.rnxRouter.push('/users/john-doe');
 
-      setTimeout(() => {
-        expect(window.rnxRouter.params().id).toBe('john-doe');
-        done();
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    expect(window.rnxRouter.params().id).toBe('john-doe');
     });
   });
 
@@ -133,67 +127,55 @@ describe('Router Plugin', () => {
         routes: {
           '/': 'home',
           '/about': 'about',
-          '/contact': 'contact'
+          '/contact': 'contact',
+          '/users/:id': 'user'
         }
       });
 
       manager.use(plugin);
     });
 
-    it('should navigate with push()', (done) => {
+    it('should navigate with push()', async () => {
       window.rnxRouter.push('/about');
 
-      setTimeout(() => {
-        expect(window.rnxRouter.currentRoute()).toBe('about');
-        done();
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    expect(window.rnxRouter.currentRoute()).toBe('about');
     });
 
-    it('should navigate with replace()', (done) => {
+    it('should navigate with replace()', async () => {
       window.rnxRouter.replace('/contact');
 
-      setTimeout(() => {
-        expect(window.rnxRouter.currentRoute()).toBe('contact');
-        done();
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    expect(window.rnxRouter.currentRoute()).toBe('contact');
     });
 
-    it('should support back() navigation', (done) => {
+    it('should support back() navigation', async () => {
       window.rnxRouter.push('/about');
-      setTimeout(() => {
-        window.rnxRouter.back();
-        setTimeout(() => {
-          // Back navigates in history
-          done();
-        }, 50);
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    window.rnxRouter.back();
+    await new Promise(resolve => setTimeout(resolve, 50));
+  // Back navigates in history
     });
 
-    it('should return current route', (done) => {
+    it('should return current route', async () => {
       window.rnxRouter.push('/about');
 
-      setTimeout(() => {
-        expect(window.rnxRouter.currentRoute()).toBe('about');
-        done();
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    expect(window.rnxRouter.currentRoute()).toBe('about');
     });
 
-    it('should return current path', (done) => {
+    it('should return current path', async () => {
       window.rnxRouter.push('/about');
 
-      setTimeout(() => {
-        expect(window.rnxRouter.path()).toBe('/about');
-        done();
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    expect(window.rnxRouter.path()).toBe('/about');
     });
 
-    it('should return current params', (done) => {
+    it('should return current params', async () => {
       window.rnxRouter.push('/users/123');
 
-      setTimeout(() => {
-        expect(window.rnxRouter.params()).toEqual({ id: '123' });
-        done();
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    expect(window.rnxRouter.params()).toEqual({ id: '123' });
     });
   });
 
@@ -219,42 +201,38 @@ describe('Router Plugin', () => {
       manager.use(plugin);
     });
 
-    it('should show active route element', (done) => {
+    it('should show active route element', async () => {
       window.rnxRouter.push('/');
 
-      setTimeout(() => {
-        const home = container.querySelector('[data-route="home"]');
-        const about = container.querySelector('[data-route="about"]');
+      await new Promise(resolve => setTimeout(resolve, 50));
+    const home = container.querySelector('[data-route="home"]');
+    const about = container.querySelector('[data-route="about"]');
 
-        expect(home.style.display).not.toBe('none');
-        expect(about.style.display).toBe('none');
-        done();
-      }, 50);
+    expect(home.style.display).not.toBe('none');
+    expect(about.style.display).toBe('none');
     });
 
-    it('should toggle route elements on navigation', (done) => {
+    it('should toggle route elements on navigation', async () => {
       window.rnxRouter.push('/');
 
-      setTimeout(() => {
-        const home = container.querySelector('[data-route="home"]');
-        expect(home.style.display).not.toBe('none');
+      await new Promise(resolve => setTimeout(resolve, 50));
+    const home = container.querySelector('[data-route="home"]');
+    expect(home.style.display).not.toBe('none');
 
-        window.rnxRouter.push('/about');
+    window.rnxRouter.push('/about');
 
-        setTimeout(() => {
-          const home = container.querySelector('[data-route="home"]');
-          const about = container.querySelector('[data-route="about"]');
+    await new Promise(resolve => setTimeout(resolve, 50));
+    // re-query: the router re-renders, so the earlier reference is stale
+    const homeAfter = container.querySelector('[data-route="home"]');
+    const about = container.querySelector('[data-route="about"]');
 
-          expect(home.style.display).toBe('none');
-          expect(about.style.display).not.toBe('none');
-          done();
-        }, 50);
-      }, 50);
+    expect(homeAfter.style.display).toBe('none');
+    expect(about.style.display).not.toBe('none');
     });
   });
 
   describe('Route Callbacks', () => {
-    it('should call onRouteChange callback', (done) => {
+    it('should call onRouteChange callback', async () => {
       const onRouteChange = vi.fn();
 
       const plugin = routerPlugin({
@@ -269,17 +247,16 @@ describe('Router Plugin', () => {
 
       window.rnxRouter.push('/about');
 
-      setTimeout(() => {
-        expect(onRouteChange).toHaveBeenCalled();
-        const arg = onRouteChange.mock.calls[0][0];
-        expect(arg.name).toBe('about');
-        done();
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    expect(onRouteChange).toHaveBeenCalled();
+    // assert the most recent call: the router also fires once on init
+    const arg = onRouteChange.mock.calls.at(-1)[0];
+    expect(arg.name).toBe('about');
     });
   });
 
   describe('Default Route', () => {
-    it('should use default route on init', (done) => {
+    it('should use default route on init', async () => {
       const plugin = routerPlugin({
         routes: {
           '/home': 'home',
@@ -290,15 +267,13 @@ describe('Router Plugin', () => {
 
       manager.use(plugin);
 
-      setTimeout(() => {
-        expect(window.rnxRouter.currentRoute()).toBe('home');
-        done();
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    expect(window.rnxRouter.currentRoute()).toBe('home');
     });
   });
 
   describe('State Management', () => {
-    it('should maintain reactive state', (done) => {
+    it('should maintain reactive state', async () => {
       const plugin = routerPlugin({
         routes: {
           '/': 'home',
@@ -310,11 +285,9 @@ describe('Router Plugin', () => {
 
       window.rnxRouter.push('/users/123');
 
-      setTimeout(() => {
-        expect(window.rnxRouter.state.currentRoute).toBe('userDetail');
-        expect(window.rnxRouter.state.params.id).toBe('123');
-        done();
-      }, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
+    expect(window.rnxRouter.state.currentRoute).toBe('userDetail');
+    expect(window.rnxRouter.state.params.id).toBe('123');
     });
   });
 });

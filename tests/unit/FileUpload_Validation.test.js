@@ -144,8 +144,16 @@ describe('FileUpload Validation', () => {
         const result1 = upload.addFiles([file1]);
         expect(result1.errors.length).toBeGreaterThan(1);
 
+        // file1 was rejected, so it does not consume the single maxFiles slot
+        // and a subsequent valid file is still accepted.
         const result2 = upload.addFiles([file2]);
-        expect(result2.errors.length).toBeGreaterThan(0);
+        expect(result2.errors).toEqual([]);
+        expect(result2.added).toHaveLength(1);
+
+        // The slot is now taken, so a third file does hit the maxFiles limit.
+        const file3 = new File(['more'], 'other.jpg', { type: 'image/jpeg' });
+        const result3 = upload.addFiles([file3]);
+        expect(result3.errors.length).toBeGreaterThan(0);
 
     });
 });

@@ -89,6 +89,9 @@ export function Autocomplete({
 
         if (isAsync) {
             isLoading = true;
+            // Render the loading state, otherwise the spinner never appears:
+            // isLoading is back to false by the time the next setState runs.
+            component.setState({ isLoading });
             try {
                 const results = await items(query);
                 isLoading = false;
