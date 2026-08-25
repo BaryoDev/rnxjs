@@ -1,0 +1,371 @@
+/*!
+ * rnxJS default theme
+ *
+ * One stylesheet. Link it after Bootstrap and every rnxJS component picks up
+ * a considered default look, plus the page furniture an internal tool needs:
+ * panels, metrics, fields, tables.
+ *
+ *   <link href=".../bootstrap.min.css" rel="stylesheet">
+ *   <link href=".../rnxjs/css/rnx.css"  rel="stylesheet">
+ *
+ * To change the look, set the tokens below in your own CSS. You do not need
+ * to touch this file, and you do not need JavaScript:
+ *
+ *   :root {
+ *     --rnx-primary: #7c3aed;
+ *     --rnx-border-radius: 12px;
+ *   }
+ *
+ * Token names match css/themes/base.css.
+ */
+
+/* ============================================================
+   1. Tokens. Override these, not the rules underneath.
+   ============================================================ */
+
+:root {
+  /* brand */
+  --rnx-primary: #0f5c6b;
+  --rnx-primary-hover: #0c4c59;
+  --rnx-primary-active: #0a4552;
+  --rnx-primary-rgb: 15, 92, 107;
+  --rnx-text-on-primary: #ffffff;
+
+  /* status. These carry meaning, so they stay distinct from the brand. */
+  --rnx-success: #12664a;
+  --rnx-danger: #9a3b2c;
+  --rnx-warning: #8a5a12;
+  --rnx-info: #1f5e7a;
+
+  /* surfaces */
+  --rnx-background: #eef1f4;
+  --rnx-surface: #ffffff;
+  --rnx-surface-variant: #fbfcfd;
+  --rnx-surface-hover: #f4f7f9;
+
+  /* ink */
+  --rnx-text-primary: #101418;
+  --rnx-text-secondary: #5a6672;
+  --rnx-text-disabled: #8b96a1;
+
+  /* lines */
+  --rnx-border-color: #d3dae1;
+  --rnx-border-color-light: #e4e9ee;
+  --rnx-border-width: 1px;
+  --rnx-border-radius: 9px;
+  /* Derived, so setting --rnx-border-radius alone moves buttons, inputs and
+     panels together. Set these directly only if you want them to diverge. */
+  --rnx-border-radius-sm: max(0px, calc(var(--rnx-border-radius) - 3px));
+  --rnx-border-radius-lg: calc(var(--rnx-border-radius) + 3px);
+
+  /* type */
+  --rnx-font-family: "Public Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --rnx-font-family-display: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --rnx-font-family-monospace: "JetBrains Mono", ui-monospace, "SFMono-Regular", "Menlo", monospace;
+  --rnx-font-size-base: 1rem;
+  --rnx-font-size-sm: 0.875rem;
+  --rnx-font-size-xs: 0.78rem;
+  --rnx-line-height-base: 1.6;
+
+  /* depth and motion */
+  --rnx-shadow-sm: 0 1px 0 rgba(10, 26, 42, 0.05);
+  --rnx-shadow-md: 0 1px 2px rgba(10, 26, 42, 0.07);
+  --rnx-shadow-lg: 0 12px 32px -24px rgba(10, 26, 42, 0.35);
+  --rnx-transition-fast: 140ms ease;
+
+  /* spacing */
+  --rnx-spacing-sm: 0.5rem;
+  --rnx-spacing-md: 0.85rem;
+  --rnx-spacing-lg: 1.15rem;
+  --rnx-spacing-xl: 1.75rem;
+
+  /* Derived from --rnx-primary directly. An earlier version read
+     --rnx-primary-rgb, so setting only --rnx-primary left the focus ring
+     the old colour, which is exactly the half-applied theming the README
+     promises away. */
+  --rnx-focus-ring: 0 0 0 3px color-mix(in srgb, var(--rnx-primary) 16%, transparent);
+}
+
+/* ============================================================
+   2. Bridge to Bootstrap.
+
+   Bootstrap 5.3 has two kinds of custom property and they behave
+   differently. Globals such as --bs-border-radius are read by var()
+   throughout, so setting them works. But --bs-primary is read by var()
+   ZERO times: colour is compiled into each variant class as a literal
+   (.btn-primary { --bs-btn-bg: #0d6efd }). So colour has to be re-pointed
+   per component family, which is what section 2b does.
+   ============================================================ */
+
+/* 2a. globals */
+:root {
+  --bs-body-bg: var(--rnx-background);
+  --bs-body-color: var(--rnx-text-primary);
+  --bs-body-font-family: var(--rnx-font-family);
+  --bs-body-font-size: var(--rnx-font-size-base);
+  --bs-body-line-height: var(--rnx-line-height-base);
+  --bs-border-color: var(--rnx-border-color);
+  --bs-border-radius: var(--rnx-border-radius);
+  --bs-border-radius-sm: var(--rnx-border-radius-sm);
+  --bs-border-radius-lg: var(--rnx-border-radius-lg);
+  --bs-link-color: var(--rnx-primary);
+  --bs-link-hover-color: var(--rnx-primary-hover);
+  --bs-emphasis-color: var(--rnx-text-primary);
+  --bs-secondary-color: var(--rnx-text-secondary);
+}
+
+body {
+  background: var(--rnx-background);
+  color: var(--rnx-text-primary);
+  font-family: var(--rnx-font-family);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--rnx-font-family-display);
+  letter-spacing: -0.02em;
+}
+
+code, pre, kbd, samp, .rnx-mono { font-family: var(--rnx-font-family-monospace); }
+
+/* 2b. per-component colour */
+
+.btn {
+  --bs-btn-border-radius: var(--rnx-border-radius-sm);
+  --bs-btn-font-weight: 500;
+  transition: var(--rnx-transition-fast);
+}
+
+.btn-primary {
+  --bs-btn-bg: var(--rnx-primary);
+  --bs-btn-border-color: var(--rnx-primary);
+  --bs-btn-color: var(--rnx-text-on-primary);
+  --bs-btn-hover-bg: var(--rnx-primary-hover);
+  --bs-btn-hover-border-color: var(--rnx-primary-hover);
+  --bs-btn-hover-color: var(--rnx-text-on-primary);
+  --bs-btn-active-bg: var(--rnx-primary-active);
+  --bs-btn-active-border-color: var(--rnx-primary-active);
+  --bs-btn-disabled-bg: var(--rnx-primary);
+  --bs-btn-disabled-border-color: var(--rnx-primary);
+}
+
+/* Quiet buttons. rnxJS calls this variant "outlined". */
+.btn-outlined, .btn-secondary, .btn-outline-primary, .btn-outline-secondary {
+  --bs-btn-bg: var(--rnx-surface);
+  --bs-btn-color: var(--rnx-text-primary);
+  --bs-btn-border-color: var(--rnx-border-color);
+  --bs-btn-hover-bg: var(--rnx-surface-hover);
+  --bs-btn-hover-border-color: var(--rnx-primary);
+  --bs-btn-hover-color: var(--rnx-primary);
+  --bs-btn-active-bg: var(--rnx-surface-hover);
+  --bs-btn-active-border-color: var(--rnx-primary);
+  --bs-btn-active-color: var(--rnx-primary);
+}
+
+.btn-danger {
+  --bs-btn-bg: var(--rnx-danger);
+  --bs-btn-border-color: var(--rnx-danger);
+  --bs-btn-hover-bg: var(--rnx-danger);
+  --bs-btn-hover-border-color: var(--rnx-danger);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--rnx-primary);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+.card {
+  --bs-card-bg: var(--rnx-surface);
+  --bs-card-border-color: var(--rnx-border-color);
+  --bs-card-border-radius: var(--rnx-border-radius);
+  --bs-card-cap-bg: var(--rnx-surface-variant);
+  box-shadow: var(--rnx-shadow-sm);
+}
+
+.table {
+  --bs-table-bg: transparent;
+  --bs-table-border-color: var(--rnx-border-color-light);
+  --bs-table-hover-bg: var(--rnx-surface-variant);
+  margin-bottom: 0;
+}
+
+.table thead th {
+  font-family: var(--rnx-font-family-monospace);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--rnx-text-disabled);
+  font-weight: 500;
+  background: var(--rnx-surface-variant);
+  border-bottom: var(--rnx-border-width) solid var(--rnx-border-color);
+  white-space: nowrap;
+}
+
+.table td, .table th { vertical-align: middle; font-variant-numeric: tabular-nums; }
+
+.form-control, .form-select {
+  border-color: var(--rnx-border-color);
+  border-radius: var(--rnx-border-radius-sm);
+  background: var(--rnx-surface);
+  color: var(--rnx-text-primary);
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--rnx-primary);
+  box-shadow: var(--rnx-focus-ring);
+}
+
+.form-check-input:checked { background-color: var(--rnx-primary); border-color: var(--rnx-primary); }
+.form-check-input:focus { border-color: var(--rnx-primary); box-shadow: var(--rnx-focus-ring); }
+
+.modal-content, .dropdown-menu, .offcanvas, .popover, .list-group {
+  --bs-modal-bg: var(--rnx-surface);
+  --bs-dropdown-bg: var(--rnx-surface);
+  --bs-dropdown-border-color: var(--rnx-border-color);
+  --bs-dropdown-link-active-bg: var(--rnx-primary);
+  --bs-list-group-bg: var(--rnx-surface);
+  --bs-list-group-border-color: var(--rnx-border-color);
+  --bs-list-group-active-bg: var(--rnx-primary);
+  --bs-list-group-active-border-color: var(--rnx-primary);
+}
+
+.nav-pills { --bs-nav-pills-link-active-bg: var(--rnx-primary); }
+.pagination { --bs-pagination-active-bg: var(--rnx-primary); --bs-pagination-active-border-color: var(--rnx-primary); }
+.progress { --bs-progress-bar-bg: var(--rnx-primary); }
+.alert { --bs-alert-border-color: var(--rnx-border-color); border-radius: var(--rnx-border-radius); }
+
+/* ============================================================
+   3. Page furniture.
+
+   The components render themselves; these are the pieces around them
+   that every internal tool needs and nobody wants to design twice.
+   ============================================================ */
+
+.rnx-shell { width: min(1180px, 100% - 3rem); margin-inline: auto; }
+
+.rnx-topbar {
+  border-bottom: var(--rnx-border-width) solid var(--rnx-border-color);
+  background: var(--rnx-surface);
+  position: sticky;
+  top: 0;
+  z-index: var(--rnx-z-sticky, 1020);
+}
+
+.rnx-topbar-inner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 52px;
+  font-family: var(--rnx-font-family-monospace);
+  font-size: 0.78rem;
+}
+
+.rnx-topbar-inner .rnx-spacer { flex: 1; }
+
+.rnx-page-head {
+  padding: clamp(2rem, 4.5vw, 3.25rem) 0 1.5rem;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.rnx-page-head h1 {
+  font-size: clamp(1.7rem, 3.4vw, 2.4rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin: 0;
+}
+
+.rnx-page-head p {
+  margin: 0.4rem 0 0;
+  color: var(--rnx-text-secondary);
+  max-width: 58ch;
+}
+
+.rnx-panel {
+  background: var(--rnx-surface);
+  border: var(--rnx-border-width) solid var(--rnx-border-color);
+  border-radius: var(--rnx-border-radius-lg);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.rnx-panel-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.95rem var(--rnx-spacing-lg);
+  border-bottom: var(--rnx-border-width) solid var(--rnx-border-color-light);
+  flex-wrap: wrap;
+}
+
+.rnx-panel-head h2 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: -0.008em;
+  margin: 0;
+}
+
+.rnx-panel-body { padding: var(--rnx-spacing-lg); flex: 1 1 auto; min-width: 0; }
+.rnx-panel-body.rnx-flush { padding: 0; overflow-x: auto; }
+
+.rnx-metric {
+  background: var(--rnx-surface);
+  border: var(--rnx-border-width) solid var(--rnx-border-color);
+  border-left: 3px solid var(--rnx-primary);
+  border-radius: var(--rnx-border-radius);
+  padding: 0.95rem 1.05rem 1.05rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.rnx-metric-label {
+  font-family: var(--rnx-font-family-monospace);
+  font-size: 0.66rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--rnx-text-disabled);
+}
+
+.rnx-metric-value {
+  font-family: var(--rnx-font-family-display);
+  font-size: clamp(1.55rem, 2.4vw, 1.95rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  font-variant-numeric: tabular-nums;
+}
+
+.rnx-metric-note { font-size: 0.79rem; color: var(--rnx-text-secondary); }
+.rnx-metric-note.rnx-up { color: var(--rnx-success); }
+.rnx-metric-note.rnx-down { color: var(--rnx-danger); }
+
+.rnx-field { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+.rnx-field > label { font-size: var(--rnx-font-size-xs); font-weight: 600; color: var(--rnx-text-secondary); }
+.rnx-field-error { font-size: var(--rnx-font-size-xs); color: var(--rnx-danger); min-height: 1rem; }
+
+/* Layout helpers, because <Column> only carries what Bootstrap's grid gives it
+   and a plain grid is easier to reason about for a dashboard. */
+.rnx-grid { display: grid; gap: var(--rnx-spacing-md); }
+.rnx-grid-metrics { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+.rnx-grid-cards { grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+.rnx-grid-split { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); align-items: stretch; }
+.rnx-grid-sidebar { grid-template-columns: minmax(180px, 0.9fr) minmax(0, 3fr); align-items: start; }
+.rnx-stack { display: flex; flex-direction: column; gap: var(--rnx-spacing-md); }
+
+@media (max-width: 820px) {
+  .rnx-grid-split, .rnx-grid-sidebar { grid-template-columns: 1fr; }
+  .rnx-shell { width: min(1180px, 100% - 2rem); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

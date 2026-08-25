@@ -225,6 +225,13 @@ export function loadComponents(root = document, reactiveState = null) {
             props[name] = value;
           }
 
+          // Markup carries `class`; components take `className`. Without this,
+          // <Column class="col-md-6"> rendered as plain `col` and every grid
+          // width silently did nothing.
+          if (props.class && props.className === undefined) {
+            props.className = props.class;
+          }
+
           const children = Array.from(el.childNodes).filter(n => n.nodeType !== 8);
           if (children.length) props.children = children;
 
@@ -248,6 +255,16 @@ export function loadComponents(root = document, reactiveState = null) {
           if (comp instanceof Node) {
             // Mark new component as hydrated to prevent re-hydration (infinite loop for recursive tags like Input -> input)
             comp._rnxHydrated = true;
+
+            // A component name that collides with a real HTML element claims
+            // every one of them: after parsing, <Button> and <button> are the
+            // same tag. Carrying the author's classes across means a styled
+            // <button class="list-group-item"> is no longer stripped bare.
+            // Opt out entirely with data-rnx-ignore.
+            if (el.classList.length && comp.classList) {
+              el.classList.forEach(c => comp.classList.add(c));
+            }
+
             el.replaceWith(comp);
 
             // Verify if connected
