@@ -69,9 +69,9 @@ export const tailwindTheme = {
         dark: 'bg-slate-900 text-white ring-slate-900'
       },
       sizes: {
-        sm: 'h-8 px-1.5 text-xs rounded',
-        md: 'h-9 px-2 text-xs rounded-md',
-        lg: 'h-11 px-2.5 text-sm rounded-md'
+        sm: 'px-1.5 py-0.5 text-xs rounded',
+        md: 'px-2 py-0.5 text-xs rounded-md',
+        lg: 'px-2.5 py-1 text-sm rounded-md'
       },
       modifiers: {
         pill: 'rounded-full'
@@ -186,7 +186,7 @@ export const tailwindTheme = {
     // ============================================================================
 
     input: {
-      base: 'w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500',
+      base: 'w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:border-indigo-500',
       sizes: {
         sm: 'h-8 px-2.5 text-xs',
         md: 'h-9 px-3 text-sm',
@@ -208,11 +208,11 @@ export const tailwindTheme = {
     },
 
     textarea: {
-      base: 'w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500',
+      base: 'w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:border-indigo-500',
       sizes: {
-        sm: 'h-8 px-2.5 text-xs',
-        md: 'h-9 px-3 text-sm',
-        lg: 'h-11 px-4 text-base'
+        sm: 'px-2.5 py-1.5 text-xs',
+        md: 'px-3 py-2 text-sm',
+        lg: 'px-4 py-2.5 text-base'
       },
       states: {
         disabled: 'bg-slate-50 text-slate-500 cursor-not-allowed',
@@ -221,7 +221,7 @@ export const tailwindTheme = {
     },
 
     select: {
-      base: 'w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500',
+      base: 'w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:border-indigo-500',
       sizes: {
         sm: 'h-8 px-2.5 text-xs',
         md: 'h-9 px-3 text-sm',
@@ -535,9 +535,9 @@ export const tailwindTheme = {
     pagination: {
       base: 'flex items-center gap-1',
       sizes: {
-        sm: 'h-8 text-xs',
-        md: 'h-9 text-sm',
-        lg: 'h-11 text-base'
+        sm: 'text-xs',
+        md: 'text-sm',
+        lg: 'text-base'
       },
       parts: {
         item: '',
@@ -588,7 +588,7 @@ export const tailwindTheme = {
     autocomplete: {
       base: 'relative',
       parts: {
-        input: 'w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500',
+        input: 'w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:border-indigo-500',
         dropdown: 'absolute z-50 mt-1.5 w-full bg-white rounded-lg shadow-lg ring-1 ring-slate-900/10 max-h-60 overflow-auto py-1',
         item: 'px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 cursor-pointer transition-colors duration-150 motion-reduce:transition-none'
       },
@@ -601,7 +601,7 @@ export const tailwindTheme = {
     search: {
       base: 'relative',
       parts: {
-        input: 'w-full pl-9 pr-4 py-2 rounded-md border border-slate-300 bg-white text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500',
+        input: 'w-full pl-9 pr-4 py-2 rounded-md border border-slate-300 bg-white text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:border-indigo-500',
         icon: 'absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none',
         button: 'absolute right-1.5 top-1/2 -translate-y-1/2 px-2.5 py-1 bg-indigo-600 text-white text-xs font-medium rounded hover:bg-indigo-700 active:bg-indigo-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500'
       }
@@ -610,7 +610,7 @@ export const tailwindTheme = {
     datepicker: {
       base: 'relative',
       parts: {
-        input: 'w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500',
+        input: 'w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:border-indigo-500',
         calendar: 'absolute z-50 mt-1.5 bg-white rounded-lg shadow-lg ring-1 ring-slate-900/10 p-3',
         header: 'flex items-center justify-between mb-3',
         body: 'grid grid-cols-7 gap-0.5',
