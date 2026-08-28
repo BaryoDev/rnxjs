@@ -32,12 +32,12 @@ const isTrue = (v) => v === true || v === 'true' || v === '';
  * @returns {HTMLElement} Textarea element
  *
  * @example
- * // Basic usage
- * <Textarea name="description" placeholder="Enter description..." />
+ * // Basic usage (Note: MUST be explicitly closed, self-closing will break HTML parsing)
+ * <Textarea name="description" placeholder="Enter description..."></Textarea>
  *
  * @example
  * // With label and help text
- * <Textarea label="Bio" help="Tell us about yourself" rows={8} />
+ * <Textarea label="Bio" help="Tell us about yourself" rows={8}></Textarea>
  */
 export function Textarea({
   label = '',

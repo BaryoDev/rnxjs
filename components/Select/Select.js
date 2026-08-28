@@ -51,6 +51,7 @@ export function Select({
   onchange,
   id,
   className = '',
+  children = [],
   ...rest
 } = {}) {
   const attrs = Object.entries(rest).map(([k, v]) => {
@@ -106,6 +107,7 @@ export function Select({
         ${describedBy ? `aria-describedby="${escapeHtml(describedBy)}"` : ''}
         data-ref="select"
         data-rnx-ignore="true"
+        ${parsedOptions.length === 0 ? 'data-slot' : ''}
         ${attrs}
       >
         ${parsedOptions.map(opt => `
@@ -120,7 +122,7 @@ export function Select({
     </div>
   `;
 
-  const select = createComponent(template, { name, label, options, value, required, disabled });
+  const select = createComponent(template, { name, label, options, value, required, disabled, children });
 
   select.useEffect(() => {
     if (onchange) {

@@ -5,6 +5,10 @@ Laravel Blade directives and helpers for integrating [rnxJS](https://github.com/
 [![License: MPL-2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
 [![PHP Version](https://img.shields.io/badge/php-%3E%3D8.0-blue.svg)](https://www.php.net/)
 
+> [!WARNING]
+> **Experimental / Unmaintained**  
+> This package is currently experimental and not actively maintained. Development focus is on the Django integration. Contributions are welcome, but please use with caution in production.
+
 ## Overview
 
 laravel-rnx provides Blade directives and helpers that make it easy to:

@@ -537,8 +537,6 @@ When using the `icon` prop in components like `Button`, `FAB`, `Icon`, etc., sim
 
 Working examples: [rnxJS_samples](https://github.com/BaryoDev/rnxJS_samples)
 
-There is also a CLI scaffolder, [`create-rnxjs-app`](https://www.npmjs.com/package/@arnelirobles/create-rnxjs-app), if you want a project skeleton. It is not the recommended path. The script tag above is.
-
 ---
 
 ## Contributing
