@@ -5,6 +5,10 @@ Rails gem providing view helpers and ERB directives for integrating [rnxJS](http
 [![License: MPL-2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
 [![Ruby Version](https://img.shields.io/badge/ruby-%3E%3D2.7-red.svg)](https://www.ruby-lang.org/)
 
+> [!WARNING]
+> **Experimental / Unmaintained**  
+> This package is currently experimental and not actively maintained. Development focus is on the Django integration. Contributions are welcome, but please use with caution in production.
+
 ## Overview
 
 rnx_rails provides Rails view helpers that make it easy to:

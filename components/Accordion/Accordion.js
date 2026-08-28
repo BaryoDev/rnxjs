@@ -92,9 +92,44 @@ export function Accordion({ id = 'accordion', items = [], multiple = false, onTo
         button.setAttribute('aria-expanded', open ? 'true' : 'false');
         collapsedTokens.forEach(t => button.classList.toggle(t, !open));
         if (panel) {
-          panel.hidden = !open;
-          showTokens.forEach(t => panel.classList.toggle(t, open));
-          hideTokens.forEach(t => panel.classList.toggle(t, !open));
+          if (open) {
+            if (panel._closeTimer) clearTimeout(panel._closeTimer);
+            if (panel._closeHandler) {
+              panel.removeEventListener('transitionend', panel._closeHandler);
+              panel._closeHandler = null;
+            }
+            panel.hidden = false;
+            void panel.offsetHeight; // force reflow to allow transition from display:none
+            showTokens.forEach(t => panel.classList.toggle(t, true));
+            hideTokens.forEach(t => panel.classList.toggle(t, false));
+          } else {
+            showTokens.forEach(t => panel.classList.toggle(t, false));
+            hideTokens.forEach(t => panel.classList.toggle(t, true));
+            
+            const duration = parseFloat(window.getComputedStyle(panel).transitionDuration) * 1000 || 0;
+            if (duration > 0) {
+              panel._closeHandler = (e) => {
+                if (e.target === panel) {
+                  panel.hidden = true;
+                  panel.removeEventListener('transitionend', panel._closeHandler);
+                  panel._closeHandler = null;
+                  if (panel._closeTimer) clearTimeout(panel._closeTimer);
+                }
+              };
+              panel.addEventListener('transitionend', panel._closeHandler);
+              
+              // Fallback for motion-reduce or cancelled transition
+              panel._closeTimer = setTimeout(() => {
+                panel.hidden = true;
+                if (panel._closeHandler) {
+                  panel.removeEventListener('transitionend', panel._closeHandler);
+                  panel._closeHandler = null;
+                }
+              }, duration + 50);
+            } else {
+              panel.hidden = true;
+            }
+          }
         }
       };
 

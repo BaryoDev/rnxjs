@@ -4,6 +4,10 @@ The official scaffolding tool for [rnxJS](https://www.npmjs.com/package/@arnelir
 
 Quickly bootstrap a new rnxJS application with interactive template selection and framework configuration.
 
+> [!WARNING]
+> **Experimental / Not Recommended**  
+> This scaffolding tool is experimental and currently parked. rnxJS is designed as a zero-build-step library to be dropped into existing projects via a `<script>` tag. Generating a full project structure works against that primary goal. If you want to use rnxJS, it is highly recommended to include it in your existing templates instead.
+
 ## 🚀 Usage
 
 With **npm**:

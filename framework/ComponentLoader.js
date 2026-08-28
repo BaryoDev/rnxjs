@@ -193,6 +193,15 @@ export function loadComponents(root = document, reactiveState = null) {
     return;
   }
 
+  // Check for accidentally self-closed <Textarea /> tags that eat the page
+  const textareas = root.querySelectorAll('textarea');
+  textareas.forEach(ta => {
+    const content = ta.textContent || '';
+    if (content.includes('<script') || content.match(/<[A-Z][a-zA-Z]+/)) {
+      console.warn(`[rnxJS] Warning: A <textarea> contains what looks like unparsed HTML tags. This usually happens if you wrote a self-closing <Textarea />. Textareas are raw text elements in HTML and must be explicitly closed: <Textarea></Textarea>`);
+    }
+  });
+
   Object.keys(registeredComponents).forEach(tag => {
     try {
       // Robust selector: match "FAB" or "fab"
