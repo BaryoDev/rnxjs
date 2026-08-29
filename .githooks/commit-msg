@@ -1,9 +1,12 @@
 #!/bin/sh
-# Rejects AI attribution trailers and em/en dashes in commit messages.
+# Rejects AI attribution and em/en dashes in the commit message, and commits
+# authored as Claude. File contents are checked separately by pre-commit.
 # Enable in a fresh clone with:  git config core.hooksPath .githooks
-# Checks the message only, not file contents.
 
 msg_file="$1"
+
+em=$(printf '\342\200\224')
+en=$(printf '\342\200\223')
 
 # Drop the verbose diff (everything from the scissors line) and comment lines,
 # so only the text that becomes the real commit message is inspected.
@@ -22,8 +25,7 @@ reject 'co-authored-by:.*claude' 'remove the Claude co-author trailer'
 reject 'claude-session:'         'remove the Claude-Session trailer'
 reject 'generated with.*claude'  'remove the "Generated with Claude Code" line'
 reject 'claude\.ai/code'         'remove the claude.ai/code link'
-reject '🤖'                       'remove the robot emoji attribution'
-reject '—|–'                     'remove em and en dashes; use a comma, a colon, or rewrite'
+reject "$em|$en"                 'remove em and en dashes, use a comma or a rewrite'
 
 # The author field is attribution too, and the container default is Claude.
 author=$(git var GIT_AUTHOR_IDENT 2>/dev/null)

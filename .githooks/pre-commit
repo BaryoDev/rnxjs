@@ -1,0 +1,22 @@
+#!/bin/sh
+# Rejects em and en dashes in staged file content.
+# Enable in a fresh clone with:  git config core.hooksPath .githooks
+
+em=$(printf '\342\200\224')
+en=$(printf '\342\200\223')
+
+files=$(git diff --cached --name-only --diff-filter=ACM)
+[ -z "$files" ] && exit 0
+
+# --cached reads the staged blob rather than the worktree; -I skips binaries.
+hits=$(git diff --cached --name-only --diff-filter=ACM -z |
+	xargs -0 git grep -I -n -E -e "$em|$en" --cached -- 2>/dev/null)
+
+if [ -n "$hits" ]; then
+	echo "pre-commit: em or en dash in staged file content:" >&2
+	echo "$hits" >&2
+	echo "pre-commit: replace with a comma, a colon, or a rewrite" >&2
+	exit 1
+fi
+
+exit 0

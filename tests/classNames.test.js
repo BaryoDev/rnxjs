@@ -150,7 +150,7 @@ describe('cn', () => {
         });
 
         it('never merges across a responsive breakpoint infix', () => {
-            // Different media queries — collapsing them would drop a breakpoint.
+            // Different media queries, collapsing them would drop a breakpoint.
             expect(cn('m-3 m-md-5')).toBe('m-3 m-md-5');
             expect(cn('flex-sm-row flex-md-column')).toBe('flex-sm-row flex-md-column');
             expect(cn('d-none d-lg-block')).toBe('d-none d-lg-block');

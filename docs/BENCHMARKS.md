@@ -302,7 +302,7 @@ rnxJS delivers **excellent performance** while maintaining **zero-build simplici
 - **Time to interactive**: <100ms, matching jQuery
 - **Memory efficiency**: Efficient cleanup with $destroy()
 
-The goal isn't to beat React or Vue at everything—it's to provide the **best balance** of performance, simplicity, and features for **backend developers building internal tools**.
+The goal isn't to beat React or Vue at everything, it's to provide the **best balance** of performance, simplicity, and features for **backend developers building internal tools**.
 
 ---
 

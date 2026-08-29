@@ -456,7 +456,7 @@ const card = StatCard({
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `label` | string | `''` | Label above the value |
-| `value` | string\|number | `'—'` | Main metric value |
+| `value` | string\|number | `'-'` | Main metric value |
 | `icon` | string | `''` | Bootstrap icon name, e.g. `'people'`, `'cash-coin'` |
 | `change` | Object | `null` | `{ value: number, trend: 'up'\|'down'\|'neutral' }` |
 | `variant` | string | `'primary'` | primary, success, danger, warning, info, light |
@@ -614,7 +614,7 @@ const dropdown = Dropdown({
 #### **Tooltip** 🔧 Advanced
 Contextual information on hover or focus. Two modes:
 
-1. **Imperative** (pass `element`): attaches to an existing element and returns a tooltip API object — not a DOM node.
+1. **Imperative** (pass `element`): attaches to an existing element and returns a tooltip API object, not a DOM node.
 2. **Declarative** (no `element`): wraps `children` in a Bootstrap tooltip trigger span using `title` and `placement`.
 
 ```javascript
@@ -707,7 +707,7 @@ Vertical list with items.
 #### **VirtualList** 🔧 Advanced
 High-performance list for large datasets (1000+). Uses virtual scrolling: only visible items plus a buffer are rendered. Requires either `renderItem` or `renderItemSafe`.
 
-**Security:** `renderItem` returns raw HTML — you MUST escape user content yourself with `escapeHtml()` from `utils/security`. Prefer `renderItemSafe` (returns `{ title, subtitle, content }`, auto-escaped) when you only need text.
+**Security:** `renderItem` returns raw HTML, so you MUST escape user content yourself with `escapeHtml()` from `utils/security`. Prefer `renderItemSafe` (returns `{ title, subtitle, content }`, auto-escaped) when you only need text.
 
 ```javascript
 import { escapeHtml } from '@arnelirobles/rnxjs/utils/security';
@@ -732,8 +732,8 @@ const list = VirtualList({
 | `itemHeight` | number | `40` | Fixed height per item (px) |
 | `visibleCount` | number | `20` | Visible items (sets container height unless `height` given) |
 | `bufferSize` | number | `5` | Extra items rendered above/below the viewport |
-| `renderItem` | Function | — | `(item, index) => htmlString` (escape user content!) |
-| `renderItemSafe` | Function | — | `(item) => ({ title, subtitle, content })`, auto-escaped |
+| `renderItem` | Function | - | `(item, index) => htmlString` (escape user content!) |
+| `renderItemSafe` | Function | - | `(item) => ({ title, subtitle, content })`, auto-escaped |
 | `height` | string | auto | Container height (CSS value) |
 | `onScroll` | Function | `null` | Scroll event callback |
 | `state` | Object | `null` | Reactive state object for auto-updates |
@@ -907,7 +907,7 @@ nextBtn.onclick = () => { if (!stepper.isLastStep()) stepper.nextStep(); };
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `steps` | Array | `[]` | `{title, content}` — `content` is sanitized HTML |
+| `steps` | Array | `[]` | `{title, content}`, where `content` is sanitized HTML |
 | `currentStep` | number | `0` | Initially active step (0-indexed) |
 | `orientation` | string | `'horizontal'` | horizontal or vertical |
 | `editable` | boolean | `false` | Allow clicking completed steps to navigate back |

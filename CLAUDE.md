@@ -2,24 +2,51 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Writing Style for Commits, PRs and Docs
+## House Rules
 
-Write in the maintainer's voice, not an assistant's.
+These are standing rules. Follow them without being asked and without asking
+for confirmation.
 
-- No attribution. Never add `Co-Authored-By: Claude`, a `Claude-Session:`
-  trailer, a "Generated with Claude Code" line, a robot emoji, or a claude.ai
-  link to a commit message, PR body, code comment, or any file in this repo.
-  `.claude/settings.json` turns the built-in footers off, and
-  `.githooks/commit-msg` rejects them if one gets through.
-- No em dashes or en dashes in anything you write, prose and chat replies
-  included. Use a comma, a colon, or split the sentence.
-- Commit subjects use `type: lowercase imperative summary`. The body explains
-  what was wrong and why the change fixes it, in plain sentences.
-- Commits are authored as Arnel Robles <arnelirobles@gmail.com>. The
-  SessionStart hook in `.claude/settings.json` sets this. Do not commit as
-  Claude.
+### No attribution
 
-The hook needs enabling once per clone: `git config core.hooksPath .githooks`
+Never add `Co-Authored-By: Claude`, a `Claude-Session:` trailer, a "Generated
+with Claude Code" line, a robot emoji, or a claude.ai link to a commit message,
+PR body, code comment, or any file in this repo. Commits are authored as
+Arnel Robles <arnelirobles@gmail.com>, never as Claude.
+
+`.claude/settings.json` turns the built-in footers off and sets the identity.
+`.githooks/commit-msg` rejects anything that gets through.
+
+### No em dashes or en dashes
+
+Not in commit messages, not in file contents, not in chat replies. Use a comma,
+a colon, or split the sentence. If existing content has one, revise it rather
+than working around it. `.githooks/pre-commit` blocks staged file content and
+`.githooks/commit-msg` blocks commit messages.
+
+### Be brief
+
+Answer in as few words as the question needs. Lead with the answer, not the
+method. Specifically:
+
+- No preamble, no restating the request, no summarising what you just did at
+  the end of a message that already showed it.
+- Report findings, not the search. Skip narration of tool calls that worked.
+- Tables and headings only when comparing several things. A one line answer
+  beats a formatted report.
+- Commit bodies stay under roughly ten lines. Say what was wrong and why the
+  change fixes it, then stop.
+
+### Decide, do not ask
+
+Make the routine call yourself and state the assumption in one line. Ask only
+when proceeding either way would be unsafe or would waste real work. Never ask
+which of these house rules to apply.
+
+### Commits
+
+Subjects use `type: lowercase imperative summary`. Enable the hooks once per
+clone: `git config core.hooksPath .githooks`
 
 ## Project Overview
 

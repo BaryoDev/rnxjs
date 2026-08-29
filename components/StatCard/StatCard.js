@@ -35,7 +35,7 @@ import { cn } from '../../utils/classNames.js';
  */
 export function StatCard({
     label = '',
-    value = '—',
+    value = '-',
     icon = '',
     change = null,
     variant = 'primary',

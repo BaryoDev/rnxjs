@@ -10,7 +10,7 @@
  * - Depth discipline: shadow-sm on cards/controls, shadow-lg for popovers,
  *   shadow-xl for modals only
  * - Complete interactive states: hover, active press, focus-visible ring,
- *   disabled — on every control; motion-reduce respected
+ *   disabled, on every control; motion-reduce respected
  * - WCAG AA contrast (warning uses dark text on amber-400)
  *
  * @module themes/tailwind
