@@ -1,6 +1,6 @@
 # rnxJS v1.0.0: The Production-Ready Framework for Backend Developers
 
-> **December 26, 2025** — After 15 months of development, rigorous testing, and community feedback, we're excited to announce the official release of **rnxJS v1.0.0**. This marks the first stable release of the lightweight, zero-build framework designed specifically for backend developers.
+> **December 26, 2025**. After 15 months of development, rigorous testing, and community feedback, we're excited to announce the official release of **rnxJS v1.0.0**. This marks the first stable release of the lightweight, zero-build framework designed specifically for backend developers.
 
 ## What is rnxJS?
 
@@ -91,7 +91,7 @@ Over 15 months, the framework evolved dramatically:
 
 ### 1. 🎯 46 Production-Ready Components
 
-We didn't just add features—we built a **complete component library**:
+We didn't just add features, we built a **complete component library**:
 
 **Form Components** (11):
 - Input, Textarea, Select, Checkbox, Radio, Switch, Slider, FileUpload, Autocomplete, DatePicker, Search
@@ -130,7 +130,7 @@ v1.0.0 includes **5 complete guides**:
    - Real-world examples
    - Zero dependencies explained
 
-2. **COMPONENTS.md** (50KB) — NEW
+2. **COMPONENTS.md** (50KB), NEW
    - All 46 components documented
    - Props and usage examples
    - Component selection guide
@@ -315,7 +315,7 @@ Components with M3 support: FAB, Button, NavigationBar, NavigationDrawer, TopApp
 - React + Material-UI: 400ms render, 100ms sort, 60ms filter
 
 **Interactive Benchmark Suite:**
-Try it yourself in [benchmarks/index.html](../benchmarks/index.html) — runs tests in your browser with real performance metrics.
+Try it yourself in [benchmarks/index.html](../benchmarks/index.html), which runs tests in your browser with real performance metrics.
 
 ---
 

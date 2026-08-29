@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Pluggable theme system**: all 46 components resolve styling through `ThemeProvider`
   - `setTheme('bootstrap' | 'tailwind')`, `registerTheme(custom)`, `themeProvider`, `cn`, `cls`, `twMerge` exported from the package root
-  - Bootstrap remains the default theme — existing apps look identical after upgrading
+  - Bootstrap remains the default theme, so existing apps look identical after upgrading
   - New built-in Tailwind theme: professional design system (indigo primary, 14px UI density, complete hover/active/focus-visible/disabled states, `motion-reduce` support, WCAG AA warning contrast)
   - Smart class merging with Tailwind/Bootstrap conflict resolution (`utils/classNames.js`)
 
@@ -32,7 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **toast plugin**: `clear()` and the max-toast guard looped forever (removal was deferred), freezing the tab and crashing test workers; repeated installs no longer create duplicate containers
 - **storage plugin**: `persist()` now writes the initial snapshot synchronously
-- **Sidebar**: component was broken at runtime (invalid `createComponent` usage) — rewritten
+- **Sidebar**: component was broken at runtime (invalid `createComponent` usage), now rewritten
 - **VirtualList**: reactive item updates now recompute total height and visible range
 - **XSS**: escaped `error.message`/`error.stack` in ErrorBoundary fallback, `icon` in StatCard, `value` in DatePicker, style attributes in Skeleton, label/attribute values in Button and Badge
 

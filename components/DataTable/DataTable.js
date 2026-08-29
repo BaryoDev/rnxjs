@@ -310,7 +310,7 @@ export function DataTable({
         return `
             <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-top: 1rem;">
                 <small class="${resolveUtility('text', 'muted')}">
-                    Showing ${(currentPage - 1) * pageSize + 1}–${Math.min(currentPage * pageSize, totalRows)}
+                    Showing ${(currentPage - 1) * pageSize + 1}-${Math.min(currentPage * pageSize, totalRows)}
                     of ${totalRows} results
                 </small>
                 <nav aria-label="Table pagination">

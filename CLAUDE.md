@@ -2,6 +2,52 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## House Rules
+
+These are standing rules. Follow them without being asked and without asking
+for confirmation.
+
+### No attribution
+
+Never add `Co-Authored-By: Claude`, a `Claude-Session:` trailer, a "Generated
+with Claude Code" line, a robot emoji, or a claude.ai link to a commit message,
+PR body, code comment, or any file in this repo. Commits are authored as
+Arnel Robles <arnelirobles@gmail.com>, never as Claude.
+
+`.claude/settings.json` turns the built-in footers off and sets the identity.
+`.githooks/commit-msg` rejects anything that gets through.
+
+### No em dashes or en dashes
+
+Not in commit messages, not in file contents, not in chat replies. Use a comma,
+a colon, or split the sentence. If existing content has one, revise it rather
+than working around it. `.githooks/pre-commit` blocks staged file content and
+`.githooks/commit-msg` blocks commit messages.
+
+### Be brief
+
+Answer in as few words as the question needs. Lead with the answer, not the
+method. Specifically:
+
+- No preamble, no restating the request, no summarising what you just did at
+  the end of a message that already showed it.
+- Report findings, not the search. Skip narration of tool calls that worked.
+- Tables and headings only when comparing several things. A one line answer
+  beats a formatted report.
+- Commit bodies stay under roughly ten lines. Say what was wrong and why the
+  change fixes it, then stop.
+
+### Decide, do not ask
+
+Make the routine call yourself and state the assumption in one line. Ask only
+when proceeding either way would be unsafe or would waste real work. Never ask
+which of these house rules to apply.
+
+### Commits
+
+Subjects use `type: lowercase imperative summary`. Enable the hooks once per
+clone: `git config core.hooksPath .githooks`
+
 ## Project Overview
 
 rnxJS is a Bootstrap-native reactive framework designed for production apps. It provides zero-build, CDN-ready reactive components and data binding for backend developers (Django, Rails, Laravel, Express) and internal tools. The framework includes 46+ production-ready components, a reactive state system, and official backend integrations.
@@ -172,12 +218,22 @@ loadComponents(document.body, state);
 ```
 
 ### Publishing Changes
-This is a production library (v1.0.0). Changes require:
+This is a production library (v2.0.0). Changes require:
 1. Tests must pass: `npm test`
 2. Build must succeed: `npm run build`
 3. Update version in `package.json`
 4. Update `CHANGELOG.md`
 5. For backend packages, update corresponding package versions in `packages/`
+
+Publishing runs from `.github/workflows/npm-publish.yml` and is triggered by
+creating a GitHub release. It reruns the suite and the build, checks the
+release tag against `package.json`, then publishes.
+
+Auth is npm trusted publishing over OIDC. There is no `NPM_TOKEN` secret and
+nothing to rotate. The job needs `id-token: write` and npm 11.5.1 or newer,
+and npm only accepts the publish when the repo, owner and workflow filename
+match the trusted publisher configured on the package. Renaming or moving
+`npm-publish.yml` breaks releases until that publisher is updated on npmjs.com.
 
 ## TypeScript Support
 

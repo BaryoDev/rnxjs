@@ -113,7 +113,7 @@ export function toastPlugin(options = {}) {
       function remove(toast) {
         if (!toast) return;
 
-        // Remove from tracking synchronously — callers loop on toasts.length,
+        // Remove from tracking synchronously, because callers loop on toasts.length,
         // so deferring the splice would spin forever
         const idx = toasts.indexOf(toast);
         if (idx > -1) toasts.splice(idx, 1);

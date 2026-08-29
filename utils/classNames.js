@@ -5,7 +5,7 @@
  * so that later classes override earlier ones for the same CSS property.
  *
  * Design rule: only drop a class when we are confident two classes set the
- * same property. When a utility is not recognised it is kept verbatim —
+ * same property. When a utility is not recognised it is kept verbatim:
  * under-merging leaves a harmless duplicate, over-merging silently deletes
  * styling (which is much harder to debug).
  *
@@ -121,7 +121,7 @@ function splitVariants(cls) {
  * Resolve a base utility to a conflict group.
  *
  * Two classes conflict only when they share both a variant prefix and a group.
- * Returning `null` means "unknown utility" — the class is always kept.
+ * Returning `null` means "unknown utility", so the class is always kept.
  *
  * @param {string} raw - Base utility, without variant prefix
  * @returns {string|null} - Conflict group key, or null when unrecognised
@@ -323,7 +323,7 @@ function getGroup(raw) {
   v = after(bare, 'object-');
   if (v !== null) return OBJECT_FIT.has(v) ? 'object-fit' : 'object-position';
   // Bootstrap's `align-items-*` / `align-self-*` / `align-content-*` are flexbox
-  // properties, not vertical-align — they share a prefix and nothing else.
+  // properties, not vertical-align, since they share a prefix and nothing else.
   if (bare.startsWith('align-items-')) return 'align-items';
   if (bare.startsWith('align-self-')) return 'align-self';
   if (bare.startsWith('align-content-')) return 'align-content';
@@ -374,7 +374,7 @@ function getGroup(raw) {
  * // => "bg-red-500" (last one wins)
  *
  * @example
- * // Width and colour are different properties — both survive
+ * // Width and colour are different properties, so both survive
  * cn('border-b border-slate-200')
  * // => "border-b border-slate-200"
  *
