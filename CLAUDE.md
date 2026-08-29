@@ -172,12 +172,22 @@ loadComponents(document.body, state);
 ```
 
 ### Publishing Changes
-This is a production library (v1.0.0). Changes require:
+This is a production library (v2.0.0). Changes require:
 1. Tests must pass: `npm test`
 2. Build must succeed: `npm run build`
 3. Update version in `package.json`
 4. Update `CHANGELOG.md`
 5. For backend packages, update corresponding package versions in `packages/`
+
+Publishing runs from `.github/workflows/npm-publish.yml` and is triggered by
+creating a GitHub release. It reruns the suite and the build, checks the
+release tag against `package.json`, then publishes.
+
+Auth is npm trusted publishing over OIDC. There is no `NPM_TOKEN` secret and
+nothing to rotate. The job needs `id-token: write` and npm 11.5.1 or newer,
+and npm only accepts the publish when the repo, owner and workflow filename
+match the trusted publisher configured on the package. Renaming or moving
+`npm-publish.yml` breaks releases until that publisher is updated on npmjs.com.
 
 ## TypeScript Support
 
