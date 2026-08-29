@@ -2,6 +2,25 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Writing Style for Commits, PRs and Docs
+
+Write in the maintainer's voice, not an assistant's.
+
+- No attribution. Never add `Co-Authored-By: Claude`, a `Claude-Session:`
+  trailer, a "Generated with Claude Code" line, a robot emoji, or a claude.ai
+  link to a commit message, PR body, code comment, or any file in this repo.
+  `.claude/settings.json` turns the built-in footers off, and
+  `.githooks/commit-msg` rejects them if one gets through.
+- No em dashes or en dashes in anything you write, prose and chat replies
+  included. Use a comma, a colon, or split the sentence.
+- Commit subjects use `type: lowercase imperative summary`. The body explains
+  what was wrong and why the change fixes it, in plain sentences.
+- Commits are authored as Arnel Robles <arnelirobles@gmail.com>. The
+  SessionStart hook in `.claude/settings.json` sets this. Do not commit as
+  Claude.
+
+The hook needs enabling once per clone: `git config core.hooksPath .githooks`
+
 ## Project Overview
 
 rnxJS is a Bootstrap-native reactive framework designed for production apps. It provides zero-build, CDN-ready reactive components and data binding for backend developers (Django, Rails, Laravel, Express) and internal tools. The framework includes 46+ production-ready components, a reactive state system, and official backend integrations.

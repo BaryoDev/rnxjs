@@ -48,7 +48,8 @@ coverage/
 .nuxt/
 
 # IDE and AI Assistant files
-.claude/
+.claude/*
+!.claude/settings.json
 brain/
 
 # Test output and reports

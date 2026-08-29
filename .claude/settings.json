@@ -1,0 +1,19 @@
+{
+  "attribution": {
+    "commit": "",
+    "pr": "",
+    "sessionUrl": false
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "git config user.name 'Arnel Robles'; git config user.email 'arnelirobles@gmail.com'; git config core.hooksPath .githooks"
+          }
+        ]
+      }
+    ]
+  }
+}

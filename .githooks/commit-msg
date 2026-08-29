@@ -1,0 +1,43 @@
+#!/bin/sh
+# Rejects AI attribution trailers and em/en dashes in commit messages.
+# Enable in a fresh clone with:  git config core.hooksPath .githooks
+# Checks the message only, not file contents.
+
+msg_file="$1"
+
+# Drop the verbose diff (everything from the scissors line) and comment lines,
+# so only the text that becomes the real commit message is inspected.
+body=$(sed '/^#.*>8/,$d' "$msg_file" | grep -v '^#')
+
+fail=0
+
+reject() {
+	if printf '%s\n' "$body" | grep -qiE -- "$1"; then
+		echo "commit-msg: $2" >&2
+		fail=1
+	fi
+}
+
+reject 'co-authored-by:.*claude' 'remove the Claude co-author trailer'
+reject 'claude-session:'         'remove the Claude-Session trailer'
+reject 'generated with.*claude'  'remove the "Generated with Claude Code" line'
+reject 'claude\.ai/code'         'remove the claude.ai/code link'
+reject '🤖'                       'remove the robot emoji attribution'
+reject '—|–'                     'remove em and en dashes; use a comma, a colon, or rewrite'
+
+# The author field is attribution too, and the container default is Claude.
+author=$(git var GIT_AUTHOR_IDENT 2>/dev/null)
+case "$author" in
+*noreply@anthropic.com*|*"Claude <"*)
+	echo "commit-msg: authored as $author" >&2
+	echo "commit-msg: set a real identity with git config user.name and user.email" >&2
+	fail=1
+	;;
+esac
+
+if [ "$fail" -ne 0 ]; then
+	echo "commit-msg: commit rejected, edit the message and try again" >&2
+	exit 1
+fi
+
+exit 0
