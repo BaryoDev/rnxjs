@@ -5,6 +5,73 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2026-08-31
+
+The suite was reporting success while exiting 1, so nothing it covered was
+actually gated. Fixing that surfaced the rest of this release.
+
+### Security
+
+- **Breadcrumb, Dropdown, NavigationDrawer and Sidebar rendered user-supplied
+  `href` values through `escapeHtml`**, which escapes entities and does nothing
+  about the URL scheme, so `javascript:` reached the DOM as a live link.
+  `sanitizeUrl` already existed and no component used it. All five call sites
+  now route through it.
+
+### Fixed
+
+- `cn()` silently deleted utility classes, which shipped in 2.0.0.
+- `DataTable` ignored the table-level `sortable` prop, so headers stayed
+  focusable and clickable with `sortable: false`.
+- `dropdown-item` landed on both the `<li>` and the `<a>`, so every item query
+  returned twice the item count. It now sits on the anchor, matching Bootstrap.
+- `Autocomplete` never rendered its loading state: `isLoading` was set without
+  a `setState`, so the spinner was unreachable in every async configuration.
+- `FileUpload` drop-zone styling sat on the theme base, so the wrapper and the
+  zone both matched `.file-upload` and drag feedback landed on an unstyled
+  element. Both themes gained a `zone` part.
+- Accordion panels taller than 24rem were clipped with no way to scroll.
+- Tailwind control heights did not line up with buttons, and form controls
+  showed a focus ring on mouse click while buttons did not.
+- `<Column class="col-md-6">` rendered as a bare `col`, so grid widths did
+  nothing. `class` is now mapped to `className` for every component.
+- A replaced element lost its classes, so a styled native `<button>` was
+  stripped when `Button` claimed it. `data-rnx-ignore` still opts out.
+- `<Select>` discarded its `<option>` children.
+- A self-closing `<Textarea />` swallowed the rest of the document, because
+  HTML parses it as the raw-text `<textarea>`.
+
+### Added
+
+- **`css/rnx.css`**, one stylesheet giving every component a considered default
+  plus the page furniture an internal tool needs. Recolouring is CSS custom
+  properties only, no JavaScript and no build step:
+  `:root { --rnx-primary: #7c3aed; }`. It bridges the `--rnx-*` tokens in
+  `css/themes/base.css`, which had been declared and consumed by nothing.
+- README now shows the design and documents overriding it in three steps.
+
+### Changed
+
+- **CI runs the suite on every pull request** across Node 20 and 22, and the
+  publish workflow reruns it before anything reaches npm. Neither existed.
+- **Publishing moved to npm trusted publishing over OIDC.** There is no
+  `NPM_TOKEN` secret and nothing to rotate. The release tag is checked against
+  `package.json` before publishing.
+- `package-lock.json` is committed, so builds are reproducible and `npm ci`
+  works. It was gitignored.
+- `require('@arnelirobles/rnxjs')` crashed on Node 20: the CJS entry loads raw
+  source, which imported three `.ts` files. Node 22 strips types, Node 20 does
+  not.
+- Removed the orphaned second theme system, `utils/theme.js` and
+  `utils/theme.ts`.
+
+### Tests
+
+699 passing and exiting 0, from 689 passing while exiting 1. Sixteen files were
+converted off deprecated `done()` callbacks; their assertions had been running
+after their test ended, where a failure surfaced as an unhandled error rather
+than a failing test. That is what had been hiding the defects above.
+
 ## [2.0.0] - 2026-07-14
 
 ### CSS-Framework-Agnostic Theming
