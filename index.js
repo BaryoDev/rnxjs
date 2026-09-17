@@ -27,6 +27,9 @@ export {
 } from './utils/ThemeProvider.js';
 export { cn, cls, twMerge } from './utils/classNames.js';
 export { bootstrapTheme } from './themes/bootstrap/index.js';
+// v3 custom elements. Opt-in for now: v2's loadComponents() still works.
+export { defineElement, defineElements, provideState, tagFor } from './framework/defineElements.js';
+
 export { tailwindTheme } from './themes/tailwind/index.js';
 
 // Framework
