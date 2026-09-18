@@ -67,7 +67,7 @@ actually gated. Fixing that surfaced the rest of this release.
 
 ### Tests
 
-699 passing and exiting 0, from 689 passing while exiting 1. Sixteen files were
+687 passing and exiting 0, from 689 passing while exiting 1. Sixteen files were
 converted off deprecated `done()` callbacks; their assertions had been running
 after their test ended, where a failure surfaced as an unhandled error rather
 than a failing test. That is what had been hiding the defects above.
