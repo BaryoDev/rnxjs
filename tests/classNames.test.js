@@ -254,6 +254,63 @@ describe('cn', () => {
     });
 });
 
+describe('cn with token-aware arbitrary colours', () => {
+    const c = (name) => `${name}-[color:var(--rnx-primary,#4f46e5)]`;
+    const mix = 'color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_20%,var(--rnx-background,#ffffff))';
+
+    it('keeps a font size next to an arbitrary text colour', () => {
+        expect(cn('text-sm', c('text'))).toBe(`text-sm ${c('text')}`);
+        expect(cn(c('text'), 'text-sm')).toBe(`${c('text')} text-sm`);
+    });
+
+    it('keeps a border width next to an arbitrary border colour', () => {
+        expect(cn('border', c('border'))).toBe(`border ${c('border')}`);
+        expect(cn('border-2', c('border'))).toBe(`border-2 ${c('border')}`);
+        expect(cn('border-b', c('border-t'))).toBe(`border-b ${c('border-t')}`);
+    });
+
+    it('keeps a ring width next to an arbitrary ring colour', () => {
+        expect(cn('ring-2', c('ring'))).toBe(`ring-2 ${c('ring')}`);
+        expect(cn('ring-offset-2', c('ring-offset'))).toBe(`ring-offset-2 ${c('ring-offset')}`);
+    });
+
+    it('keeps an outline width and shadow size next to their colours', () => {
+        expect(cn('outline-2', c('outline'))).toBe(`outline-2 ${c('outline')}`);
+        expect(cn('shadow-md', c('shadow'))).toBe(`shadow-md ${c('shadow')}`);
+    });
+
+    it('lets a later arbitrary colour win over an earlier one in the same group', () => {
+        for (const util of ['text', 'bg', 'border', 'border-t', 'ring', 'outline', 'divide']) {
+            const a = `${util}-[color:var(--a,#111111)]`;
+            const b = `${util}-[color:${mix}]`;
+            expect(cn(a, b)).toBe(b);
+        }
+    });
+
+    it('lets an arbitrary colour replace a palette colour of the same kind', () => {
+        expect(cn('text-red-500', c('text'))).toBe(c('text'));
+        expect(cn('border-slate-200', c('border'))).toBe(c('border'));
+        expect(cn('ring-indigo-500', c('ring'))).toBe(c('ring'));
+        expect(cn('bg-white', c('bg'))).toBe(c('bg'));
+    });
+
+    it('keeps different kinds apart (text vs bg vs border colour)', () => {
+        const out = cn(c('text'), c('bg'), c('border'), c('ring'));
+        expect(out.split(' ')).toHaveLength(4);
+    });
+
+    it('keeps variants apart', () => {
+        const base = c('bg');
+        const hover = `hover:bg-[color:${mix}]`;
+        expect(cn(base, hover)).toBe(`${base} ${hover}`);
+    });
+
+    it('treats color-mix() without a hint as a colour', () => {
+        expect(cn('text-sm', `text-[${mix}]`)).toBe(`text-sm text-[${mix}]`);
+        expect(cn('border', `border-[${mix}]`)).toBe(`border border-[${mix}]`);
+    });
+});
+
 describe('theme integrity under cn', () => {
     /**
      * Flatten every class string a theme declares.

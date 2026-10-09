@@ -78,7 +78,9 @@ const isArbitrary = (v) =>
 const isNumeric = (v) => /^\d+(\.\d+)?$/.test(v) || v === 'px';
 
 // `text-[#fff]` is a colour; `text-[13px]` is a font size.
-const isArbitraryColor = (v) => /^\[(#|rgb|hsl|oklch|oklab|color[:(])/.test(v);
+// `color-mix(...)` and `color:var(...)` are colours too (the rnx Tailwind theme
+// emits `text-[color:...]`, `border-[color:...]`, `ring-[color:...]`).
+const isArbitraryColor = (v) => /^\[(#|rgb|hsl|oklch|oklab|color[:(]|color-mix\()/.test(v);
 
 const after = (value, prefix) => (value.startsWith(prefix) ? value.slice(prefix.length) : null);
 
@@ -196,6 +198,7 @@ function getGroup(raw) {
   if (v !== null) {
     if (LINE_STYLE.has(v)) return 'border-style';
     if (v === 'collapse' || v === 'separate') return 'border-collapse';
+    if (isArbitraryColor(v)) return 'border-color';
     if (isNumeric(v) || isArbitrary(v)) return 'border-w';
     if (v.startsWith('spacing-')) return 'border-spacing';
     const side = v.match(/^([a-z]+)(?:-(.*))?$/);
@@ -203,6 +206,7 @@ function getGroup(raw) {
       const rest = side[2];
       // `border-b`, `border-b-2`, `border-end-0` are widths for that side.
       // `border-t-indigo-600` is a colour for that side.
+      if (rest !== undefined && isArbitraryColor(rest)) return `border-color-${side[1]}`;
       if (rest === undefined || isNumeric(rest) || isArbitrary(rest)) {
         return `border-w-${side[1]}`;
       }
@@ -226,9 +230,11 @@ function getGroup(raw) {
   if (v !== null) {
     if (v === 'inset') return 'ring-inset';
     if (v.startsWith('opacity-')) return 'ring-opacity';
+    if (isArbitraryColor(v)) return 'ring-color';
     if (isNumeric(v) || isArbitrary(v)) return 'ring-w';
     const offset = after(v, 'offset-');
     if (offset !== null) {
+      if (isArbitraryColor(offset)) return 'ring-offset-color';
       return isNumeric(offset) || isArbitrary(offset) ? 'ring-offset-w' : 'ring-offset-color';
     }
     return 'ring-color';
@@ -237,6 +243,7 @@ function getGroup(raw) {
   v = after(bare, 'outline-');
   if (v !== null) {
     if (LINE_STYLE.has(v)) return 'outline-style';
+    if (isArbitraryColor(v)) return 'outline-color';
     if (isNumeric(v) || isArbitrary(v)) return 'outline-w';
     if (v.startsWith('offset-')) return 'outline-offset';
     return 'outline-color';
@@ -312,6 +319,7 @@ function getGroup(raw) {
   if (bare.startsWith('opacity-')) return 'opacity';
   v = after(bare, 'shadow-');
   if (v !== null) {
+    if (isArbitraryColor(v)) return 'shadow-color';
     return SHADOW_SIZE.has(v) || isNumeric(v) || isArbitrary(v) ? 'shadow' : 'shadow-color';
   }
   if (bare.startsWith('animate-')) return 'animate';
