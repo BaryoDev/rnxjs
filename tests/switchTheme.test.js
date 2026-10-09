@@ -32,7 +32,7 @@ describe('Switch theming', () => {
       expect(thumb).not.toBeNull();
       expect(thumb.className).toContain('peer-checked:translate-x-5');
       // track is a sibling after the input so peer-* variants apply
-      expect(input.nextElementSibling.className).toContain('peer-checked:bg-indigo-600');
+      expect(input.nextElementSibling.className).toContain('peer-checked:bg-[color:var(--rnx-primary,#4f46e5)]');
     });
 
     it('toggles checked, aria-checked and fires onchange', async () => {
@@ -142,7 +142,7 @@ describe('Tailwind form controls without @tailwindcss/forms', () => {
   it('checkbox is appearance-none with a check mark and focus ring', () => {
     setTheme('tailwind');
     const cls = Checkbox({ label: 'x' }).querySelector('input').className;
-    for (const c of ['appearance-none', 'h-4', 'w-4', 'border', 'checked:bg-indigo-600', 'focus-visible:ring-2', 'disabled:opacity-50']) {
+    for (const c of ['appearance-none', 'h-4', 'w-4', 'border', 'checked:bg-[color:var(--rnx-primary,#4f46e5)]', 'focus-visible:ring-2', 'disabled:opacity-50']) {
       expect(cls).toContain(c);
     }
     expect(cls).toContain('checked:bg-[url(data:image/svg+xml');
@@ -161,7 +161,7 @@ describe('Tailwind form controls without @tailwindcss/forms', () => {
     const cls = Select({ options: [{ value: 'a', label: 'A' }] }).querySelector('select').className;
     expect(cls).toContain('appearance-none');
     expect(cls).toContain('bg-[url(data:image/svg+xml');
-    expect(cls).toContain('disabled:bg-slate-50');
+    expect(cls).toContain('disabled:bg-[color:var(--rnx-surface,#f8fafc)]');
   });
 
   it('cn() keeps arbitrary background colour, image, position and size', async () => {

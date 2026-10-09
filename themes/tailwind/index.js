@@ -11,11 +11,18 @@
  *   shadow-xl for modals only
  * - Complete interactive states: hover, active press, focus-visible ring,
  *   disabled, on every control; motion-reduce respected
+ * - Token aware: every colour is an arbitrary value reading an --rnx-* CSS
+ *   variable, with the old Tailwind hex as the fallback, for example
+ *   bg-[color:var(--rnx-primary,#4f46e5)]. Set the variables in your own CSS
+ *   to restyle the theme, no Tailwind config change. Tints and shades with no
+ *   token are color-mix() of a token with --rnx-background or
+ *   --rnx-text-primary. The color: hint stops Tailwind reading text-[...] or
+ *   border-[...] as a size or width.
  * - WCAG AA: text colours reach 4.5:1 on white, checked by
  *   tests/tailwindContrast.test.js, against the fill in the same class string
  *   (white if none). Excluded: decorative text (breadcrumb separator) and
  *   icons and close buttons (graphics, not text). Warning buttons use dark
- *   text on amber-400.
+ *   text on the warning fill.
  *
  * @module themes/tailwind
  */
@@ -29,22 +36,22 @@ export const tailwindTheme = {
     // ============================================================================
 
     button: {
-      base: 'inline-flex items-center justify-center gap-2 font-medium rounded-md select-none transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500 disabled:opacity-50 disabled:pointer-events-none',
+      base: 'inline-flex items-center justify-center gap-2 font-medium rounded-md select-none transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_14%,var(--rnx-primary,#4f46e5))] disabled:opacity-50 disabled:pointer-events-none',
       variants: {
-        filled: 'bg-indigo-600 text-white shadow-sm hover:bg-indigo-700 active:bg-indigo-800',
-        outlined: 'border border-slate-300 bg-white text-slate-700 shadow-sm hover:bg-slate-50 active:bg-slate-100',
-        text: 'text-indigo-600 hover:bg-indigo-50 active:bg-indigo-100',
-        elevated: 'bg-white text-indigo-600 shadow-md hover:bg-indigo-50 active:bg-indigo-100',
-        tonal: 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100 active:bg-indigo-200',
+        filled: 'bg-[color:var(--rnx-primary,#4f46e5)] text-[color:var(--rnx-text-on-primary,#ffffff)] shadow-sm hover:bg-[color:var(--rnx-primary-hover,#4338ca)] active:bg-[color:var(--rnx-primary-active,#3730a3)]',
+        outlined: 'border border-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_75%,var(--rnx-secondary,#475569))] bg-[color:var(--rnx-background,#ffffff)] text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_34%,var(--rnx-secondary,#475569))] shadow-sm hover:bg-[color:var(--rnx-surface,#f8fafc)] active:bg-[color:var(--rnx-surface-variant,#f1f5f9)]',
+        text: 'text-[color:var(--rnx-primary,#4f46e5)] hover:bg-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_92%,var(--rnx-primary,#4f46e5))] active:bg-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_85%,var(--rnx-primary,#4f46e5))]',
+        elevated: 'bg-[color:var(--rnx-background,#ffffff)] text-[color:var(--rnx-primary,#4f46e5)] shadow-md hover:bg-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_92%,var(--rnx-primary,#4f46e5))] active:bg-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_85%,var(--rnx-primary,#4f46e5))]',
+        tonal: 'bg-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_92%,var(--rnx-primary,#4f46e5))] text-[color:var(--rnx-primary-hover,#4338ca)] hover:bg-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_85%,var(--rnx-primary,#4f46e5))] active:bg-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_72%,var(--rnx-primary,#4f46e5))]',
         // Color variants
-        primary: 'bg-indigo-600 text-white shadow-sm hover:bg-indigo-700 active:bg-indigo-800',
-        secondary: 'bg-white text-slate-700 border border-slate-300 shadow-sm hover:bg-slate-50 active:bg-slate-100',
-        success: 'bg-emerald-700 text-white shadow-sm hover:bg-emerald-800 active:bg-emerald-900 focus-visible:ring-emerald-500',
-        danger: 'bg-red-600 text-white shadow-sm hover:bg-red-700 active:bg-red-800 focus-visible:ring-red-500',
-        warning: 'bg-amber-400 text-amber-950 shadow-sm hover:bg-amber-500 active:bg-amber-600 focus-visible:ring-amber-400',
-        info: 'bg-sky-700 text-white shadow-sm hover:bg-sky-800 active:bg-sky-900 focus-visible:ring-sky-500',
-        light: 'bg-slate-100 text-slate-700 hover:bg-slate-200 active:bg-slate-300 focus-visible:ring-slate-400',
-        dark: 'bg-slate-900 text-white shadow-sm hover:bg-slate-800 active:bg-slate-700 focus-visible:ring-slate-600'
+        primary: 'bg-[color:var(--rnx-primary,#4f46e5)] text-[color:var(--rnx-text-on-primary,#ffffff)] shadow-sm hover:bg-[color:var(--rnx-primary-hover,#4338ca)] active:bg-[color:var(--rnx-primary-active,#3730a3)]',
+        secondary: 'bg-[color:var(--rnx-background,#ffffff)] text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_34%,var(--rnx-secondary,#475569))] border border-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_75%,var(--rnx-secondary,#475569))] shadow-sm hover:bg-[color:var(--rnx-surface,#f8fafc)] active:bg-[color:var(--rnx-surface-variant,#f1f5f9)]',
+        success: 'bg-[color:var(--rnx-success,#047857)] text-[color:var(--rnx-text-on-primary,#ffffff)] shadow-sm hover:bg-[color:var(--rnx-success-hover,#065f46)] active:bg-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_27%,var(--rnx-success-hover,#065f46))] focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_20%,var(--rnx-success,#047857))]',
+        danger: 'bg-[color:var(--rnx-danger,#dc2626)] text-[color:var(--rnx-text-on-primary,#ffffff)] shadow-sm hover:bg-[color:var(--rnx-danger-hover,#b91c1c)] active:bg-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_17%,var(--rnx-danger-hover,#b91c1c))] focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_19%,var(--rnx-danger,#dc2626))]',
+        warning: 'bg-[color:var(--rnx-warning,#fbbf24)] text-[color:var(--rnx-text-primary,#0f172a)] shadow-sm hover:bg-[color:var(--rnx-warning-hover,#f59e0b)] active:bg-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_18%,var(--rnx-warning-hover,#f59e0b))] focus-visible:ring-[color:var(--rnx-warning,#fbbf24)]',
+        info: 'bg-[color:var(--rnx-info,#0369a1)] text-[color:var(--rnx-text-on-primary,#ffffff)] shadow-sm hover:bg-[color:var(--rnx-info-hover,#075985)] active:bg-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_22%,var(--rnx-info-hover,#075985))] focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_24%,var(--rnx-info,#0369a1))]',
+        light: 'bg-[color:var(--rnx-surface-variant,#f1f5f9)] text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_34%,var(--rnx-secondary,#475569))] hover:bg-[color:var(--rnx-border-color,#e2e8f0)] active:bg-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_75%,var(--rnx-secondary,#475569))] focus-visible:ring-[color:var(--rnx-text-disabled,#94a3b8)]',
+        dark: 'bg-[color:var(--rnx-text-primary,#0f172a)] text-[color:var(--rnx-background,#ffffff)] shadow-sm hover:bg-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_71%,var(--rnx-secondary,#475569))] active:bg-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_34%,var(--rnx-secondary,#475569))] focus-visible:ring-[color:var(--rnx-secondary,#475569)]'
       },
       sizes: {
         sm: 'h-8 px-3 text-xs',
@@ -63,14 +70,14 @@ export const tailwindTheme = {
     badge: {
       base: 'inline-flex items-center gap-1 font-medium ring-1 ring-inset',
       variants: {
-        primary: 'bg-indigo-50 text-indigo-700 ring-indigo-600/20',
-        secondary: 'bg-slate-50 text-slate-700 ring-slate-500/20',
-        success: 'bg-emerald-50 text-emerald-700 ring-emerald-600/20',
-        danger: 'bg-red-50 text-red-700 ring-red-600/20',
-        warning: 'bg-amber-50 text-amber-800 ring-amber-600/20',
-        info: 'bg-sky-50 text-sky-700 ring-sky-600/20',
-        light: 'bg-slate-50 text-slate-600 ring-slate-400/20',
-        dark: 'bg-slate-900 text-white ring-slate-900'
+        primary: 'bg-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_92%,var(--rnx-primary,#4f46e5))] text-[color:var(--rnx-primary-hover,#4338ca)] ring-[color:color-mix(in_srgb,var(--rnx-primary,#4f46e5)_20%,transparent)]',
+        secondary: 'bg-[color:var(--rnx-surface,#f8fafc)] text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_34%,var(--rnx-secondary,#475569))] ring-[color:color-mix(in_srgb,var(--rnx-text-secondary,#64748b)_20%,transparent)]',
+        success: 'bg-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_94%,var(--rnx-success,#047857))] text-[color:var(--rnx-success,#047857)] ring-[color:color-mix(in_srgb,color-mix(in_srgb,var(--rnx-background,#ffffff)_8%,var(--rnx-success,#047857))_20%,transparent)]',
+        danger: 'bg-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_94%,var(--rnx-danger,#dc2626))] text-[color:var(--rnx-danger-hover,#b91c1c)] ring-[color:color-mix(in_srgb,var(--rnx-danger,#dc2626)_20%,transparent)]',
+        warning: 'bg-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_90%,var(--rnx-warning,#fbbf24))] text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_53%,var(--rnx-warning-hover,#f59e0b))] ring-[color:color-mix(in_srgb,color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_18%,var(--rnx-warning-hover,#f59e0b))_20%,transparent)]',
+        info: 'bg-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_95%,var(--rnx-info,#0369a1))] text-[color:var(--rnx-info,#0369a1)] ring-[color:color-mix(in_srgb,color-mix(in_srgb,var(--rnx-background,#ffffff)_10%,var(--rnx-info,#0369a1))_20%,transparent)]',
+        light: 'bg-[color:var(--rnx-surface,#f8fafc)] text-[color:var(--rnx-secondary,#475569)] ring-[color:color-mix(in_srgb,var(--rnx-text-disabled,#94a3b8)_20%,transparent)]',
+        dark: 'bg-[color:var(--rnx-text-primary,#0f172a)] text-[color:var(--rnx-background,#ffffff)] ring-[color:var(--rnx-text-primary,#0f172a)]'
       },
       sizes: {
         sm: 'px-1.5 py-0.5 text-xs rounded',
@@ -85,14 +92,14 @@ export const tailwindTheme = {
     alert: {
       base: 'rounded-lg border p-4 text-sm',
       variants: {
-        primary: 'bg-indigo-50 border-indigo-200 text-indigo-800',
-        secondary: 'bg-slate-50 border-slate-200 text-slate-700',
-        success: 'bg-emerald-50 border-emerald-200 text-emerald-800',
-        danger: 'bg-red-50 border-red-200 text-red-800',
-        warning: 'bg-amber-50 border-amber-200 text-amber-800',
-        info: 'bg-sky-50 border-sky-200 text-sky-800',
-        light: 'bg-white border-slate-200 text-slate-700',
-        dark: 'bg-slate-900 border-slate-800 text-slate-100'
+        primary: 'bg-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_92%,var(--rnx-primary,#4f46e5))] border-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_72%,var(--rnx-primary,#4f46e5))] text-[color:var(--rnx-primary-active,#3730a3)]',
+        secondary: 'bg-[color:var(--rnx-surface,#f8fafc)] border-[color:var(--rnx-border-color,#e2e8f0)] text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_34%,var(--rnx-secondary,#475569))]',
+        success: 'bg-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_94%,var(--rnx-success,#047857))] border-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_74%,var(--rnx-success,#047857))] text-[color:var(--rnx-success-hover,#065f46)]',
+        danger: 'bg-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_94%,var(--rnx-danger,#dc2626))] border-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_76%,var(--rnx-danger,#dc2626))] text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_17%,var(--rnx-danger-hover,#b91c1c))]',
+        warning: 'bg-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_90%,var(--rnx-warning,#fbbf24))] border-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_48%,var(--rnx-warning,#fbbf24))] text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_53%,var(--rnx-warning-hover,#f59e0b))]',
+        info: 'bg-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_95%,var(--rnx-info,#0369a1))] border-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_79%,var(--rnx-info,#0369a1))] text-[color:var(--rnx-info-hover,#075985)]',
+        light: 'bg-[color:var(--rnx-background,#ffffff)] border-[color:var(--rnx-border-color,#e2e8f0)] text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_34%,var(--rnx-secondary,#475569))]',
+        dark: 'bg-[color:var(--rnx-text-primary,#0f172a)] border-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_71%,var(--rnx-secondary,#475569))] text-[color:var(--rnx-surface-variant,#f1f5f9)]'
       },
       modifiers: {
         dismissible: 'pr-12 relative'
@@ -100,9 +107,9 @@ export const tailwindTheme = {
     },
 
     spinner: {
-      base: 'animate-spin rounded-full border-2 border-slate-200 motion-reduce:animate-[spin_1.5s_linear_infinite]',
+      base: 'animate-spin rounded-full border-2 border-[color:var(--rnx-border-color,#e2e8f0)] motion-reduce:animate-[spin_1.5s_linear_infinite]',
       variants: {
-        border: 'border-t-indigo-600',
+        border: 'border-t-[color:var(--rnx-primary,#4f46e5)]',
         grow: 'animate-ping'
       },
       sizes: {
@@ -160,30 +167,30 @@ export const tailwindTheme = {
     // ============================================================================
 
     card: {
-      base: 'bg-white rounded-lg overflow-hidden',
+      base: 'bg-[color:var(--rnx-background,#ffffff)] rounded-lg overflow-hidden',
       variants: {
-        outlined: 'border border-slate-200 shadow-sm',
+        outlined: 'border border-[color:var(--rnx-border-color,#e2e8f0)] shadow-sm',
         elevated: 'shadow-md',
-        filled: 'bg-slate-50 border border-slate-200'
+        filled: 'bg-[color:var(--rnx-surface,#f8fafc)] border border-[color:var(--rnx-border-color,#e2e8f0)]'
       },
       parts: {
-        header: 'px-5 py-4 border-b border-slate-200',
+        header: 'px-5 py-4 border-b border-[color:var(--rnx-border-color,#e2e8f0)]',
         body: 'px-5 py-4',
-        footer: 'px-5 py-4 border-t border-slate-200 bg-slate-50 text-sm text-slate-600',
-        title: 'text-base font-semibold text-slate-900',
-        subtitle: 'text-sm text-slate-500 mt-0.5'
+        footer: 'px-5 py-4 border-t border-[color:var(--rnx-border-color,#e2e8f0)] bg-[color:var(--rnx-surface,#f8fafc)] text-sm text-[color:var(--rnx-secondary,#475569)]',
+        title: 'text-base font-semibold text-[color:var(--rnx-text-primary,#0f172a)]',
+        subtitle: 'text-sm text-[color:var(--rnx-text-secondary,#64748b)] mt-0.5'
       }
     },
 
     statcard: {
-      base: 'bg-white rounded-lg p-5 border border-slate-200 shadow-sm',
+      base: 'bg-[color:var(--rnx-background,#ffffff)] rounded-lg p-5 border border-[color:var(--rnx-border-color,#e2e8f0)] shadow-sm',
       parts: {
         body: '',
-        title: 'text-sm font-medium text-slate-500',
-        value: 'text-2xl font-semibold text-slate-900 mt-1 tabular-nums',
-        trend: 'text-xs font-medium text-slate-500 mt-2',
+        title: 'text-sm font-medium text-[color:var(--rnx-text-secondary,#64748b)]',
+        value: 'text-2xl font-semibold text-[color:var(--rnx-text-primary,#0f172a)] mt-1 tabular-nums',
+        trend: 'text-xs font-medium text-[color:var(--rnx-text-secondary,#64748b)] mt-2',
         icon: 'ml-3',
-        footer: 'mt-3 pt-3 border-t border-slate-200'
+        footer: 'mt-3 pt-3 border-t border-[color:var(--rnx-border-color,#e2e8f0)]'
       }
     },
 
@@ -192,65 +199,65 @@ export const tailwindTheme = {
     // ============================================================================
 
     input: {
-      base: 'w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm placeholder:text-slate-500 transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:border-indigo-500',
+      base: 'w-full rounded-md border border-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_75%,var(--rnx-secondary,#475569))] bg-[color:var(--rnx-background,#ffffff)] px-3 py-2 text-sm text-[color:var(--rnx-text-primary,#0f172a)] shadow-sm placeholder:text-[color:var(--rnx-text-secondary,#64748b)] transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_14%,var(--rnx-primary,#4f46e5))] focus-visible:border-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_14%,var(--rnx-primary,#4f46e5))]',
       sizes: {
         sm: 'h-8 px-2.5 text-xs',
         md: 'h-9 px-3 text-sm',
         lg: 'h-11 px-4 text-base'
       },
       states: {
-        disabled: 'bg-slate-50 text-slate-500 cursor-not-allowed',
-        readonly: 'bg-slate-50',
-        error: 'border-red-500 focus:ring-red-500 focus:border-red-500'
+        disabled: 'bg-[color:var(--rnx-surface,#f8fafc)] text-[color:var(--rnx-text-secondary,#64748b)] cursor-not-allowed',
+        readonly: 'bg-[color:var(--rnx-surface,#f8fafc)]',
+        error: 'border-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_19%,var(--rnx-danger,#dc2626))] focus:ring-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_19%,var(--rnx-danger,#dc2626))] focus:border-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_19%,var(--rnx-danger,#dc2626))]'
       },
       parts: {
         wrapper: 'relative',
-        label: 'block text-sm font-medium text-slate-700 mb-1.5',
+        label: 'block text-sm font-medium text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_34%,var(--rnx-secondary,#475569))] mb-1.5',
         floatingWrapper: 'relative',
-        icon: 'absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none',
-        help: 'mt-1.5 text-xs text-slate-500',
-        error: 'mt-1.5 text-xs text-red-600'
+        icon: 'absolute left-3 top-1/2 -translate-y-1/2 text-[color:var(--rnx-text-disabled,#94a3b8)] pointer-events-none',
+        help: 'mt-1.5 text-xs text-[color:var(--rnx-text-secondary,#64748b)]',
+        error: 'mt-1.5 text-xs text-[color:var(--rnx-danger,#dc2626)]'
       }
     },
 
     textarea: {
-      base: 'w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm placeholder:text-slate-500 transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:border-indigo-500',
+      base: 'w-full rounded-md border border-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_75%,var(--rnx-secondary,#475569))] bg-[color:var(--rnx-background,#ffffff)] px-3 py-2 text-sm text-[color:var(--rnx-text-primary,#0f172a)] shadow-sm placeholder:text-[color:var(--rnx-text-secondary,#64748b)] transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_14%,var(--rnx-primary,#4f46e5))] focus-visible:border-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_14%,var(--rnx-primary,#4f46e5))]',
       sizes: {
         sm: 'px-2.5 py-1.5 text-xs',
         md: 'px-3 py-2 text-sm',
         lg: 'px-4 py-2.5 text-base'
       },
       states: {
-        disabled: 'bg-slate-50 text-slate-500 cursor-not-allowed',
-        readonly: 'bg-slate-50'
+        disabled: 'bg-[color:var(--rnx-surface,#f8fafc)] text-[color:var(--rnx-text-secondary,#64748b)] cursor-not-allowed',
+        readonly: 'bg-[color:var(--rnx-surface,#f8fafc)]'
       }
     },
 
     select: {
-      base: 'w-full appearance-none rounded-md border border-slate-300 bg-white bg-[position:right_0.5rem_center] bg-[length:1.25rem_1.25rem] bg-no-repeat bg-[url(data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2020%2020%27%3E%3Cpath%20fill=%27none%27%20stroke=%27%2364748b%27%20stroke-width=%271.5%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27%20d=%27M6%208l4%204%204-4%27/%3E%3C/svg%3E)] px-3 py-2 pr-9 text-sm text-slate-900 shadow-sm transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:border-indigo-500 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-500 [&[multiple]]:bg-none [&[multiple]]:pr-3',
+      base: 'w-full appearance-none rounded-md border border-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_75%,var(--rnx-secondary,#475569))] bg-[color:var(--rnx-background,#ffffff)] bg-[position:right_0.5rem_center] bg-[length:1.25rem_1.25rem] bg-no-repeat bg-[url(data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2020%2020%27%3E%3Cpath%20fill=%27none%27%20stroke=%27%2364748b%27%20stroke-width=%271.5%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27%20d=%27M6%208l4%204%204-4%27/%3E%3C/svg%3E)] px-3 py-2 pr-9 text-sm text-[color:var(--rnx-text-primary,#0f172a)] shadow-sm transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_14%,var(--rnx-primary,#4f46e5))] focus-visible:border-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_14%,var(--rnx-primary,#4f46e5))] disabled:cursor-not-allowed disabled:bg-[color:var(--rnx-surface,#f8fafc)] disabled:text-[color:var(--rnx-text-secondary,#64748b)] [&[multiple]]:bg-none [&[multiple]]:pr-3',
       sizes: {
         sm: 'h-8 px-2.5 text-xs',
         md: 'h-9 px-3 text-sm',
         lg: 'h-11 px-4 text-base'
       },
       states: {
-        disabled: 'bg-slate-50 text-slate-500 cursor-not-allowed'
+        disabled: 'bg-[color:var(--rnx-surface,#f8fafc)] text-[color:var(--rnx-text-secondary,#64748b)] cursor-not-allowed'
       }
     },
 
     checkbox: {
-      base: 'h-4 w-4 rounded shrink-0 appearance-none border border-slate-300 bg-white bg-center bg-no-repeat bg-contain shadow-sm transition-colors duration-150 motion-reduce:transition-none checked:border-indigo-600 checked:bg-indigo-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 checked:bg-[url(data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2016%2016%27%3E%3Cpath%20fill=%27none%27%20stroke=%27white%27%20stroke-width=%272%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27%20d=%27M3.5%208.5l3%203%206-6.5%27/%3E%3C/svg%3E)]',
+      base: 'h-4 w-4 rounded shrink-0 appearance-none border border-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_75%,var(--rnx-secondary,#475569))] bg-[color:var(--rnx-background,#ffffff)] bg-center bg-no-repeat bg-contain shadow-sm transition-colors duration-150 motion-reduce:transition-none checked:border-[color:var(--rnx-primary,#4f46e5)] checked:bg-[color:var(--rnx-primary,#4f46e5)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_14%,var(--rnx-primary,#4f46e5))] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 checked:bg-[url(data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2016%2016%27%3E%3Cpath%20fill=%27none%27%20stroke=%27white%27%20stroke-width=%272%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27%20d=%27M3.5%208.5l3%203%206-6.5%27/%3E%3C/svg%3E)]',
       parts: {
         wrapper: 'flex items-center gap-2',
-        label: 'text-sm text-slate-700 select-none'
+        label: 'text-sm text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_34%,var(--rnx-secondary,#475569))] select-none'
       }
     },
 
     radio: {
-      base: 'h-4 w-4 rounded-full shrink-0 appearance-none border border-slate-300 bg-white bg-center bg-no-repeat bg-contain shadow-sm transition-colors duration-150 motion-reduce:transition-none checked:border-indigo-600 checked:bg-indigo-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 checked:bg-[url(data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2016%2016%27%3E%3Ccircle%20cx=%278%27%20cy=%278%27%20r=%273%27%20fill=%27white%27/%3E%3C/svg%3E)]',
+      base: 'h-4 w-4 rounded-full shrink-0 appearance-none border border-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_75%,var(--rnx-secondary,#475569))] bg-[color:var(--rnx-background,#ffffff)] bg-center bg-no-repeat bg-contain shadow-sm transition-colors duration-150 motion-reduce:transition-none checked:border-[color:var(--rnx-primary,#4f46e5)] checked:bg-[color:var(--rnx-primary,#4f46e5)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_14%,var(--rnx-primary,#4f46e5))] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 checked:bg-[url(data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2016%2016%27%3E%3Ccircle%20cx=%278%27%20cy=%278%27%20r=%273%27%20fill=%27white%27/%3E%3C/svg%3E)]',
       parts: {
         wrapper: 'flex items-center gap-2',
-        label: 'text-sm text-slate-700 select-none'
+        label: 'text-sm text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_34%,var(--rnx-secondary,#475569))] select-none'
       }
     },
 
@@ -258,13 +265,13 @@ export const tailwindTheme = {
       // The input is a visually hidden native checkbox (peer). Track and thumb
       // are siblings that react to its state through peer-* variants, so the
       // control submits with a form and stays keyboard accessible.
-      base: 'absolute inset-0 rounded-full bg-slate-300 transition-colors duration-150 motion-reduce:transition-none peer-checked:bg-indigo-600 peer-focus-visible:ring-2 peer-focus-visible:ring-indigo-500 peer-focus-visible:ring-offset-2 peer-disabled:opacity-50',
+      base: 'absolute inset-0 rounded-full bg-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_75%,var(--rnx-secondary,#475569))] transition-colors duration-150 motion-reduce:transition-none peer-checked:bg-[color:var(--rnx-primary,#4f46e5)] peer-focus-visible:ring-2 peer-focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_14%,var(--rnx-primary,#4f46e5))] peer-focus-visible:ring-offset-2 peer-disabled:opacity-50',
       parts: {
         wrapper: 'flex items-center gap-3',
-        label: 'text-sm text-slate-700 select-none',
+        label: 'text-sm text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_34%,var(--rnx-secondary,#475569))] select-none',
         control: 'relative inline-flex h-6 w-11 shrink-0 cursor-pointer',
         input: 'peer sr-only',
-        thumb: 'absolute left-1 top-1 h-4 w-4 rounded-full bg-white shadow transition-transform duration-150 motion-reduce:transition-none peer-checked:translate-x-5 peer-disabled:opacity-50'
+        thumb: 'absolute left-1 top-1 h-4 w-4 rounded-full bg-[color:var(--rnx-background,#ffffff)] shadow transition-transform duration-150 motion-reduce:transition-none peer-checked:translate-x-5 peer-disabled:opacity-50'
       },
       states: {
         disabled: 'cursor-not-allowed'
@@ -272,7 +279,7 @@ export const tailwindTheme = {
     },
 
     slider: {
-      base: 'w-full h-2 bg-slate-200 rounded-full appearance-none cursor-pointer accent-indigo-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2',
+      base: 'w-full h-2 bg-[color:var(--rnx-border-color,#e2e8f0)] rounded-full appearance-none cursor-pointer accent-[color:var(--rnx-primary,#4f46e5)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_14%,var(--rnx-primary,#4f46e5))] focus-visible:ring-offset-2',
       states: {
         disabled: 'opacity-50 cursor-not-allowed'
       }
@@ -281,9 +288,9 @@ export const tailwindTheme = {
     formgroup: {
       base: 'mb-4',
       parts: {
-        label: 'block text-sm font-medium text-slate-700 mb-1.5',
-        help: 'mt-1.5 text-xs text-slate-500',
-        error: 'mt-1.5 text-xs text-red-600'
+        label: 'block text-sm font-medium text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_34%,var(--rnx-secondary,#475569))] mb-1.5',
+        help: 'mt-1.5 text-xs text-[color:var(--rnx-text-secondary,#64748b)]',
+        error: 'mt-1.5 text-xs text-[color:var(--rnx-danger,#dc2626)]'
       }
     },
 
@@ -292,48 +299,48 @@ export const tailwindTheme = {
     // ============================================================================
 
     navigationbar: {
-      base: 'bg-white border-b border-slate-200',
+      base: 'bg-[color:var(--rnx-background,#ffffff)] border-b border-[color:var(--rnx-border-color,#e2e8f0)]',
       variants: {
-        light: 'bg-white text-slate-900',
-        dark: 'bg-slate-900 text-white border-slate-800',
-        primary: 'bg-indigo-600 text-white border-indigo-700'
+        light: 'bg-[color:var(--rnx-background,#ffffff)] text-[color:var(--rnx-text-primary,#0f172a)]',
+        dark: 'bg-[color:var(--rnx-text-primary,#0f172a)] text-[color:var(--rnx-background,#ffffff)] border-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_71%,var(--rnx-secondary,#475569))]',
+        primary: 'bg-[color:var(--rnx-primary,#4f46e5)] text-[color:var(--rnx-text-on-primary,#ffffff)] border-[color:var(--rnx-primary-hover,#4338ca)]'
       },
       parts: {
         brand: 'text-base font-semibold tracking-tight',
-        toggler: 'p-2 rounded-md hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500',
+        toggler: 'p-2 rounded-md hover:bg-[color:var(--rnx-surface-variant,#f1f5f9)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_14%,var(--rnx-primary,#4f46e5))]',
         collapse: 'flex-grow',
         nav: 'flex items-center gap-1',
         item: '',
-        link: 'px-3 py-2 text-sm font-medium rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500'
+        link: 'px-3 py-2 text-sm font-medium rounded-md text-[color:var(--rnx-secondary,#475569)] hover:text-[color:var(--rnx-text-primary,#0f172a)] hover:bg-[color:var(--rnx-surface-variant,#f1f5f9)] transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_14%,var(--rnx-primary,#4f46e5))]'
       }
     },
 
     navigationdrawer: {
-      base: 'fixed inset-y-0 left-0 z-50 w-72 bg-white shadow-xl transform transition-transform duration-300 motion-reduce:transition-none',
+      base: 'fixed inset-y-0 left-0 z-50 w-72 bg-[color:var(--rnx-background,#ffffff)] shadow-xl transform transition-transform duration-300 motion-reduce:transition-none',
       parts: {
-        header: 'px-5 py-4 border-b border-slate-200',
+        header: 'px-5 py-4 border-b border-[color:var(--rnx-border-color,#e2e8f0)]',
         body: 'p-3 overflow-y-auto',
-        title: 'text-base font-semibold text-slate-900',
-        overlay: 'fixed inset-0 bg-slate-900/50 z-40'
+        title: 'text-base font-semibold text-[color:var(--rnx-text-primary,#0f172a)]',
+        overlay: 'fixed inset-0 bg-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_50%,transparent)] z-40'
       }
     },
 
     sidebar: {
-      base: 'bg-white border-r border-slate-200 h-full',
+      base: 'bg-[color:var(--rnx-background,#ffffff)] border-r border-[color:var(--rnx-border-color,#e2e8f0)] h-full',
       parts: {
         nav: 'flex flex-col gap-0.5 p-3',
         item: '',
-        link: 'flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500'
+        link: 'flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md text-[color:var(--rnx-secondary,#475569)] hover:text-[color:var(--rnx-text-primary,#0f172a)] hover:bg-[color:var(--rnx-surface-variant,#f1f5f9)] transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_14%,var(--rnx-primary,#4f46e5))]'
       },
       states: {
-        active: 'bg-indigo-50 text-indigo-700'
+        active: 'bg-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_92%,var(--rnx-primary,#4f46e5))] text-[color:var(--rnx-primary-hover,#4338ca)]'
       }
     },
 
     topappbar: {
-      base: 'bg-white border-b border-slate-200 px-4 sm:px-6 py-3',
+      base: 'bg-[color:var(--rnx-background,#ffffff)] border-b border-[color:var(--rnx-border-color,#e2e8f0)] px-4 sm:px-6 py-3',
       parts: {
-        brand: 'text-base font-semibold tracking-tight text-slate-900',
+        brand: 'text-base font-semibold tracking-tight text-[color:var(--rnx-text-primary,#0f172a)]',
         title: 'm-0',
         nav: 'flex items-center gap-2 ml-auto'
       }
@@ -342,27 +349,27 @@ export const tailwindTheme = {
     breadcrumb: {
       base: 'flex items-center gap-2 text-sm',
       parts: {
-        item: 'text-slate-500 hover:text-slate-900 transition-colors duration-150 motion-reduce:transition-none',
-        active: 'text-slate-900 font-medium',
+        item: 'text-[color:var(--rnx-text-secondary,#64748b)] hover:text-[color:var(--rnx-text-primary,#0f172a)] transition-colors duration-150 motion-reduce:transition-none',
+        active: 'text-[color:var(--rnx-text-primary,#0f172a)] font-medium',
         // decorative: Breadcrumb renders it aria-hidden, so no contrast requirement
-        separator: 'text-slate-300 select-none'
+        separator: 'text-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_75%,var(--rnx-secondary,#475569))] select-none'
       }
     },
 
     tabs: {
-      base: 'border-b border-slate-200',
+      base: 'border-b border-[color:var(--rnx-border-color,#e2e8f0)]',
       variants: {
         tabs: 'flex gap-6',
         pills: 'flex gap-2 border-none'
       },
       parts: {
         item: '',
-        link: 'py-3 px-1 -mb-px text-sm font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-inset',
+        link: 'py-3 px-1 -mb-px text-sm font-medium border-b-2 border-transparent text-[color:var(--rnx-text-secondary,#64748b)] hover:text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_34%,var(--rnx-secondary,#475569))] hover:border-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_75%,var(--rnx-secondary,#475569))] transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_14%,var(--rnx-primary,#4f46e5))] focus-visible:ring-inset',
         content: 'py-5',
         pane: 'hidden'
       },
       states: {
-        active: 'border-indigo-600 text-indigo-600'
+        active: 'border-[color:var(--rnx-primary,#4f46e5)] text-[color:var(--rnx-primary,#4f46e5)]'
       }
     },
 
@@ -381,14 +388,14 @@ export const tailwindTheme = {
         full: 'max-w-full'
       },
       parts: {
-        overlay: 'fixed inset-0 bg-slate-900/50 transition-opacity motion-reduce:transition-none',
-        dialog: 'relative bg-white rounded-lg shadow-xl mx-auto my-8 w-full',
+        overlay: 'fixed inset-0 bg-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_50%,transparent)] transition-opacity motion-reduce:transition-none',
+        dialog: 'relative bg-[color:var(--rnx-background,#ffffff)] rounded-lg shadow-xl mx-auto my-8 w-full',
         content: 'relative',
-        header: 'flex items-start justify-between px-5 py-4 border-b border-slate-200',
-        body: 'px-5 py-4 text-sm text-slate-700',
-        footer: 'flex justify-end gap-2 px-5 py-4 border-t border-slate-200 bg-slate-50',
-        title: 'text-base font-semibold text-slate-900',
-        close: 'absolute top-3 right-3 p-2 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500'
+        header: 'flex items-start justify-between px-5 py-4 border-b border-[color:var(--rnx-border-color,#e2e8f0)]',
+        body: 'px-5 py-4 text-sm text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_34%,var(--rnx-secondary,#475569))]',
+        footer: 'flex justify-end gap-2 px-5 py-4 border-t border-[color:var(--rnx-border-color,#e2e8f0)] bg-[color:var(--rnx-surface,#f8fafc)]',
+        title: 'text-base font-semibold text-[color:var(--rnx-text-primary,#0f172a)]',
+        close: 'absolute top-3 right-3 p-2 rounded-md text-[color:var(--rnx-text-disabled,#94a3b8)] hover:text-[color:var(--rnx-secondary,#475569)] hover:bg-[color:var(--rnx-surface-variant,#f1f5f9)] transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_14%,var(--rnx-primary,#4f46e5))]'
       },
       modifiers: {
         centered: 'flex items-center min-h-screen',
@@ -397,12 +404,12 @@ export const tailwindTheme = {
     },
 
     toast: {
-      base: 'pointer-events-auto bg-white rounded-lg shadow-lg ring-1 ring-slate-900/10 overflow-hidden',
+      base: 'pointer-events-auto bg-[color:var(--rnx-background,#ffffff)] rounded-lg shadow-lg ring-1 ring-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_10%,transparent)] overflow-hidden',
       parts: {
-        header: 'flex items-center px-4 py-3 border-b border-slate-100 text-sm font-medium text-slate-900',
+        header: 'flex items-center px-4 py-3 border-b border-[color:var(--rnx-border-color-light,#f1f5f9)] text-sm font-medium text-[color:var(--rnx-text-primary,#0f172a)]',
         title: 'mr-auto',
-        body: 'px-4 py-3 text-sm text-slate-700',
-        close: 'absolute top-3 right-3 p-1.5 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500'
+        body: 'px-4 py-3 text-sm text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_34%,var(--rnx-secondary,#475569))]',
+        close: 'absolute top-3 right-3 p-1.5 rounded-md text-[color:var(--rnx-text-disabled,#94a3b8)] hover:text-[color:var(--rnx-secondary,#475569)] hover:bg-[color:var(--rnx-surface-variant,#f1f5f9)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_14%,var(--rnx-primary,#4f46e5))]'
       },
       states: {
         show: 'motion-safe:animate-rnx-toast-in'
@@ -410,9 +417,9 @@ export const tailwindTheme = {
     },
 
     tooltip: {
-      base: 'absolute z-50 px-2.5 py-1.5 text-xs font-medium text-white bg-slate-900 rounded-md shadow-md max-w-xs',
+      base: 'absolute z-50 px-2.5 py-1.5 text-xs font-medium text-[color:var(--rnx-background,#ffffff)] bg-[color:var(--rnx-text-primary,#0f172a)] rounded-md shadow-md max-w-xs',
       parts: {
-        arrow: 'absolute w-2 h-2 bg-slate-900 transform rotate-45',
+        arrow: 'absolute w-2 h-2 bg-[color:var(--rnx-text-primary,#0f172a)] transform rotate-45',
         inner: ''
       }
     },
@@ -421,9 +428,9 @@ export const tailwindTheme = {
       base: 'relative inline-block',
       parts: {
         toggle: 'inline-flex items-center justify-center gap-1.5',
-        menu: 'absolute z-50 mt-1.5 bg-white rounded-lg shadow-lg ring-1 ring-slate-900/10 min-w-[12rem] py-1',
-        item: 'block w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:bg-slate-100',
-        divider: 'h-px bg-slate-200 my-1'
+        menu: 'absolute z-50 mt-1.5 bg-[color:var(--rnx-background,#ffffff)] rounded-lg shadow-lg ring-1 ring-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_10%,transparent)] min-w-[12rem] py-1',
+        item: 'block w-full text-left px-3 py-2 text-sm text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_34%,var(--rnx-secondary,#475569))] hover:bg-[color:var(--rnx-surface-variant,#f1f5f9)] hover:text-[color:var(--rnx-text-primary,#0f172a)] transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:bg-[color:var(--rnx-surface-variant,#f1f5f9)]',
+        divider: 'h-px bg-[color:var(--rnx-border-color,#e2e8f0)] my-1'
       },
       states: {
         show: 'block',
@@ -436,12 +443,12 @@ export const tailwindTheme = {
     // ============================================================================
 
     progressbar: {
-      base: 'w-full bg-slate-200 rounded-full h-2 overflow-hidden',
+      base: 'w-full bg-[color:var(--rnx-border-color,#e2e8f0)] rounded-full h-2 overflow-hidden',
       parts: {
-        bar: 'h-full bg-indigo-600 rounded-full transition-[width] duration-300 motion-reduce:transition-none'
+        bar: 'h-full bg-[color:var(--rnx-primary,#4f46e5)] rounded-full transition-[width] duration-300 motion-reduce:transition-none'
       },
       variants: {
-        striped: 'bg-gradient-to-r from-indigo-600 to-indigo-500',
+        striped: 'bg-gradient-to-r from-[color:var(--rnx-primary,#4f46e5)] to-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_14%,var(--rnx-primary,#4f46e5))]',
         animated: 'animate-pulse'
       }
     },
@@ -450,26 +457,26 @@ export const tailwindTheme = {
       base: 'flex items-center',
       parts: {
         step: 'flex items-center relative',
-        connector: 'flex-1 h-0.5 bg-slate-200 mx-4',
+        connector: 'flex-1 h-0.5 bg-[color:var(--rnx-border-color,#e2e8f0)] mx-4',
         circle: 'w-9 h-9 rounded-full border-2 flex items-center justify-center text-sm font-semibold transition-colors duration-150 motion-reduce:transition-none',
-        label: 'absolute top-11 left-1/2 -translate-x-1/2 text-xs font-medium text-slate-500 whitespace-nowrap'
+        label: 'absolute top-11 left-1/2 -translate-x-1/2 text-xs font-medium text-[color:var(--rnx-text-secondary,#64748b)] whitespace-nowrap'
       },
       states: {
-        active: 'border-indigo-600 bg-indigo-600 text-white',
-        completed: 'border-indigo-600 bg-white text-indigo-600',
-        pending: 'border-slate-300 bg-white text-slate-500'
+        active: 'border-[color:var(--rnx-primary,#4f46e5)] bg-[color:var(--rnx-primary,#4f46e5)] text-[color:var(--rnx-text-on-primary,#ffffff)]',
+        completed: 'border-[color:var(--rnx-primary,#4f46e5)] bg-[color:var(--rnx-background,#ffffff)] text-[color:var(--rnx-primary,#4f46e5)]',
+        pending: 'border-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_75%,var(--rnx-secondary,#475569))] bg-[color:var(--rnx-background,#ffffff)] text-[color:var(--rnx-text-secondary,#64748b)]'
       }
     },
 
     skeleton: {
       base: 'animate-pulse motion-reduce:animate-none',
       parts: {
-        item: 'bg-slate-200 rounded-md'
+        item: 'bg-[color:var(--rnx-border-color,#e2e8f0)] rounded-md'
       },
       variants: {
-        text: 'h-4 bg-slate-200 rounded w-full',
-        circle: 'rounded-full bg-slate-200',
-        rect: 'bg-slate-200 rounded-md'
+        text: 'h-4 bg-[color:var(--rnx-border-color,#e2e8f0)] rounded w-full',
+        circle: 'rounded-full bg-[color:var(--rnx-border-color,#e2e8f0)]',
+        rect: 'bg-[color:var(--rnx-border-color,#e2e8f0)] rounded-md'
       }
     },
 
@@ -478,30 +485,30 @@ export const tailwindTheme = {
     // ============================================================================
 
     datatable: {
-      base: 'min-w-full divide-y divide-slate-200',
+      base: 'min-w-full divide-y divide-[color:var(--rnx-border-color,#e2e8f0)]',
       variants: {
-        striped: '[&_tbody_tr:nth-child(odd)]:bg-slate-50/60',
-        bordered: 'border border-slate-200',
-        hover: '[&_tbody_tr]:hover:bg-slate-50',
+        striped: '[&_tbody_tr:nth-child(odd)]:bg-[color:color-mix(in_srgb,var(--rnx-surface,#f8fafc)_60%,transparent)]',
+        bordered: 'border border-[color:var(--rnx-border-color,#e2e8f0)]',
+        hover: '[&_tbody_tr]:hover:bg-[color:var(--rnx-surface,#f8fafc)]',
         compact: 'text-sm [&_td]:py-2 [&_th]:py-2'
       },
       parts: {
-        wrapper: 'overflow-x-auto rounded-lg border border-slate-200 shadow-sm',
-        head: 'bg-slate-50',
-        body: 'bg-white divide-y divide-slate-100',
+        wrapper: 'overflow-x-auto rounded-lg border border-[color:var(--rnx-border-color,#e2e8f0)] shadow-sm',
+        head: 'bg-[color:var(--rnx-surface,#f8fafc)]',
+        body: 'bg-[color:var(--rnx-background,#ffffff)] divide-y divide-[color:var(--rnx-border-color-light,#f1f5f9)]',
         row: 'transition-colors duration-150 motion-reduce:transition-none',
-        th: 'px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide',
-        td: 'px-4 py-3 whitespace-nowrap text-sm text-slate-700'
+        th: 'px-4 py-3 text-left text-xs font-semibold text-[color:var(--rnx-secondary,#475569)] uppercase tracking-wide',
+        td: 'px-4 py-3 whitespace-nowrap text-sm text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_34%,var(--rnx-secondary,#475569))]'
       }
     },
 
     list: {
-      base: 'divide-y divide-slate-100 rounded-lg border border-slate-200 bg-white shadow-sm',
+      base: 'divide-y divide-[color:var(--rnx-border-color-light,#f1f5f9)] rounded-lg border border-[color:var(--rnx-border-color,#e2e8f0)] bg-[color:var(--rnx-background,#ffffff)] shadow-sm',
       parts: {
-        item: 'px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 transition-colors duration-150 motion-reduce:transition-none'
+        item: 'px-4 py-3 text-sm text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_34%,var(--rnx-secondary,#475569))] hover:bg-[color:var(--rnx-surface,#f8fafc)] transition-colors duration-150 motion-reduce:transition-none'
       },
       states: {
-        active: 'bg-indigo-50 text-indigo-700',
+        active: 'bg-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_92%,var(--rnx-primary,#4f46e5))] text-[color:var(--rnx-primary-hover,#4338ca)]',
         disabled: 'opacity-50 cursor-not-allowed'
       },
       modifiers: {
@@ -518,13 +525,13 @@ export const tailwindTheme = {
     },
 
     accordion: {
-      base: 'divide-y divide-slate-200 rounded-lg border border-slate-200 bg-white shadow-sm',
+      base: 'divide-y divide-[color:var(--rnx-border-color,#e2e8f0)] rounded-lg border border-[color:var(--rnx-border-color,#e2e8f0)] bg-[color:var(--rnx-background,#ffffff)] shadow-sm',
       parts: {
         item: '',
         header: '',
-        button: 'flex items-center justify-between w-full px-4 py-3.5 text-left text-sm font-medium text-slate-900 hover:bg-slate-50 transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-inset',
+        button: 'flex items-center justify-between w-full px-4 py-3.5 text-left text-sm font-medium text-[color:var(--rnx-text-primary,#0f172a)] hover:bg-[color:var(--rnx-surface,#f8fafc)] transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_14%,var(--rnx-primary,#4f46e5))] focus-visible:ring-inset',
         collapse: 'overflow-hidden transition-all duration-200 motion-reduce:transition-none',
-        body: 'px-4 pb-4 text-sm text-slate-600'
+        body: 'px-4 pb-4 text-sm text-[color:var(--rnx-secondary,#475569)]'
       },
       states: {
         show: 'max-h-[10000px]',
@@ -545,10 +552,10 @@ export const tailwindTheme = {
       },
       parts: {
         item: '',
-        link: 'inline-flex items-center justify-center min-w-[2.25rem] h-9 px-2 rounded-md border border-slate-300 bg-white text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 active:bg-slate-100 transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500'
+        link: 'inline-flex items-center justify-center min-w-[2.25rem] h-9 px-2 rounded-md border border-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_75%,var(--rnx-secondary,#475569))] bg-[color:var(--rnx-background,#ffffff)] text-sm font-medium text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_34%,var(--rnx-secondary,#475569))] shadow-sm hover:bg-[color:var(--rnx-surface,#f8fafc)] active:bg-[color:var(--rnx-surface-variant,#f1f5f9)] transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_14%,var(--rnx-primary,#4f46e5))]'
       },
       states: {
-        active: 'bg-indigo-600 text-white border-indigo-600 hover:bg-indigo-700 active:bg-indigo-800',
+        active: 'bg-[color:var(--rnx-primary,#4f46e5)] text-[color:var(--rnx-text-on-primary,#ffffff)] border-[color:var(--rnx-primary,#4f46e5)] hover:bg-[color:var(--rnx-primary-hover,#4338ca)] active:bg-[color:var(--rnx-primary-active,#3730a3)]',
         disabled: 'opacity-50 cursor-not-allowed pointer-events-none'
       }
     },
@@ -560,10 +567,10 @@ export const tailwindTheme = {
     chips: {
       base: 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ring-1 ring-inset transition-colors duration-150 motion-reduce:transition-none',
       variants: {
-        primary: 'bg-indigo-50 text-indigo-700 ring-indigo-600/20',
-        secondary: 'bg-slate-50 text-slate-700 ring-slate-500/20',
-        success: 'bg-emerald-50 text-emerald-700 ring-emerald-600/20',
-        danger: 'bg-red-50 text-red-700 ring-red-600/20'
+        primary: 'bg-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_92%,var(--rnx-primary,#4f46e5))] text-[color:var(--rnx-primary-hover,#4338ca)] ring-[color:color-mix(in_srgb,var(--rnx-primary,#4f46e5)_20%,transparent)]',
+        secondary: 'bg-[color:var(--rnx-surface,#f8fafc)] text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_34%,var(--rnx-secondary,#475569))] ring-[color:color-mix(in_srgb,var(--rnx-text-secondary,#64748b)_20%,transparent)]',
+        success: 'bg-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_94%,var(--rnx-success,#047857))] text-[color:var(--rnx-success,#047857)] ring-[color:color-mix(in_srgb,color-mix(in_srgb,var(--rnx-background,#ffffff)_8%,var(--rnx-success,#047857))_20%,transparent)]',
+        danger: 'bg-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_94%,var(--rnx-danger,#dc2626))] text-[color:var(--rnx-danger-hover,#b91c1c)] ring-[color:color-mix(in_srgb,var(--rnx-danger,#dc2626)_20%,transparent)]'
       },
       modifiers: {
         removable: 'pr-1'
@@ -571,7 +578,7 @@ export const tailwindTheme = {
     },
 
     fab: {
-      base: 'fixed bottom-6 right-6 w-14 h-14 rounded-full bg-indigo-600 text-white shadow-lg hover:bg-indigo-700 hover:shadow-xl active:bg-indigo-800 transition-all duration-150 motion-reduce:transition-none flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2',
+      base: 'fixed bottom-6 right-6 w-14 h-14 rounded-full bg-[color:var(--rnx-primary,#4f46e5)] text-[color:var(--rnx-text-on-primary,#ffffff)] shadow-lg hover:bg-[color:var(--rnx-primary-hover,#4338ca)] hover:shadow-xl active:bg-[color:var(--rnx-primary-active,#3730a3)] transition-all duration-150 motion-reduce:transition-none flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_14%,var(--rnx-primary,#4f46e5))] focus-visible:ring-offset-2',
       sizes: {
         sm: 'w-12 h-12',
         md: 'w-14 h-14',
@@ -580,21 +587,21 @@ export const tailwindTheme = {
     },
 
     segmentedbutton: {
-      base: 'inline-flex rounded-lg bg-slate-100 p-1',
+      base: 'inline-flex rounded-lg bg-[color:var(--rnx-surface-variant,#f1f5f9)] p-1',
       parts: {
-        button: 'px-3.5 py-1.5 text-sm font-medium rounded-md text-slate-600 hover:text-slate-900 transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500'
+        button: 'px-3.5 py-1.5 text-sm font-medium rounded-md text-[color:var(--rnx-secondary,#475569)] hover:text-[color:var(--rnx-text-primary,#0f172a)] transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_14%,var(--rnx-primary,#4f46e5))]'
       },
       states: {
-        active: 'bg-white shadow-sm text-slate-900'
+        active: 'bg-[color:var(--rnx-background,#ffffff)] shadow-sm text-[color:var(--rnx-text-primary,#0f172a)]'
       }
     },
 
     autocomplete: {
       base: 'relative',
       parts: {
-        input: 'w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm placeholder:text-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:border-indigo-500',
-        dropdown: 'absolute z-50 mt-1.5 w-full bg-white rounded-lg shadow-lg ring-1 ring-slate-900/10 max-h-60 overflow-auto py-1',
-        item: 'px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 cursor-pointer transition-colors duration-150 motion-reduce:transition-none'
+        input: 'w-full rounded-md border border-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_75%,var(--rnx-secondary,#475569))] bg-[color:var(--rnx-background,#ffffff)] px-3 py-2 text-sm text-[color:var(--rnx-text-primary,#0f172a)] shadow-sm placeholder:text-[color:var(--rnx-text-secondary,#64748b)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_14%,var(--rnx-primary,#4f46e5))] focus-visible:border-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_14%,var(--rnx-primary,#4f46e5))]',
+        dropdown: 'absolute z-50 mt-1.5 w-full bg-[color:var(--rnx-background,#ffffff)] rounded-lg shadow-lg ring-1 ring-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_10%,transparent)] max-h-60 overflow-auto py-1',
+        item: 'px-3 py-2 text-sm text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_34%,var(--rnx-secondary,#475569))] hover:bg-[color:var(--rnx-surface-variant,#f1f5f9)] cursor-pointer transition-colors duration-150 motion-reduce:transition-none'
       },
       states: {
         show: 'block',
@@ -605,38 +612,38 @@ export const tailwindTheme = {
     search: {
       base: 'relative',
       parts: {
-        input: 'w-full pl-9 pr-4 py-2 rounded-md border border-slate-300 bg-white text-sm text-slate-900 shadow-sm placeholder:text-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:border-indigo-500',
-        icon: 'absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none',
-        button: 'absolute right-1.5 top-1/2 -translate-y-1/2 px-2.5 py-1 bg-indigo-600 text-white text-xs font-medium rounded hover:bg-indigo-700 active:bg-indigo-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500'
+        input: 'w-full pl-9 pr-4 py-2 rounded-md border border-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_75%,var(--rnx-secondary,#475569))] bg-[color:var(--rnx-background,#ffffff)] text-sm text-[color:var(--rnx-text-primary,#0f172a)] shadow-sm placeholder:text-[color:var(--rnx-text-secondary,#64748b)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_14%,var(--rnx-primary,#4f46e5))] focus-visible:border-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_14%,var(--rnx-primary,#4f46e5))]',
+        icon: 'absolute left-3 top-1/2 -translate-y-1/2 text-[color:var(--rnx-text-disabled,#94a3b8)] pointer-events-none',
+        button: 'absolute right-1.5 top-1/2 -translate-y-1/2 px-2.5 py-1 bg-[color:var(--rnx-primary,#4f46e5)] text-[color:var(--rnx-text-on-primary,#ffffff)] text-xs font-medium rounded hover:bg-[color:var(--rnx-primary-hover,#4338ca)] active:bg-[color:var(--rnx-primary-active,#3730a3)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_14%,var(--rnx-primary,#4f46e5))]'
       }
     },
 
     datepicker: {
       base: 'relative',
       parts: {
-        input: 'w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:border-indigo-500',
-        calendar: 'absolute z-50 mt-1.5 bg-white rounded-lg shadow-lg ring-1 ring-slate-900/10 p-3',
+        input: 'w-full rounded-md border border-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_75%,var(--rnx-secondary,#475569))] bg-[color:var(--rnx-background,#ffffff)] px-3 py-2 text-sm text-[color:var(--rnx-text-primary,#0f172a)] shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_14%,var(--rnx-primary,#4f46e5))] focus-visible:border-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_14%,var(--rnx-primary,#4f46e5))]',
+        calendar: 'absolute z-50 mt-1.5 bg-[color:var(--rnx-background,#ffffff)] rounded-lg shadow-lg ring-1 ring-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_10%,transparent)] p-3',
         header: 'flex items-center justify-between mb-3',
         body: 'grid grid-cols-7 gap-0.5',
-        day: 'w-9 h-9 rounded-md hover:bg-slate-100 flex items-center justify-center text-sm cursor-pointer transition-colors duration-150 motion-reduce:transition-none'
+        day: 'w-9 h-9 rounded-md hover:bg-[color:var(--rnx-surface-variant,#f1f5f9)] flex items-center justify-center text-sm cursor-pointer transition-colors duration-150 motion-reduce:transition-none'
       },
       states: {
-        selected: 'bg-indigo-600 text-white hover:bg-indigo-700',
-        today: 'font-semibold text-indigo-600'
+        selected: 'bg-[color:var(--rnx-primary,#4f46e5)] text-[color:var(--rnx-text-on-primary,#ffffff)] hover:bg-[color:var(--rnx-primary-hover,#4338ca)]',
+        today: 'font-semibold text-[color:var(--rnx-primary,#4f46e5)]'
       }
     },
 
     fileupload: {
       base: '',
       parts: {
-        zone: 'border-2 border-dashed border-slate-300 rounded-lg p-8 text-center bg-white hover:border-indigo-400 hover:bg-indigo-50/30 transition-colors duration-150 motion-reduce:transition-none',
+        zone: 'border-2 border-dashed border-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_75%,var(--rnx-secondary,#475569))] rounded-lg p-8 text-center bg-[color:var(--rnx-background,#ffffff)] hover:border-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_33%,var(--rnx-primary,#4f46e5))] hover:bg-[color:color-mix(in_srgb,color-mix(in_srgb,var(--rnx-background,#ffffff)_92%,var(--rnx-primary,#4f46e5))_30%,transparent)] transition-colors duration-150 motion-reduce:transition-none',
         input: 'hidden',
-        label: 'block text-sm font-medium text-slate-700 mb-1.5',
+        label: 'block text-sm font-medium text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_34%,var(--rnx-secondary,#475569))] mb-1.5',
         preview: 'mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3',
-        icon: 'mx-auto text-slate-400 mb-3'
+        icon: 'mx-auto text-[color:var(--rnx-text-disabled,#94a3b8)] mb-3'
       },
       states: {
-        dragover: 'border-indigo-500 bg-indigo-50'
+        dragover: 'border-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_14%,var(--rnx-primary,#4f46e5))] bg-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_92%,var(--rnx-primary,#4f46e5))]'
       }
     },
 
@@ -647,30 +654,30 @@ export const tailwindTheme = {
     emptystate: {
       base: 'text-center py-12 px-6',
       parts: {
-        icon: 'mx-auto mb-4 text-slate-300',
-        title: 'text-base font-semibold text-slate-900 mb-1',
-        description: 'text-sm text-slate-500 mb-6 max-w-sm mx-auto',
-        action: 'inline-flex items-center justify-center gap-2 h-9 px-4 text-sm font-medium bg-indigo-600 text-white rounded-md shadow-sm hover:bg-indigo-700 active:bg-indigo-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2'
+        icon: 'mx-auto mb-4 text-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_75%,var(--rnx-secondary,#475569))]',
+        title: 'text-base font-semibold text-[color:var(--rnx-text-primary,#0f172a)] mb-1',
+        description: 'text-sm text-[color:var(--rnx-text-secondary,#64748b)] mb-6 max-w-sm mx-auto',
+        action: 'inline-flex items-center justify-center gap-2 h-9 px-4 text-sm font-medium bg-[color:var(--rnx-primary,#4f46e5)] text-[color:var(--rnx-text-on-primary,#ffffff)] rounded-md shadow-sm hover:bg-[color:var(--rnx-primary-hover,#4338ca)] active:bg-[color:var(--rnx-primary-active,#3730a3)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_14%,var(--rnx-primary,#4f46e5))] focus-visible:ring-offset-2'
       }
     },
 
     errorstate: {
-      base: 'rounded-lg bg-red-50 border border-red-200 p-6',
+      base: 'rounded-lg bg-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_94%,var(--rnx-danger,#dc2626))] border border-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_76%,var(--rnx-danger,#dc2626))] p-6',
       parts: {
-        icon: 'inline-block mr-2 text-red-500',
-        title: 'text-base font-semibold text-red-800 mb-1',
-        message: 'text-sm text-red-700',
-        action: 'mt-4 inline-flex items-center gap-2 h-9 px-4 text-sm font-medium bg-red-600 text-white rounded-md shadow-sm hover:bg-red-700 active:bg-red-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2'
+        icon: 'inline-block mr-2 text-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_19%,var(--rnx-danger,#dc2626))]',
+        title: 'text-base font-semibold text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_17%,var(--rnx-danger-hover,#b91c1c))] mb-1',
+        message: 'text-sm text-[color:var(--rnx-danger-hover,#b91c1c)]',
+        action: 'mt-4 inline-flex items-center gap-2 h-9 px-4 text-sm font-medium bg-[color:var(--rnx-danger,#dc2626)] text-[color:var(--rnx-text-on-primary,#ffffff)] rounded-md shadow-sm hover:bg-[color:var(--rnx-danger-hover,#b91c1c)] active:bg-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_17%,var(--rnx-danger-hover,#b91c1c))] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_19%,var(--rnx-danger,#dc2626))] focus-visible:ring-offset-2'
       }
     },
 
     errorboundary: {
-      base: 'rounded-lg bg-red-50 border border-red-200 p-6',
+      base: 'rounded-lg bg-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_94%,var(--rnx-danger,#dc2626))] border border-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_76%,var(--rnx-danger,#dc2626))] p-6',
       parts: {
         container: 'max-w-2xl mx-auto',
-        title: 'text-base font-semibold text-red-800 mb-2',
-        message: 'text-sm text-red-700 font-mono',
-        stack: 'mt-4 p-4 bg-red-100 rounded-md text-xs font-mono overflow-auto'
+        title: 'text-base font-semibold text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_17%,var(--rnx-danger-hover,#b91c1c))] mb-2',
+        message: 'text-sm text-[color:var(--rnx-danger-hover,#b91c1c)] font-mono',
+        stack: 'mt-4 p-4 bg-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_88%,var(--rnx-danger,#dc2626))] rounded-md text-xs font-mono overflow-auto'
       }
     }
   },
@@ -751,25 +758,25 @@ export const tailwindTheme = {
       left: 'text-left',
       center: 'text-center',
       right: 'text-right',
-      muted: 'text-slate-500',
-      primary: 'text-indigo-600',
-      secondary: 'text-slate-600',
-      success: 'text-emerald-700',
-      danger: 'text-red-600',
-      warning: 'text-amber-700',
-      info: 'text-sky-700'
+      muted: 'text-[color:var(--rnx-text-secondary,#64748b)]',
+      primary: 'text-[color:var(--rnx-primary,#4f46e5)]',
+      secondary: 'text-[color:var(--rnx-secondary,#475569)]',
+      success: 'text-[color:var(--rnx-success,#047857)]',
+      danger: 'text-[color:var(--rnx-danger,#dc2626)]',
+      warning: 'text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_38%,var(--rnx-warning-hover,#f59e0b))]',
+      info: 'text-[color:var(--rnx-info,#0369a1)]'
     },
 
     background: {
-      primary: 'bg-indigo-600',
-      secondary: 'bg-slate-600',
-      success: 'bg-emerald-700',
-      danger: 'bg-red-600',
-      warning: 'bg-amber-400',
-      info: 'bg-sky-700',
-      light: 'bg-slate-100',
-      dark: 'bg-slate-900',
-      white: 'bg-white',
+      primary: 'bg-[color:var(--rnx-primary,#4f46e5)]',
+      secondary: 'bg-[color:var(--rnx-secondary,#475569)]',
+      success: 'bg-[color:var(--rnx-success,#047857)]',
+      danger: 'bg-[color:var(--rnx-danger,#dc2626)]',
+      warning: 'bg-[color:var(--rnx-warning,#fbbf24)]',
+      info: 'bg-[color:var(--rnx-info,#0369a1)]',
+      light: 'bg-[color:var(--rnx-surface-variant,#f1f5f9)]',
+      dark: 'bg-[color:var(--rnx-text-primary,#0f172a)]',
+      white: 'bg-[color:var(--rnx-background,#ffffff)]',
       transparent: 'bg-transparent'
     },
 

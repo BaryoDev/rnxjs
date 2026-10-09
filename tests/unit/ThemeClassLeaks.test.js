@@ -72,7 +72,7 @@ describe('Bootstrap-only classes under the Tailwind theme', () => {
         const container = await fileWithItem();
         const btn = container.querySelector('.file-upload-item-remove');
         expect(btn).not.toBeNull();
-        expect(btn.className).toContain('bg-red-600');
+        expect(btn.className).toContain('bg-[color:var(--rnx-danger,#dc2626)]');
     });
 });
 
