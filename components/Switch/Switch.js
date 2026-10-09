@@ -68,11 +68,30 @@ export function Switch({
 
   const wrapperClass = resolvePartClasses('switch', 'wrapper');
   const labelClass = resolvePartClasses('switch', 'label');
+  const thumbClass = resolvePartClasses('switch', 'thumb');
 
-  const template = () => `
-    <div class="${wrapperClass}">
+  // Themes that define a thumb part get a real track and thumb. The native
+  // checkbox stays in the DOM (visually hidden, still focusable) so the
+  // switch submits with a form and keeps its keyboard and screen reader
+  // behaviour. Themes without a thumb (Bootstrap) restyle the input itself.
+  const hasThumb = !!(
+    thumbClass &&
+    resolvePartClasses('switch', 'input') &&
+    resolvePartClasses('switch', 'control')
+  );
+  const inputClass = hasThumb
+    ? resolvePartClasses('switch', 'input')
+    : switchClass;
+  const trackClass = hasThumb
+    ? cn(resolveClasses('switch', { disabled: isDisabled }), className)
+    : '';
+  const controlClass = hasThumb
+    ? resolvePartClasses('switch', 'control')
+    : '';
+
+  const inputHtml = `
       <input
-        class="${switchClass}"
+        class="${inputClass}"
         type="checkbox"
         role="switch"
         aria-checked="${isChecked ? 'true' : 'false'}"
@@ -85,7 +104,18 @@ export function Switch({
         data-ref="input"
         data-rnx-ignore="true"
         ${attrs}
-      >
+      >`;
+
+  const control = hasThumb
+    ? `<label class="${controlClass}" for="${escapeHtml(finalId)}">${inputHtml}
+      <span class="${trackClass}" aria-hidden="true"></span>
+      <span class="${thumbClass}" aria-hidden="true" data-part="thumb"></span>
+    </label>`
+    : inputHtml;
+
+  const template = () => `
+    <div class="${wrapperClass}">
+      ${control}
       ${label ? `<label class="${labelClass}" for="${escapeHtml(finalId)}">${escapeHtml(label)}</label>` : ''}
     </div>
   `;
