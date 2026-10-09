@@ -16,8 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Icons come from the theme.** Components and the toast plugin no longer
   hardcode Bootstrap Icons classes; they call `resolveIcon(name)`, which reads
   the theme's `utilities.icon.className`. Both built-in themes map to
-  `bi bi-<name>`, so output is unchanged by default. Set your own mapping to
-  use another icon set. (#11)
+  `bi bi-<name>`, so the classes are unchanged by default. Set your own
+  mapping to use another icon set. Toast icons now carry `aria-hidden`, and
+  `Icon` with no name no longer emits a bare `bi` class. (#11)
 
 ### Added
 
@@ -39,8 +40,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `cn()` treated arbitrary `bg-[url(...)]` and gradient values as colours, so
   a background colour and a background image could drop each other. (#68)
 - `EmptyState` and `ErrorState` broke icon names containing a dash
-  (`exclamation-triangle`) by encoding the dash. `Button` did not escape its
-  icon name.
+  (`exclamation-triangle`) by encoding the dash. The Bootstrap `ErrorState`
+  also rendered its default warning icon next to the one you passed.
 
 ## [2.1.0] - 2026-08-31
 

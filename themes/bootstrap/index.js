@@ -91,7 +91,7 @@ export const bootstrapTheme = {
     },
 
     icon: {
-      base: 'bi' // Bootstrap Icons
+      base: ''
     },
 
     // ============================================================================
@@ -586,7 +586,7 @@ export const bootstrapTheme = {
     errorstate: {
       base: 'error-state alert alert-danger',
       parts: {
-        icon: 'bi bi-exclamation-triangle me-2',
+        icon: 'me-2',
         title: 'alert-heading h5',
         message: 'mb-0'
       }

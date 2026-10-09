@@ -3,6 +3,7 @@ import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { setTheme, registerTheme } from '../utils/ThemeProvider.js';
 import { tailwindTheme } from '../themes/tailwind/index.js';
+import { bootstrapTheme } from '../themes/bootstrap/index.js';
 import { resolveIcon } from '../utils/icon.js';
 import { Icon } from '../components/Icon/Icon.js';
 import { Button } from '../components/Button/Button.js';
@@ -30,6 +31,11 @@ describe('icon set', () => {
       name: 'phosphor-test',
       utilities: { ...tailwindTheme.utilities, icon: { className: (n) => `ph ph-${n}` } }
     });
+    registerTheme({
+      ...bootstrapTheme,
+      name: 'phosphor-bs-test',
+      utilities: { ...bootstrapTheme.utilities, icon: { className: (n) => `ph ph-${n}` } }
+    });
   });
 
   afterEach(() => {
@@ -41,6 +47,8 @@ describe('icon set', () => {
     expect(resolveIcon('check')).toBe('bi bi-check');
     expect(resolveIcon('bi-check')).toBe('bi bi-check');
     expect(resolveIcon('')).toBe('');
+    expect(resolveIcon('bi-')).toBe('');
+    expect(resolveIcon({})).toBe('');
   });
 
   it('falls back to Bootstrap Icons for a theme without an icon utility', () => {
@@ -49,8 +57,8 @@ describe('icon set', () => {
     expect(resolveIcon('check')).toBe('bi bi-check');
   });
 
-  it('every component takes its icons from the theme', () => {
-    setTheme('phosphor-test');
+  it.each(['phosphor-test', 'phosphor-bs-test'])('every component takes its icons from %s', (theme) => {
+    setTheme(theme);
     const rendered = [
       Icon({ name: 'heart' }),
       Button({ icon: 'plus', label: 'Add' }),
@@ -80,6 +88,23 @@ describe('icon set', () => {
     }
   });
 
+  it('DataTable sort icons come from the theme in both directions', async () => {
+    setTheme('phosphor-test');
+    const table = DataTable({ columns: [{ key: 'a', label: 'A', sortable: true }], rows: [{ a: 2 }, { a: 1 }] });
+    document.body.appendChild(table);
+    const tick = () => new Promise((r) => setTimeout(r, 50));
+    const header = () => document.querySelector('th[data-column="a"]');
+    const sortIcon = () => header().querySelector('i').getAttribute('class');
+    await tick();
+    expect(sortIcon()).toBe('ph ph-arrow-down-up');
+    header().click();
+    await tick();
+    expect(sortIcon()).toBe('ph ph-sort-up');
+    header().click();
+    await tick();
+    expect(sortIcon()).toBe('ph ph-sort-down');
+  });
+
   it('toast icons come from the theme', () => {
     setTheme('phosphor-test');
     window.rnx = window.rnx || {};
@@ -90,7 +115,7 @@ describe('icon set', () => {
     delete window.rnx.toast;
   });
 
-  it('no component or plugin hardcodes a Bootstrap Icons class', () => {
+  it('nothing outside the icon mapping hardcodes a Bootstrap Icons class', () => {
     const files = [];
     const walk = (dir) => {
       for (const f of readdirSync(dir)) {
@@ -101,7 +126,11 @@ describe('icon set', () => {
     };
     walk('components');
     walk('plugins');
-    const offenders = files.filter((f) => /["'`\s]bi[\s"'`]|bi-\$\{|["'`\s]bi-[a-z]/.test(readFileSync(f, 'utf8')));
+    walk('themes');
+    const mapping = 'className: (name) => `bi bi-${name}`';
+    const offenders = files.filter((f) =>
+      /["'`\s]bi[\s"'`]|bi-\$\{|["'`\s]bi-[a-z]/.test(readFileSync(f, 'utf8').replace(mapping, ''))
+    );
     expect(offenders).toEqual([]);
   });
 });
