@@ -97,6 +97,16 @@ describe('modal scroll lock', () => {
     });
 });
 
+describe('modal close button', () => {
+    it('draws a glyph under Tailwind and stays empty under Bootstrap', async () => {
+        const tw = await mount(Modal({ title: 'T' }));
+        expect(tw.querySelector('[data-bs-dismiss="modal"]').textContent.trim()).toBe('\u00d7');
+        themeProvider.setTheme('bootstrap');
+        const bs = await mount(Modal({ title: 'T' }));
+        expect(bs.querySelector('[data-bs-dismiss="modal"]').textContent.trim()).toBe('');
+    });
+});
+
 describe('modal instance', () => {
     it('getInstance returns show, hide and toggle', async () => {
         const modal = await mount(Modal({ title: 'T' }));

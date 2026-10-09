@@ -175,6 +175,7 @@ export function Modal({ id = '', title = '', dismissable = true, children = [], 
   const headerClass = resolvePartClasses('modal', 'header') || 'modal-header';
   const titleClass = resolvePartClasses('modal', 'title') || 'modal-title';
   const closeClass = resolvePartClasses('modal', 'close') || 'btn-close';
+  const closeGlyph = resolvePartClasses('modal', 'close') ? '<span aria-hidden="true">×</span>' : '';
   const bodyClass = resolvePartClasses('modal', 'body') || 'modal-body';
   const footerClass = resolvePartClasses('modal', 'footer') || 'modal-footer';
 
@@ -186,7 +187,7 @@ export function Modal({ id = '', title = '', dismissable = true, children = [], 
           ${title ? `
           <div class="${headerClass}">
             <h5 class="${titleClass}" id="${escapeHtml(modalId)}-label">${escapeHtml(title)}</h5>
-            ${dismissable ? `<button type="button" class="${closeClass}" data-bs-dismiss="modal" aria-label="Close"></button>` : ''}
+            ${dismissable ? `<button type="button" class="${closeClass}" data-bs-dismiss="modal" aria-label="Close">${closeGlyph}</button>` : ''}
           </div>
           ` : ''}
 
