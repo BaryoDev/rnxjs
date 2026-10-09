@@ -11,7 +11,11 @@
  *   shadow-xl for modals only
  * - Complete interactive states: hover, active press, focus-visible ring,
  *   disabled, on every control; motion-reduce respected
- * - WCAG AA contrast (warning uses dark text on amber-400)
+ * - WCAG AA: text colours reach 4.5:1 on white, checked by
+ *   tests/tailwindContrast.test.js, against the fill in the same class string
+ *   (white if none). Excluded: decorative text (breadcrumb separator) and
+ *   icons and close buttons (graphics, not text). Warning buttons use dark
+ *   text on amber-400.
  *
  * @module themes/tailwind
  */
@@ -35,10 +39,10 @@ export const tailwindTheme = {
         // Color variants
         primary: 'bg-indigo-600 text-white shadow-sm hover:bg-indigo-700 active:bg-indigo-800',
         secondary: 'bg-white text-slate-700 border border-slate-300 shadow-sm hover:bg-slate-50 active:bg-slate-100',
-        success: 'bg-emerald-600 text-white shadow-sm hover:bg-emerald-700 active:bg-emerald-800 focus-visible:ring-emerald-500',
+        success: 'bg-emerald-700 text-white shadow-sm hover:bg-emerald-800 active:bg-emerald-900 focus-visible:ring-emerald-500',
         danger: 'bg-red-600 text-white shadow-sm hover:bg-red-700 active:bg-red-800 focus-visible:ring-red-500',
         warning: 'bg-amber-400 text-amber-950 shadow-sm hover:bg-amber-500 active:bg-amber-600 focus-visible:ring-amber-400',
-        info: 'bg-sky-600 text-white shadow-sm hover:bg-sky-700 active:bg-sky-800 focus-visible:ring-sky-500',
+        info: 'bg-sky-700 text-white shadow-sm hover:bg-sky-800 active:bg-sky-900 focus-visible:ring-sky-500',
         light: 'bg-slate-100 text-slate-700 hover:bg-slate-200 active:bg-slate-300 focus-visible:ring-slate-400',
         dark: 'bg-slate-900 text-white shadow-sm hover:bg-slate-800 active:bg-slate-700 focus-visible:ring-slate-600'
       },
@@ -186,7 +190,7 @@ export const tailwindTheme = {
     // ============================================================================
 
     input: {
-      base: 'w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:border-indigo-500',
+      base: 'w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm placeholder:text-slate-500 transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:border-indigo-500',
       sizes: {
         sm: 'h-8 px-2.5 text-xs',
         md: 'h-9 px-3 text-sm',
@@ -208,7 +212,7 @@ export const tailwindTheme = {
     },
 
     textarea: {
-      base: 'w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:border-indigo-500',
+      base: 'w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm placeholder:text-slate-500 transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:border-indigo-500',
       sizes: {
         sm: 'px-2.5 py-1.5 text-xs',
         md: 'px-3 py-2 text-sm',
@@ -337,6 +341,7 @@ export const tailwindTheme = {
       parts: {
         item: 'text-slate-500 hover:text-slate-900 transition-colors duration-150 motion-reduce:transition-none',
         active: 'text-slate-900 font-medium',
+        // decorative: Breadcrumb renders it aria-hidden, so no contrast requirement
         separator: 'text-slate-300 select-none'
       }
     },
@@ -448,7 +453,7 @@ export const tailwindTheme = {
       states: {
         active: 'border-indigo-600 bg-indigo-600 text-white',
         completed: 'border-indigo-600 bg-white text-indigo-600',
-        pending: 'border-slate-300 bg-white text-slate-400'
+        pending: 'border-slate-300 bg-white text-slate-500'
       }
     },
 
@@ -583,7 +588,7 @@ export const tailwindTheme = {
     autocomplete: {
       base: 'relative',
       parts: {
-        input: 'w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:border-indigo-500',
+        input: 'w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm placeholder:text-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:border-indigo-500',
         dropdown: 'absolute z-50 mt-1.5 w-full bg-white rounded-lg shadow-lg ring-1 ring-slate-900/10 max-h-60 overflow-auto py-1',
         item: 'px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 cursor-pointer transition-colors duration-150 motion-reduce:transition-none'
       },
@@ -596,7 +601,7 @@ export const tailwindTheme = {
     search: {
       base: 'relative',
       parts: {
-        input: 'w-full pl-9 pr-4 py-2 rounded-md border border-slate-300 bg-white text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:border-indigo-500',
+        input: 'w-full pl-9 pr-4 py-2 rounded-md border border-slate-300 bg-white text-sm text-slate-900 shadow-sm placeholder:text-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:border-indigo-500',
         icon: 'absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none',
         button: 'absolute right-1.5 top-1/2 -translate-y-1/2 px-2.5 py-1 bg-indigo-600 text-white text-xs font-medium rounded hover:bg-indigo-700 active:bg-indigo-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500'
       }
@@ -740,19 +745,19 @@ export const tailwindTheme = {
       muted: 'text-slate-500',
       primary: 'text-indigo-600',
       secondary: 'text-slate-600',
-      success: 'text-emerald-600',
+      success: 'text-emerald-700',
       danger: 'text-red-600',
-      warning: 'text-amber-600',
-      info: 'text-sky-600'
+      warning: 'text-amber-700',
+      info: 'text-sky-700'
     },
 
     background: {
       primary: 'bg-indigo-600',
       secondary: 'bg-slate-600',
-      success: 'bg-emerald-600',
+      success: 'bg-emerald-700',
       danger: 'bg-red-600',
       warning: 'bg-amber-400',
-      info: 'bg-sky-600',
+      info: 'bg-sky-700',
       light: 'bg-slate-100',
       dark: 'bg-slate-900',
       white: 'bg-white',
