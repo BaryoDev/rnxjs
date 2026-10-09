@@ -155,7 +155,7 @@ registered theme:
 ```html
 <Button variant="primary" label="Save changes"></Button>
 <!-- bootstrap: class="btn btn-primary" -->
-<!-- tailwind:  class="inline-flex items-center ... bg-indigo-600 text-white ..." -->
+<!-- tailwind:  class="inline-flex items-center ... bg-[color:var(--rnx-primary,#4f46e5)] ..." -->
 ```
 
 Switch with `setTheme('bootstrap')` or `setTheme('tailwind')`.
@@ -203,6 +203,36 @@ content: [
 ```
 
 Without the preset the toast still works, it just appears without the slide-in.
+
+#### Restyle the Tailwind theme
+
+Every colour in the Tailwind theme reads an `--rnx-*` CSS variable and falls
+back to the Tailwind colour it used before, for example
+`bg-[color:var(--rnx-primary,#4f46e5)]`. Set the variables in your own CSS. No
+Tailwind config change, no fork:
+
+```css
+:root {
+  --rnx-primary: #7c3aed;
+  --rnx-primary-hover: #6d28d9;
+  --rnx-primary-active: #5b21b6;
+}
+```
+
+With nothing set, the theme looks as it did before. Tokens it reads:
+
+- `--rnx-primary`, `-hover`, `-active`
+- `--rnx-secondary`
+- `--rnx-success`, `--rnx-danger`, `--rnx-warning`, `--rnx-info`, each with `-hover`
+- `--rnx-background`, `--rnx-surface`, `--rnx-surface-variant`
+- `--rnx-text-primary`, `--rnx-text-secondary`, `--rnx-text-disabled`, `--rnx-text-on-primary`
+- `--rnx-border-color`, `--rnx-border-color-light`
+
+Tints and shades that have no token of their own (the light alert backgrounds,
+hover fills, focus rings) are `color-mix()` of one of these with
+`--rnx-background` or `--rnx-text-primary`, so they follow when you change the
+token. They land within a few points of the old shade. This needs a browser
+with `color-mix()` (Chrome 111, Safari 16.2, Firefox 113 or newer).
 
 ### What is not supported yet
 
