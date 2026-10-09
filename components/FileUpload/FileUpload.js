@@ -162,6 +162,7 @@ export function FileUpload({
         // Resolve classes from active theme
         const wrapperClass = cn(resolveClasses('fileupload'), 'file-upload-wrapper', className);
         const zoneClass = cn(resolvePartClasses('fileupload', 'zone'), 'file-upload');
+        const removeButtonClass = cn('file-upload-item-remove', resolveClasses('button', { variant: 'danger', size: 'sm' }));
 
         return `
             <div class="${wrapperClass}" data-ref="wrapper">
@@ -200,7 +201,7 @@ export function FileUpload({
                                     <small class="file-upload-item-size text-muted">${escapeHtml(formatBytes(file.size))}</small>
                                 </div>
                             </div>
-                            <button type="button" class="file-upload-item-remove btn btn-sm btn-danger" data-index="${index}">
+                            <button type="button" class="${removeButtonClass}" data-index="${index}">
                                 &times;
                             </button>
                         </div>

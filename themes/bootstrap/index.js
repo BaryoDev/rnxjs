@@ -607,6 +607,10 @@ export const bootstrapTheme = {
   // ============================================================================
 
   utilities: {
+    a11y: {
+      srOnly: 'visually-hidden'
+    },
+
     spacing: {
       // Margin
       m: (size) => `m-${size}`,

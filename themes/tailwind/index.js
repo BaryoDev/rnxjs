@@ -671,6 +671,10 @@ export const tailwindTheme = {
   // ============================================================================
 
   utilities: {
+    a11y: {
+      srOnly: 'sr-only'
+    },
+
     spacing: {
       // Margin
       m: (size) => `m-${size}`,

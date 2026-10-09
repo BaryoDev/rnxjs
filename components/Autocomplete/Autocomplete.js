@@ -9,6 +9,7 @@
 import { createComponent } from '../../utils/createComponent.js';
 import { escapeHtml } from '../../utils/security.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
+import { srOnlyAttr } from '../../utils/srOnly.js';
 import { cn } from '../../utils/classNames.js';
 
 let autocompleteUid = 0;
@@ -229,7 +230,7 @@ export function Autocomplete({
         const itemClass = cn(resolvePartClasses('autocomplete', 'item'), 'autocomplete-item');
         const tagClass = cn(resolveClasses('chips', { variant: 'primary' }), 'badge');
         const checkboxClass = resolveClasses('checkbox');
-        const spinnerClass = cn(resolveClasses('spinner', { variant: 'border', size: 'sm' }), 'spinner-border spinner-border-sm');
+        const spinnerClass = cn(resolveClasses('spinner', { variant: 'border', size: 'sm' }));
 
         const expanded = isOpen && filteredItems.length > 0;
         const isItemSelected = (item) => multiple ? selectedItems.includes(item) : selectedItems === item;
@@ -255,7 +256,7 @@ export function Autocomplete({
                     ${isLoading ? `
                         <div class="autocomplete-loading">
                             <div class="${spinnerClass}" role="status">
-                                <span class="visually-hidden">Loading...</span>
+                                <span ${srOnlyAttr()}>Loading...</span>
                             </div>
                         </div>
                     ` : ''}

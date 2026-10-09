@@ -1,5 +1,6 @@
 import { createComponent } from '../../utils/createComponent.js';
 import { resolveClasses, themeProvider } from '../../utils/ThemeProvider.js';
+import { srOnlyAttr } from '../../utils/srOnly.js';
 import { cn } from '../../utils/classNames.js';
 import { escapeHtml } from '../../utils/security.js';
 
@@ -49,7 +50,7 @@ export function Spinner({
 
   const template = () => `
     <div class="${escapeHtml(spinnerClass)}" role="status" aria-label="${escapeHtml(label || 'Loading...')}">
-      <span class="visually-hidden sr-only">${escapeHtml(label || 'Loading...')}</span>
+      <span ${srOnlyAttr()}>${escapeHtml(label || 'Loading...')}</span>
     </div>
   `;
 
