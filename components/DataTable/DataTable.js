@@ -224,8 +224,8 @@ export function DataTable({
                 <tbody class="${bodyClass}">
                     <tr>
                         <td colspan="${colSpan}" style="${centered}">
-                            <div class="${cn(resolveClasses('spinner', { variant: 'border', size: 'sm' }), 'spinner-border')}" role="status">
-                                <span class="visually-hidden">Loading...</span>
+                            <div class="${resolveClasses('spinner', { variant: 'border', size: 'sm' })}" role="status">
+                                <span class="${resolveUtility('a11y', 'srOnly')}">Loading...</span>
                             </div>
                         </td>
                     </tr>

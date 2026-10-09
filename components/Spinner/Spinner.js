@@ -47,9 +47,11 @@ export function Spinner({
     className // User classes applied last (highest priority)
   );
 
+  const srOnly = themeProvider.resolveUtility('a11y', 'srOnly');
+
   const template = () => `
     <div class="${escapeHtml(spinnerClass)}" role="status" aria-label="${escapeHtml(label || 'Loading...')}">
-      <span class="visually-hidden sr-only">${escapeHtml(label || 'Loading...')}</span>
+      <span class="${escapeHtml(srOnly)}">${escapeHtml(label || 'Loading...')}</span>
     </div>
   `;
 
