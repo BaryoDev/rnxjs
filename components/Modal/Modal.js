@@ -15,6 +15,30 @@ const themeState = (component, state) => {
 
 const tokens = (str) => String(str || '').split(/\s+/).filter(Boolean);
 
+// Open standalone modals, topmost last. Escape closes only the top one.
+const openModals = [];
+let savedBodyOverflow = null;
+
+const lockScroll = () => {
+  if (openModals.length === 1 && document.body) {
+    savedBodyOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+  }
+};
+
+const unlockScroll = () => {
+  if (openModals.length === 0 && savedBodyOverflow !== null && document.body) {
+    document.body.style.overflow = savedBodyOverflow;
+    savedBodyOverflow = null;
+  }
+};
+
+const removeFromStack = (entry) => {
+  const i = openModals.indexOf(entry);
+  if (i !== -1) openModals.splice(i, 1);
+  unlockScroll();
+};
+
 /**
  * Show/hide behaviour for themes without Bootstrap JS.
  * Fires shown.bs.modal / hidden.bs.modal so existing listeners keep working.
@@ -24,6 +48,7 @@ function setupStandaloneModal(el, { title, dismissable, overlayClass }) {
   const focusTrap = dialog ? createFocusTrap(dialog) : null;
   const openTokens = tokens(themeState('modal', 'open'));
   const closedTokens = tokens(themeState('modal', 'closed'));
+  const entry = { el };
   let isOpen = false;
   let trigger = null;
 
@@ -42,8 +67,11 @@ function setupStandaloneModal(el, { title, dismissable, overlayClass }) {
 
   const show = () => {
     if (isOpen) return;
+    const active = document.activeElement;
+    trigger = active && !openModals.some(m => m.el.contains(active)) ? active : null;
     isOpen = true;
-    trigger = document.activeElement;
+    openModals.push(entry);
+    lockScroll();
     apply();
     if (focusTrap) focusTrap.activate();
     if (dialog && !dialog.contains(document.activeElement)) el.focus();
@@ -54,39 +82,48 @@ function setupStandaloneModal(el, { title, dismissable, overlayClass }) {
   const hide = () => {
     if (!isOpen) return;
     isOpen = false;
+    removeFromStack(entry);
     apply();
     if (focusTrap) focusTrap.deactivate(false);
+    const next = openModals[openModals.length - 1];
     if (trigger && typeof trigger.focus === 'function' && document.contains(trigger)) trigger.focus();
+    else if (next) next.el.focus();
     trigger = null;
     if (title) announce(`${title} dialog closed`, 'polite');
     el.dispatchEvent(new Event('hidden.bs.modal'));
   };
 
-  const onKeydown = (e) => {
-    if (e.key === 'Escape' && dismissable) hide();
-  };
   const onClick = (e) => {
     const t = e.target;
     if (dismissable && (t === el || t === overlay)) return hide();
     if (t.closest && t.closest('[data-bs-dismiss="modal"]') && el.contains(t.closest('[data-bs-dismiss="modal"]'))) hide();
   };
-  const onDocKeydown = (e) => {
-    if (isOpen && e.key === 'Escape' && dismissable) hide();
+
+  const detach = () => {
+    document.removeEventListener('keydown', onDocKeydown);
+    removeFromStack(entry);
+    isOpen = false;
   };
 
-  el.addEventListener('keydown', onKeydown);
+  function onDocKeydown(e) {
+    if (e.key !== 'Escape') return;
+    if (!el.isConnected) return detach();
+    if (isOpen && dismissable && openModals[openModals.length - 1] === entry) hide();
+  }
+
   el.addEventListener('click', onClick);
   document.addEventListener('keydown', onDocKeydown);
 
+  const instance = { show, hide, toggle: () => (isOpen ? hide() : show()), dispose: () => {} };
   el.show = show;
   el.hide = hide;
-  el.toggle = () => (isOpen ? hide() : show());
+  el.toggle = instance.toggle;
+  el.getInstance = () => instance;
   apply();
 
   return () => {
-    el.removeEventListener('keydown', onKeydown);
     el.removeEventListener('click', onClick);
-    document.removeEventListener('keydown', onDocKeydown);
+    detach();
     if (focusTrap && focusTrap.isActive()) focusTrap.deactivate();
     overlay.remove();
   };

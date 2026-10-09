@@ -58,7 +58,29 @@ export function Tooltip({
         const popupTemplate = () => `
             <span class="${triggerClass}" data-slot><span role="tooltip" id="${popupId}" class="${popupClass}">${escapeHtml(title)}</span></span>
         `;
-        return createComponent(popupTemplate, { title, placement, children, className });
+        const popupComponent = createComponent(popupTemplate, { title, placement, children, className });
+        popupComponent.useEffect((el) => {
+            const popup = el.querySelector('[role="tooltip"]');
+            const target = Array.from(el.children).find(c => c !== popup);
+            if (target) target.setAttribute('aria-describedby', popupId);
+
+            // Escape hides the popup until the pointer or focus comes back
+            const dismiss = (e) => {
+                if (e.key === 'Escape' && popup) popup.style.visibility = 'hidden';
+            };
+            const reveal = () => {
+                if (popup) popup.style.visibility = '';
+            };
+            document.addEventListener('keydown', dismiss);
+            el.addEventListener('mouseenter', reveal);
+            el.addEventListener('focusin', reveal);
+            return () => {
+                document.removeEventListener('keydown', dismiss);
+                el.removeEventListener('mouseenter', reveal);
+                el.removeEventListener('focusin', reveal);
+            };
+        });
+        return popupComponent;
     }
 
     const tooltipClass = cn(resolveClasses('tooltip'), className);

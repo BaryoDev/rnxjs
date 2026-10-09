@@ -14,7 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ProgressBar takes its fill colour from the theme per variant instead of the Bootstrap `bg-*` names.
 - Tooltip under Tailwind puts the bubble classes on a popup element that shows on hover and focus, with no Bootstrap JS.
 - Input and Select under Tailwind show the label above the field. Bootstrap keeps its floating label.
-- Skeleton renders the requested number of lines when `lines`, `rows` or `cols` arrive as strings such as `"3"`.
+- Under Tailwind, Modal no longer uses Bootstrap JS. A `data-bs-toggle="modal"` trigger is not supported there, so use the Modal API. Escape closes only the topmost of stacked modals, body scroll is locked while one is open, and `getInstance()` returns an object with show, hide and toggle.
+- The imperative `Tooltip({element})` under Tailwind now shows on hover and focus, not always. The declarative tooltip sets `aria-describedby` on its trigger and Escape dismisses it.
+- ProgressBar falls back to the primary fill for a variant the theme does not define.
+- Input under Tailwind no longer repeats the label as the placeholder, and its icon centres on the field. A vertical Stepper puts the label beside the circle.
+- Skeleton renders the requested number of lines when `lines`, `rows` or `cols` arrive as strings such as `"3"`, and caps each at 100.
 
 ## [2.3.0] - 2026-10-09
 

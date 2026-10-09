@@ -38,7 +38,7 @@ export const Stepper = (props = {}) => {
 
     let activeStep = currentStep;
 
-    const renderStepHeader = (step, index) => {
+    const renderStepHeader = (step, index, vertical = false) => {
         const circlePart = resolvePartClasses('stepper', 'circle');
         const labelPart = resolvePartClasses('stepper', 'label');
         const isActive = index === activeStep;
@@ -50,7 +50,7 @@ export const Stepper = (props = {}) => {
                 : themeState('stepper', 'pending');
 
         return `
-            <div class="${cn(resolvePartClasses('stepper', 'header'), 'stepper-step-header')}">
+            <div class="${cn((vertical && resolvePartClasses('stepper', 'headerVertical')) || resolvePartClasses('stepper', 'header'), 'stepper-step-header')}">
                 <div class="${cn(circlePart, circleState, 'stepper-step-indicator')}" aria-hidden="true">
                     ${isCompleted ? '✓' : index + 1}
                 </div>
@@ -98,7 +98,7 @@ export const Stepper = (props = {}) => {
                 <ol class="${cn(resolvePartClasses('stepper', 'listVertical'), 'stepper-vertical')}" style="list-style: none; margin: 0; padding: 0;">
                     ${steps.map((step, index) => `
                         <li ${stepAttrs(index, true)}>
-                            ${renderStepHeader(step, index)}
+                            ${renderStepHeader(step, index, true)}
                             <div class="stepper-content">
                                 ${step.content ? sanitizeHtml(step.content) : ''}
                             </div>

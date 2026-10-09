@@ -218,6 +218,7 @@ export const tailwindTheme = {
         label: 'block text-sm font-medium text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_34%,var(--rnx-secondary,#46576b))] mb-1.5',
         floatingWrapper: 'relative flex flex-col',
         floatingLabel: 'order-first',
+        field: 'relative',
         icon: 'absolute left-3 top-1/2 -translate-y-1/2 text-[color:var(--rnx-text-disabled,#94a3b8)] pointer-events-none',
         help: 'mt-1.5 text-xs text-[color:var(--rnx-text-secondary,#64748b)]',
         error: 'mt-1.5 text-xs text-[color:var(--rnx-danger,#dc2626)]'
@@ -477,6 +478,7 @@ export const tailwindTheme = {
         step: 'flex flex-1 items-start last:flex-none',
         stepVertical: 'flex flex-col',
         header: 'flex flex-col items-center gap-2',
+        headerVertical: 'flex flex-row items-center gap-3',
         connector: 'flex-1 h-0.5 mt-[1.0625rem] mx-3 bg-[color:var(--rnx-border-color,#e2e8f0)]',
         connectorVertical: 'w-0.5 h-6 ml-[1.0625rem] mt-2 bg-[color:var(--rnx-border-color,#e2e8f0)]',
         circle: 'w-9 h-9 shrink-0 rounded-full border-2 flex items-center justify-center text-sm font-semibold transition-colors duration-150 motion-reduce:transition-none',

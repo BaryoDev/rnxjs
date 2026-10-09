@@ -65,7 +65,7 @@ export function ProgressBar({
         resolvePartClasses('progressbar', 'bar'),
         'progress-bar',
         `progress-bar-${variant}`,
-        resolveUtility('background', variant) || `bg-${variant}`,
+        resolveUtility('background', variant) || resolveUtility('background', 'primary') || `bg-${variant}`,
         striped ? 'striped progress-bar-striped bg-gradient-to-r' : '',
         animated && striped ? 'animated progress-bar-animated animate-pulse' : '',
         indeterminate ? 'indeterminate progress-indeterminate' : ''
