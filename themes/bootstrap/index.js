@@ -136,7 +136,7 @@ export const bootstrapTheme = {
       variants: {
         outlined: 'card',
         elevated: 'shadow',
-        filled: 'bg-light'
+        filled: 'rnx-card-filled'
       },
       parts: {
         header: 'card-header',
@@ -283,13 +283,21 @@ export const bootstrapTheme = {
         header: 'offcanvas-header',
         body: 'offcanvas-body',
         title: 'offcanvas-title'
+      },
+      states: {
+        open: 'show'
       }
     },
 
     sidebar: {
-      base: 'sidebar',
+      base: 'sidebar rnx-sidebar',
       parts: {
+        header: 'd-flex align-items-center justify-content-between',
+        brand: 'fw-semibold',
+        toggle: 'btn btn-sm btn-outline-secondary',
         nav: 'nav flex-column',
+        menu: 'list-unstyled m-0 p-0',
+        submenu: 'list-unstyled m-0 p-0',
         item: 'nav-item',
         link: 'nav-link'
       },
@@ -299,7 +307,7 @@ export const bootstrapTheme = {
     },
 
     topappbar: {
-      base: 'navbar navbar-expand-lg navbar-light bg-light',
+      base: 'navbar navbar-expand-lg rnx-topappbar',
       parts: {
         brand: 'navbar-brand',
         title: 'm-0',
@@ -311,7 +319,8 @@ export const bootstrapTheme = {
       base: 'breadcrumb',
       parts: {
         item: 'breadcrumb-item',
-        active: 'breadcrumb-item active'
+        active: 'breadcrumb-item active',
+        separator: 'rnx-breadcrumb-separator'
       }
     },
 
@@ -380,7 +389,7 @@ export const bootstrapTheme = {
     dropdown: {
       base: 'dropdown',
       parts: {
-        toggle: 'dropdown-toggle',
+        toggle: 'btn btn-outline-secondary dropdown-toggle',
         menu: 'dropdown-menu',
         item: 'dropdown-item',
         divider: 'dropdown-divider'
@@ -406,7 +415,7 @@ export const bootstrapTheme = {
     },
 
     stepper: {
-      base: 'stepper',
+      base: 'stepper rnx-stepper',
       parts: {
         step: 'stepper-step',
         connector: 'stepper-connector'
@@ -566,7 +575,7 @@ export const bootstrapTheme = {
     fileupload: {
       base: 'file-upload-wrapper',
       parts: {
-        zone: 'file-upload',
+        zone: 'file-upload rnx-file-upload',
         input: 'form-control',
         label: 'form-label',
         preview: 'file-upload-preview'
