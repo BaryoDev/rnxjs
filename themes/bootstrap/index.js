@@ -153,7 +153,9 @@ export const bootstrapTheme = {
         body: 'card-body',
         title: 'card-title h6 text-muted mb-2',
         value: 'h3 mb-0',
-        trend: 'small'
+        trend: 'small',
+        icon: 'ms-3',
+        footer: 'mt-3 pt-3 border-top'
       }
     },
 
@@ -300,6 +302,7 @@ export const bootstrapTheme = {
       base: 'navbar navbar-expand-lg navbar-light bg-light',
       parts: {
         brand: 'navbar-brand',
+        title: 'm-0',
         nav: 'navbar-nav ms-auto'
       }
     },
@@ -358,6 +361,7 @@ export const bootstrapTheme = {
       base: 'toast',
       parts: {
         header: 'toast-header',
+        title: 'me-auto',
         body: 'toast-body'
       },
       states: {

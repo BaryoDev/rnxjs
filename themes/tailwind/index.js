@@ -181,7 +181,9 @@ export const tailwindTheme = {
         body: '',
         title: 'text-sm font-medium text-slate-500',
         value: 'text-2xl font-semibold text-slate-900 mt-1 tabular-nums',
-        trend: 'text-xs font-medium text-slate-500 mt-2'
+        trend: 'text-xs font-medium text-slate-500 mt-2',
+        icon: 'ml-3',
+        footer: 'mt-3 pt-3 border-t border-slate-200'
       }
     },
 
@@ -332,6 +334,7 @@ export const tailwindTheme = {
       base: 'bg-white border-b border-slate-200 px-4 sm:px-6 py-3',
       parts: {
         brand: 'text-base font-semibold tracking-tight text-slate-900',
+        title: 'm-0',
         nav: 'flex items-center gap-2 ml-auto'
       }
     },
@@ -397,6 +400,7 @@ export const tailwindTheme = {
       base: 'pointer-events-auto bg-white rounded-lg shadow-lg ring-1 ring-slate-900/10 overflow-hidden',
       parts: {
         header: 'flex items-center px-4 py-3 border-b border-slate-100 text-sm font-medium text-slate-900',
+        title: 'mr-auto',
         body: 'px-4 py-3 text-sm text-slate-700',
         close: 'absolute top-3 right-3 p-1.5 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500'
       },

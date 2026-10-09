@@ -58,7 +58,7 @@ export function TopAppBar({
            <i class="${escapeHtml(resolveIcon(leadingIcon))}" style="font-size: 24px;" aria-hidden="true"></i>
          </button>
        ` : ''}
-       <h5 class="${cn(brandClass, resolveUtility('spacing', 'm', 0))}" style="flex: 1 1 auto;">${escapeHtml(title)}</h5>
+       <h5 class="${cn(brandClass, resolvePartClasses('topappbar', 'title'))}" style="flex: 1 1 auto;">${escapeHtml(title)}</h5>
        ${trailingIcon ? `
          <div class="${navClass}">
            <button type="button" class="${iconButtonClass}" data-ref="trailing" data-rnx-ignore="true" aria-label="${escapeHtml(trailingLabel)}">
