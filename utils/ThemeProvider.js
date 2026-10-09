@@ -173,6 +173,8 @@ class ThemeProvider {
   applyMode() {
     if (typeof document === 'undefined') return;
     document.documentElement.setAttribute('data-mode', this.resolvedMode);
+    // Bootstrap 5.3 has its own dark mode, keyed on this attribute.
+    document.documentElement.setAttribute('data-bs-theme', this.resolvedMode);
   }
 
   /** @private */
@@ -442,7 +444,7 @@ export const {
   resolveUtility: (...args) => themeProvider.resolveUtility(...args),
   setTheme: (name) => themeProvider.setTheme(name),
   registerTheme: (theme) => themeProvider.registerTheme(theme),
-  setMode: (mode) => themeProvider.setMode(mode),
+  setMode: (mode, options) => themeProvider.setMode(mode, options),
   getMode: () => themeProvider.getMode(),
   getResolvedMode: () => themeProvider.getResolvedMode()
 };

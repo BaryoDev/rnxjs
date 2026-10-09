@@ -322,6 +322,11 @@ describe('tailwind theme contrast with the css/rnx.css dark tokens', () => {
         expect(check(entries, tokens).join('\n')).toBe('');
     });
 
+    it('disabled text keeps a floor of AA on the dark surfaces', () => {
+        expect(contrast(tokens['text-disabled'], tokens.surface)).toBeGreaterThanOrEqual(AA_NORMAL);
+        expect(contrast(tokens['text-disabled'], tokens['surface-hover'])).toBeGreaterThanOrEqual(AA_NORMAL);
+    });
+
     it('the labels on the brand and status fills reach AA', () => {
         for (const fill of ['primary', 'primary-hover', 'primary-active', 'success', 'danger', 'info']) {
             expect(contrast(tokens['text-on-primary'], tokens[fill])).toBeGreaterThanOrEqual(AA_NORMAL);

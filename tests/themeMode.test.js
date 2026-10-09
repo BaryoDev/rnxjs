@@ -1,3 +1,4 @@
+import { readFileSync, readdirSync } from 'node:fs';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import themeProvider, { setMode, getMode, getResolvedMode } from '../utils/ThemeProvider.js';
 import * as api from '../index.js';
@@ -18,6 +19,7 @@ function mockMatchMedia(initialDark) {
 }
 
 const attr = () => document.documentElement.getAttribute('data-mode');
+const bsAttr = () => document.documentElement.getAttribute('data-bs-theme');
 
 describe('colour mode', () => {
   const realMatchMedia = window.matchMedia;
@@ -187,5 +189,56 @@ describe('colour mode', () => {
     off();
     setMode('light');
     expect(seen).toHaveLength(3);
+  });
+
+  it('sets data-bs-theme to the resolved mode for Bootstrap 5.3', () => {
+    const mq = mockMatchMedia(false);
+    setMode('dark');
+    expect(bsAttr()).toBe('dark');
+    setMode('light');
+    expect(bsAttr()).toBe('light');
+    setMode('system');
+    expect(bsAttr()).toBe('light');
+    mq.flip(true);
+    expect(bsAttr()).toBe('dark');
+  });
+
+  it('the exported setMode passes its options through', () => {
+    setMode('dark', { persist: false });
+    expect(attr()).toBe('dark');
+    expect(localStorage.getItem('rnx-mode')).toBeNull();
+  });
+
+  it('a stored system choice is restored at load and starts watching', async () => {
+    const mq = mockMatchMedia(true);
+    localStorage.setItem('rnx-mode', 'system');
+    vi.resetModules();
+    const fresh = await import('../utils/ThemeProvider.js');
+    expect(fresh.getMode()).toBe('system');
+    expect(fresh.getResolvedMode()).toBe('dark');
+    expect(attr()).toBe('dark');
+    expect(mq.listeners.size).toBe(1);
+    mq.flip(false);
+    expect(fresh.getResolvedMode()).toBe('light');
+    expect(attr()).toBe('light');
+    fresh.setMode('light');
+    expect(mq.listeners.size).toBe(0);
+  });
+});
+
+describe('css follows the mode attribute, not the media query', () => {
+  const walk = (dir) => readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
+    e.isDirectory() ? walk(`${dir}/${e.name}`) : e.name.endsWith('.css') ? [`${dir}/${e.name}`] : []);
+  const strip = (css) => css.replace(/\/\*[\s\S]*?\*\//g, '');
+
+  it('no stylesheet has a prefers-color-scheme rule', () => {
+    const hits = walk('css').filter((f) => /prefers-color-scheme/.test(strip(readFileSync(f, 'utf8'))));
+    expect(hits).toEqual([]);
+  });
+
+  it('the toast dark rules sit under data-mode and data-theme', () => {
+    const css = strip(readFileSync('css/plugins.css', 'utf8'));
+    expect(css).toContain('[data-mode="dark"] .rnx-toast,');
+    expect(css).toContain('[data-theme="dark"] .rnx-toast {');
   });
 });
