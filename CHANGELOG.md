@@ -5,7 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.3.0] - 2026-10-09
+
+Dark mode, and a Tailwind theme that reads the `--rnx-*` tokens. `npm test`
+reports 907 passing, exit 0.
 
 ### Added
 
@@ -15,7 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `system` mode. The default stays light. `css/rnx.css` gains a dark token
   block on `[data-mode="dark"]` and `[data-theme="dark"]`, and a test checks
   that it overrides every colour the Tailwind theme reads and that the text
-  pairs reach AA on the dark tokens. (#9)
+  pairs reach AA on the dark tokens. `setMode` also sets `data-bs-theme`, so
+  Bootstrap 5.3's own dark styling follows. The Tailwind checkbox tick, radio
+  dot and modal and drawer scrims have dark variants. (#9)
 
 ### Changed
 
@@ -25,10 +30,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   longer affects the theme; set the tokens instead. Tints, hover fills and
   focus rings use `color-mix()`, so browsers without it (Chrome 111, Safari
   16.2, Firefox 113) lose them. (#72, via #71)
-- The focus ring offset follows `--rnx-surface` instead of white.
+- The focus ring offset follows `--rnx-surface` instead of white. (#9)
 
 ### Fixed
 
+- Toast dark styling in `css/plugins.css` used `prefers-color-scheme`, so it
+  ignored `setMode`. It now follows `data-mode` and `data-theme`. (#9)
 - `Toast`, `StatCard` and `TopAppBar` build their spacing classes as literal
   strings, so Tailwind generates them. (#71)
 
