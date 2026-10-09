@@ -6,9 +6,9 @@
  *    the theme or the components, because a raw class cannot be restyled by a
  *    variable.
  * 2. A real Tailwind build turns every token colour class in the theme into a
- *    rule whose colour declaration reads var(--rnx-...). Tailwind 3 reads
- *    text-[...] and border-[...] as a size or width unless the value carries a
- *    color: hint, so this proves each class is a colour and not a length.
+ *    rule whose declaration reads var(--rnx-...) on a colour property.
+ *    Tailwind 3.4.19 already reads var() values as colours; the color: hint is
+ *    kept for cn() grouping (tests/classNames.test.js), not for Tailwind.
  */
 
 import { readFileSync, readdirSync, statSync, mkdtempSync, writeFileSync } from 'node:fs';
@@ -150,14 +150,5 @@ describe('real tailwind build of the token classes', () => {
             }
         }
         expect(problems).toEqual([]);
-    });
-
-    it('does not read text and border colour as size or width', async () => {
-        const root = await build();
-        let sizes = 0;
-        root.walkDecls((d) => {
-            if (d.value.includes('var(--rnx-') && ['font-size', 'border-width', 'border-top-width', 'outline-width'].includes(d.prop)) sizes++;
-        });
-        expect(sizes).toBe(0);
     });
 });

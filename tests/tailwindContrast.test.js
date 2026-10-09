@@ -10,8 +10,13 @@
  * color-mix(in_srgb,A_P%,B) is evaluated per channel the way the CSS spec
  * defines it for srgb. A value that cannot be resolved fails the test, and so
  * does a raw palette class such as text-slate-700.
+ *
+ * The checks run twice: with no variables set (every fallback), and with the
+ * token values parsed from the :root block of css/rnx.css, the default theme
+ * a user links. Variant prefixes may be bracketed, e.g. [&_tbody_tr]:hover:.
  */
 
+import { readFileSync } from 'node:fs';
 import { describe, it, expect } from 'vitest';
 import { tailwindTheme } from '../themes/tailwind/index.js';
 
@@ -60,19 +65,19 @@ function splitTop(str) {
  * Resolve an arbitrary colour value to { hex } or { transparent: true }.
  * Returns null when it cannot be resolved.
  */
-function evaluate(value) {
+function evaluate(value, tokens = {}) {
     let m = value.match(/^#([0-9a-f]{6})$/i);
     if (m) return { hex: '#' + m[1].toLowerCase() };
     if (value === 'transparent') return { transparent: true };
-    m = value.match(/^var\(--rnx-[a-z-]+,(.+)\)$/);
-    if (m) return evaluate(m[1]);
+    m = value.match(/^var\(--rnx-([a-z-]+),(.+)\)$/);
+    if (m) return evaluate(tokens[m[1]] || m[2], tokens);
     m = value.match(/^color-mix\(in_srgb,(.+)\)$/);
     if (m) {
         const [first, second] = splitTop(m[1]);
         const pm = first && first.match(/^(.+)_(\d+(?:\.\d+)?)%$/);
         if (!pm || !second) return null;
-        const a = evaluate(pm[1]);
-        const b = evaluate(second);
+        const a = evaluate(pm[1], tokens);
+        const b = evaluate(second, tokens);
         if (!a || !b) return null;
         // Mixing with transparent gives a translucent overlay, not a fill.
         if (a.transparent || b.transparent) return { transparent: true };
@@ -85,9 +90,9 @@ function evaluate(value) {
 }
 
 // Exact classes, per theme path, that are not read as text on their background.
-const SLATE_300 = 'text-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_75%,var(--rnx-secondary,#475569))]';
+const SLATE_300 = 'text-[color:color-mix(in_srgb,var(--rnx-surface,#ffffff)_75%,var(--rnx-secondary,#2f5787))]';
 const SLATE_400 = 'text-[color:var(--rnx-text-disabled,#94a3b8)]';
-const RED_500 = 'text-[color:color-mix(in_srgb,var(--rnx-background,#ffffff)_19%,var(--rnx-danger,#dc2626))]';
+const RED_500 = 'text-[color:color-mix(in_srgb,var(--rnx-surface,#ffffff)_19%,var(--rnx-danger,#eb1818))]';
 const ALLOWLIST = {
     'components.breadcrumb.parts.separator': [SLATE_300], // decorative, rendered aria-hidden
     // Icons and close buttons are graphics (3:1 rule, tracked separately), not text.
@@ -100,20 +105,21 @@ const ALLOWLIST = {
     'components.errorstate.parts.icon': [RED_500]
 };
 
-const RAW_PALETTE = /^(?:[a-z-]+:)*(?:text|bg)-(?:white|black|(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-\d+)(?:\/\d+)?$/;
-const TOKEN_CLASS = /^((?:[a-z-]+:)*)(text|bg)-\[color:(.+)\]$/;
+const PREFIX = '(?:(?:[a-z-]+|\\[[^\\]\\s]+\\]):)*';
+const RAW_PALETTE = new RegExp('^' + PREFIX + '(?:text|bg)-(?:white|black|(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-\\d+)(?:/\\d+)?$');
+const TOKEN_CLASS = new RegExp('^(' + PREFIX + ')(text|bg)-\\[color:(.+)\\]$');
 
 // Splits a class string into { state: { text, bg } } keyed by variant prefix.
 // Throws nothing: raw palette classes and unresolvable values are reported by
 // check(), through the `bad` list.
-function parse(str, bad) {
+function parse(str, bad, tokens) {
     const states = {};
     for (const token of str.split(/\s+/)) {
         if (RAW_PALETTE.test(token)) { bad.push(`${token} is a raw palette class`); continue; }
         const m = token.match(TOKEN_CLASS);
         if (!m) continue;
         const [, prefix, kind, value] = m;
-        const colour = evaluate(value);
+        const colour = evaluate(value, tokens);
         if (!colour) { bad.push(`${token} cannot be resolved to a colour`); continue; }
         if (colour.transparent) continue; // opacity fills are overlays, not checked
         (states[prefix] = states[prefix] || {})[kind] = { cls: token, hex: colour.hex };
@@ -130,11 +136,17 @@ function collect(node, path, out) {
     return out;
 }
 
-function check(entries) {
+function defaultFills(tokens) {
+    const names = ['surface', 'background'].filter((n) => tokens[n]);
+    if (!names.length) return [{ name: 'white', hex: WHITE }];
+    return names.map((n) => ({ name: n, hex: tokens[n] }));
+}
+
+function check(entries, tokens = {}) {
     const failures = [];
     for (const { path, str } of entries) {
         const bad = [];
-        const states = parse(str, bad);
+        const states = parse(str, bad, tokens);
         for (const b of bad) failures.push(`${path}: ${b}`);
         const base = states[''] || {};
         for (const [prefix, st] of Object.entries(states)) {
@@ -144,9 +156,16 @@ function check(entries) {
             if (!st.text && !prefix.startsWith('placeholder:') && !(st.bg && text)) continue;
             if (!text) continue;
             if ((ALLOWLIST[path] || []).includes(text.cls)) continue;
-            const ratio = contrast(text.hex, bg ? bg.hex : WHITE);
-            if (ratio < AA_NORMAL) {
-                failures.push(`${path}: ${text.cls} on ${bg ? bg.cls : 'white'} is ${ratio.toFixed(2)}:1`);
+            // No fill in the class string: the text sits on a card (surface) or on
+            // the page (background). Both must pass.
+            const fills = bg
+                ? [{ name: bg.cls, hex: bg.hex }]
+                : defaultFills(tokens);
+            for (const fill of fills) {
+                const ratio = contrast(text.hex, fill.hex);
+                if (ratio < AA_NORMAL) {
+                    failures.push(`${path}: ${text.cls} on ${fill.name} is ${ratio.toFixed(2)}:1`);
+                }
             }
         }
     }
@@ -192,9 +211,9 @@ describe('tailwind theme contrast', () => {
     });
 
     it('fails on a color-mix that lands below AA', () => {
-        const light = 'text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_30%,var(--rnx-background,#ffffff))]';
+        const light = 'text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_30%,var(--rnx-surface,#ffffff))]';
         expect(check([{ path: 'x', str: light }])).toHaveLength(1);
-        const dark = 'text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_80%,var(--rnx-background,#ffffff))]';
+        const dark = 'text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_80%,var(--rnx-surface,#ffffff))]';
         expect(check([{ path: 'x', str: dark }])).toEqual([]);
     });
 
@@ -219,9 +238,81 @@ describe('tailwind theme contrast', () => {
     it('evaluates var fallbacks and color-mix', () => {
         expect(evaluate('var(--rnx-primary,#4f46e5)')).toEqual({ hex: '#4f46e5' });
         expect(evaluate('color-mix(in_srgb,#000000_50%,#ffffff)')).toEqual({ hex: '#808080' });
-        expect(evaluate('color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_100%,var(--rnx-background,#ffffff))'))
+        expect(evaluate('color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_100%,var(--rnx-surface,#ffffff))'))
             .toEqual({ hex: '#0f172a' });
         expect(evaluate('color-mix(in_srgb,var(--rnx-a,#ffffff)_20%,transparent)')).toEqual({ transparent: true });
         expect(evaluate('rebeccapurple')).toBeNull();
+    });
+});
+
+function parseRoot(file) {
+    const css = readFileSync(new URL(file, import.meta.url), 'utf8');
+    const root = css.match(/:root\s*\{([\s\S]*?)\n\}/);
+    if (!root) throw new Error(`no :root block in ${file}`);
+    const tokens = {};
+    for (const m of root[1].matchAll(/--rnx-([a-z-]+):\s*(#[0-9a-fA-F]{6})\s*;/g)) {
+        tokens[m[1]] = m[2].toLowerCase();
+    }
+    return tokens;
+}
+
+// Failures that come from the palette in css/rnx.css, not from the theme.
+// Each entry is { prefix, reason }, matched against the start of a failure line.
+const RNX_CSS_ALLOWLIST = [];
+
+describe('tailwind theme contrast with the css/rnx.css tokens', () => {
+    const entries = collect(tailwindTheme, [], []);
+    const tokens = parseRoot('../css/rnx.css');
+
+    it('parses the tokens from the :root block', () => {
+        expect(tokens.primary).toBe('#0f5c6b');
+        expect(tokens.surface).toBe('#ffffff');
+        expect(tokens.background).toBe('#eef1f4');
+        expect(Object.keys(tokens).length).toBeGreaterThan(15);
+    });
+
+    it('every text colour reaches AA with the rnx.css tokens set', () => {
+        const failures = check(entries, tokens).filter(
+            (f) => !RNX_CSS_ALLOWLIST.some((a) => f.startsWith(a.prefix))
+        );
+        expect(failures.join('\n')).toBe('');
+    });
+
+    it('allowlist entries still match a failure', () => {
+        const failures = check(entries, tokens);
+        const stale = RNX_CSS_ALLOWLIST.filter((a) => !failures.some((f) => f.startsWith(a.prefix)));
+        expect(stale).toEqual([]);
+    });
+
+    it('a token value changes the result', () => {
+        const str = 'text-[color:var(--rnx-text-secondary,#64748b)]';
+        expect(check([{ path: 'x', str }])).toEqual([]);
+        expect(check([{ path: 'x', str }], { 'text-secondary': '#aaaaaa' })).toHaveLength(1);
+    });
+});
+
+describe('text on warning', () => {
+    it('--rnx-text-on-warning reaches AA on its warning fill in both css files', () => {
+        const rnx = parseRoot('../css/rnx.css');
+        const base = parseRoot('../css/themes/base.css');
+        expect(contrast(rnx['text-on-warning'], rnx.warning)).toBeGreaterThanOrEqual(AA_NORMAL);
+        expect(contrast(base['text-on-warning'], base.warning)).toBeGreaterThanOrEqual(AA_NORMAL);
+    });
+
+    it('the default fallback #451a03 reaches AA on #fbbf24', () => {
+        expect(contrast('#451a03', '#fbbf24')).toBeGreaterThanOrEqual(AA_NORMAL);
+    });
+});
+
+describe('bracketed variant prefixes', () => {
+    it('are checked, not skipped', () => {
+        const str = '[&_tbody_tr]:hover:bg-[color:var(--rnx-success,#059669)] [&_tbody_tr]:hover:text-[color:var(--rnx-text-on-primary,#ffffff)]';
+        expect(check([{ path: 'x', str }])).toHaveLength(1);
+    });
+
+    it('flag a raw palette class behind a bracketed prefix', () => {
+        expect(check([{ path: 'x', str: '[&_td]:hover:text-pink-700' }])).toEqual([
+            'x: [&_td]:hover:text-pink-700 is a raw palette class'
+        ]);
     });
 });
