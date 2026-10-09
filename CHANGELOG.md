@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Stepper, Breadcrumb, Dropdown trigger and FileUpload have `rnx.css` styles under the Bootstrap theme. The Tailwind theme is not touched.
 - TopAppBar no longer hardcodes `navbar-light bg-light`. It reads the surface and text tokens, so it follows dark mode. The filled Card variant no longer uses `bg-light`.
 - Chips, Badge, Spinner and the Slider thumb read `--rnx-primary` instead of Bootstrap blue.
+- `rnx.css` now sets Bootstrap's `--bs-primary` and `--bs-primary-rgb` from `--rnx-primary` and `--rnx-primary-rgb`. When you override the brand colour, set both. The Breadcrumb and Slider rules are scoped to `rnx-breadcrumb` and `rnx-slider`, so other Bootstrap breadcrumbs and range inputs on the page are untouched.
+- Toast: the delay and the autohide decision use one rule, so only `true` or `'true'` hides it.
 
 ## [2.3.0] - 2026-10-09
 

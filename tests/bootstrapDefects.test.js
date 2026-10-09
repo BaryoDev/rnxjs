@@ -50,6 +50,11 @@ beforeEach(() => {
 });
 
 describe('Toast', () => {
+    it('treats null autohide as off in the markup', async () => {
+        const c = await mount(Toast({ header: 'a', body: 'b', autohide: null }));
+        expect(c.querySelector('.toast').getAttribute('data-bs-autohide')).toBe('false');
+    });
+
     it('emits data-bs-autohide=false when autohide is false', async () => {
         const c = await mount(Toast({ header: 'a', body: 'b', autohide: false }));
         expect(c.querySelector('.toast').getAttribute('data-bs-autohide')).toBe('false');
@@ -84,6 +89,7 @@ describe('Sidebar', () => {
 
     it('drops list bullets and styles the toggle and header', async () => {
         const c = await mount(Sidebar({ items }));
+        expect(c.querySelector('.sidebar').classList.contains('rnx-sidebar')).toBe(true);
         expect(c.querySelector('.sidebar-menu').classList.contains('list-unstyled')).toBe(true);
         expect(c.querySelector('.sidebar-submenu').classList.contains('list-unstyled')).toBe(true);
         expect(c.querySelector('.sidebar-toggle').classList.contains('btn')).toBe(true);
@@ -104,6 +110,13 @@ describe('TopAppBar', () => {
         expect(cls).toContain('rnx-topappbar');
     });
 
+    it('keeps readable text on a primary bar', async () => {
+        const c = await mount(TopAppBar({ title: 't', className: 'navbar-dark bg-primary' }));
+        expect(c.querySelector('.navbar').className).toContain('bg-primary');
+        expect(hasRule('.rnx-topappbar.navbar-dark.bg-primary', 'color: var(--rnx-text-on-primary)')).toBe(true);
+        expect(hasRule('.rnx-topappbar.navbar-dark.bg-primary', '--bs-navbar-brand-color: var(--rnx-text-on-primary)')).toBe(true);
+    });
+
     it('reads tokens for background and text', () => {
         expect(hasRule('.rnx-topappbar', 'background: var(--rnx-surface)')).toBe(true);
         expect(hasRule('.rnx-topappbar', 'color: var(--rnx-text-primary)')).toBe(true);
@@ -119,6 +132,13 @@ describe('filled Card', () => {
 });
 
 describe('Breadcrumb', () => {
+    it('is scoped to rnx-breadcrumb, not every .breadcrumb', async () => {
+        const c = await mount(Breadcrumb({ items: [{ label: 'A', href: '#' }, { label: 'B', active: true }] }));
+        expect(c.querySelector('.breadcrumb').classList.contains('rnx-breadcrumb')).toBe(true);
+        expect(hasRule('.rnx-breadcrumb a', 'color: var(--rnx-primary)')).toBe(true);
+        expect(css).not.toMatch(/^\.breadcrumb a/m);
+    });
+
     it('spaces its separators', async () => {
         const c = await mount(Breadcrumb({ items: [{ label: 'A', href: '#' }, { label: 'B', active: true }] }));
         expect(c.querySelector('.breadcrumb-separator').classList.contains('rnx-breadcrumb-separator')).toBe(true);
@@ -127,6 +147,22 @@ describe('Breadcrumb', () => {
 });
 
 describe('Dropdown', () => {
+    it('sets link colours through Bootstrap variables so active and disabled still win', () => {
+        expect(hasRule('.dropdown-menu', '--bs-dropdown-link-color: var(--rnx-text-primary)')).toBe(true);
+        expect(hasRule('.dropdown-menu', '--bs-dropdown-link-active-color: var(--rnx-text-on-primary)')).toBe(true);
+        expect(hasRule('.dropdown-menu', '--bs-dropdown-link-disabled-color: var(--rnx-text-disabled)')).toBe(true);
+        const from = css.indexOf('.dropdown-menu .dropdown-item-link {');
+        expect(from).toBeGreaterThan(-1);
+        expect(css.slice(from, css.indexOf('}', from))).not.toMatch(/\bcolor:/);
+    });
+
+    it('marks active and disabled items for Bootstrap', async () => {
+        const c = await mount(Dropdown({ label: 'Go', items: [{ label: 'a', active: true }, { label: 'b', disabled: true }] }));
+        const links = c.querySelectorAll('.dropdown-item');
+        expect(links[0].classList.contains('active')).toBe(true);
+        expect(links[1].classList.contains('disabled')).toBe(true);
+    });
+
     it('renders the trigger as a button, not a native one', async () => {
         const c = await mount(Dropdown({ label: 'Go', items: [{ label: 'x' }] }));
         expect(c.querySelector('.dropdown-trigger').classList.contains('btn')).toBe(true);
@@ -157,8 +193,17 @@ describe('brand colour', () => {
         expect(hasRule(':root', '--bs-primary-rgb: var(--rnx-primary-rgb)')).toBe(true);
     });
 
-    it('colours the slider thumb from the token', () => {
-        expect(hasRule('.form-range::-webkit-slider-thumb', 'var(--rnx-primary)')).toBe(true);
-        expect(hasRule('.form-range::-moz-range-thumb', 'var(--rnx-primary)')).toBe(true);
+    it('sets --bs-primary too', () => {
+        expect(hasRule(':root', '--bs-primary: var(--rnx-primary)')).toBe(true);
+    });
+
+    it('colours the slider thumb from the token, scoped to rnx-slider', () => {
+        expect(hasRule('.rnx-slider .form-range::-webkit-slider-thumb', 'var(--rnx-primary)')).toBe(true);
+        expect(hasRule('.rnx-slider .form-range::-moz-range-thumb', 'var(--rnx-primary)')).toBe(true);
+        expect(css).not.toMatch(/^\.form-range::/m);
+    });
+
+    it('points the offcanvas background at the surface token', () => {
+        expect(hasRule('.modal-content, .dropdown-menu, .offcanvas, .popover, .list-group', '--bs-offcanvas-bg: var(--rnx-surface)')).toBe(true);
     });
 });

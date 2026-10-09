@@ -316,7 +316,7 @@ export const bootstrapTheme = {
     },
 
     breadcrumb: {
-      base: 'breadcrumb',
+      base: 'breadcrumb rnx-breadcrumb',
       parts: {
         item: 'breadcrumb-item',
         active: 'breadcrumb-item active',

@@ -17,6 +17,10 @@
  *   }
  *
  * Token names match css/themes/base.css.
+ *
+ * Set --rnx-primary-rgb together with --rnx-primary (for example
+ * --rnx-primary-rgb: 124, 58, 237). Bootstrap's .bg-primary and .text-primary
+ * read the rgb form, and this file points --bs-primary-rgb at it.
  */
 
 /* ============================================================
@@ -297,12 +301,12 @@ code, pre, kbd, samp, .rnx-mono { font-family: var(--rnx-font-family-monospace);
   --bs-primary-rgb: var(--rnx-primary-rgb);
 }
 
-.form-range::-webkit-slider-thumb { background-color: var(--rnx-primary); }
-.form-range::-moz-range-thumb { background-color: var(--rnx-primary); }
-.form-range::-webkit-slider-thumb:active { background-color: var(--rnx-primary-active); }
-.form-range::-moz-range-thumb:active { background-color: var(--rnx-primary-active); }
-.form-range:focus::-webkit-slider-thumb { box-shadow: 0 0 0 1px var(--rnx-surface), var(--rnx-focus-ring); }
-.form-range:focus::-moz-range-thumb { box-shadow: 0 0 0 1px var(--rnx-surface), var(--rnx-focus-ring); }
+.rnx-slider .form-range::-webkit-slider-thumb { background-color: var(--rnx-primary); }
+.rnx-slider .form-range::-moz-range-thumb { background-color: var(--rnx-primary); }
+.rnx-slider .form-range::-webkit-slider-thumb:active { background-color: var(--rnx-primary-active); }
+.rnx-slider .form-range::-moz-range-thumb:active { background-color: var(--rnx-primary-active); }
+.rnx-slider .form-range:focus::-webkit-slider-thumb { box-shadow: 0 0 0 1px var(--rnx-surface), var(--rnx-focus-ring); }
+.rnx-slider .form-range:focus::-moz-range-thumb { box-shadow: 0 0 0 1px var(--rnx-surface), var(--rnx-focus-ring); }
 
 /* 2c. components Bootstrap has no styles for. The Bootstrap theme adds the
    rnx-* marker classes, so these rules never touch the Tailwind theme. */
@@ -318,24 +322,34 @@ code, pre, kbd, samp, .rnx-mono { font-family: var(--rnx-font-family-monospace);
   --bs-navbar-brand-hover-color: var(--rnx-text-primary);
 }
 
+/* A coloured bar (className "navbar-dark bg-primary") keeps readable text. */
+.rnx-topappbar.navbar-dark.bg-primary {
+  color: var(--rnx-text-on-primary);
+  --bs-navbar-color: var(--rnx-text-on-primary);
+  --bs-navbar-hover-color: var(--rnx-text-on-primary);
+  --bs-navbar-active-color: var(--rnx-text-on-primary);
+  --bs-navbar-brand-color: var(--rnx-text-on-primary);
+  --bs-navbar-brand-hover-color: var(--rnx-text-on-primary);
+}
+
 .rnx-card-filled { --bs-card-bg: var(--rnx-surface-variant); }
 
 .rnx-breadcrumb-separator { padding: 0 0.5rem; color: var(--rnx-text-disabled); }
-.breadcrumb { --bs-breadcrumb-item-active-color: var(--rnx-text-secondary); }
-.breadcrumb a { color: var(--rnx-primary); text-decoration: none; }
-.breadcrumb a:hover { color: var(--rnx-primary-hover); text-decoration: underline; }
+.rnx-breadcrumb { --bs-breadcrumb-item-active-color: var(--rnx-text-secondary); }
+.rnx-breadcrumb a { color: var(--rnx-primary); text-decoration: none; }
+.rnx-breadcrumb a:hover { color: var(--rnx-primary-hover); text-decoration: underline; }
 
 .btn.dropdown-trigger { display: inline-flex; align-items: center; gap: 0.5rem; }
 .btn.dropdown-trigger::after { display: none; }
-.dropdown-menu .dropdown-item-link {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.4rem 1rem;
-  color: var(--rnx-text-primary);
-  text-decoration: none;
+.dropdown-menu {
+  --bs-dropdown-color: var(--rnx-text-primary);
+  --bs-dropdown-link-color: var(--rnx-text-primary);
+  --bs-dropdown-link-hover-color: var(--rnx-primary);
+  --bs-dropdown-link-hover-bg: var(--rnx-surface-hover);
+  --bs-dropdown-link-active-color: var(--rnx-text-on-primary);
+  --bs-dropdown-link-disabled-color: var(--rnx-text-disabled);
 }
-.dropdown-menu .dropdown-item-link:hover { background: var(--rnx-surface-hover); color: var(--rnx-primary); }
+.dropdown-menu .dropdown-item-link { display: flex; align-items: center; gap: 0.5rem; }
 
 .offcanvas .m3-drawer-link {
   display: flex;
