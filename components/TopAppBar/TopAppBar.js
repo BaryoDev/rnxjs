@@ -2,6 +2,7 @@ import { createComponent } from '../../utils/createComponent.js';
 import { resolveClasses, resolvePartClasses, resolveUtility } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 import { escapeHtml } from '../../utils/security.js';
+import { resolveIcon } from '../../utils/icon.js';
 
 /**
  * TopAppBar Component - CSS Framework Agnostic
@@ -54,14 +55,14 @@ export function TopAppBar({
     <header class="${appBarClass}">
        ${leadingIcon ? `
          <button type="button" class="${iconButtonClass}" data-ref="leading" data-rnx-ignore="true" aria-label="${escapeHtml(leadingLabel)}">
-           <i class="bi bi-${escapeHtml(leadingIcon)}" style="font-size: 24px;" aria-hidden="true"></i>
+           <i class="${escapeHtml(resolveIcon(leadingIcon))}" style="font-size: 24px;" aria-hidden="true"></i>
          </button>
        ` : ''}
        <h5 class="${cn(brandClass, resolveUtility('spacing', 'm', 0))}" style="flex: 1 1 auto;">${escapeHtml(title)}</h5>
        ${trailingIcon ? `
          <div class="${navClass}">
            <button type="button" class="${iconButtonClass}" data-ref="trailing" data-rnx-ignore="true" aria-label="${escapeHtml(trailingLabel)}">
-             <i class="bi bi-${escapeHtml(trailingIcon)}" style="font-size: 24px;" aria-hidden="true"></i>
+             <i class="${escapeHtml(resolveIcon(trailingIcon))}" style="font-size: 24px;" aria-hidden="true"></i>
            </button>
          </div>
        ` : ''}

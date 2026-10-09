@@ -2,6 +2,7 @@ import { createComponent } from '../../utils/createComponent.js';
 import { escapeHtml } from '../../utils/security.js';
 import { resolveClasses, resolvePartClasses, resolveUtility } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
+import { resolveIcon } from '../../utils/icon.js';
 
 /**
  * Chips Component - CSS Framework Agnostic
@@ -66,7 +67,7 @@ export function Chips({ items = [], type = 'filter', onselect, onremove, classNa
            item.selected ? selectedClass : ''
        ))}"
              ${chipAttrs(item, idx)}>
-         ${item.selected && type === 'filter' ? '<i class="bi bi-check" aria-hidden="true"></i>' : (item.icon ? `<i class="bi bi-${escapeHtml(item.icon)}" aria-hidden="true"></i>` : '')}
+         ${item.selected && type === 'filter' ? `<i class="${escapeHtml(resolveIcon('check'))}" aria-hidden="true"></i>` : (item.icon ? `<i class="${escapeHtml(resolveIcon(item.icon))}" aria-hidden="true"></i>` : '')}
          ${escapeHtml(item.label || '')}
          ${isRemovable ? `<button type="button" class="${escapeHtml(removeClass)}" data-ref="remove-${idx}" aria-label="Remove ${escapeHtml(item.label || '')}" data-rnx-ignore="true"></button>` : ''}
        </span>

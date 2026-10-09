@@ -9,6 +9,7 @@ import { createComponent } from '../../utils/createComponent.js';
 import { escapeHtml } from '../../utils/security.js';
 import { resolveClasses, resolvePartClasses, resolveUtility } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
+import { resolveIcon } from '../../utils/icon.js';
 
 /**
  * Create a statistic card for dashboard displays
@@ -100,14 +101,14 @@ export function StatCard({
                             </h3>
                             ${change ? `
                                 <small class="${cn(trendClass, trendColor)}" style="display: inline-block;">
-                                    <i class="bi bi-${trendIcon}" aria-hidden="true"></i>
+                                    <i class="${escapeHtml(resolveIcon(trendIcon))}" aria-hidden="true"></i>
                                     ${escapeHtml(String(Math.abs(change.value)))}%
                                 </small>
                             ` : ''}
                         </div>
                         ${icon ? `
                             <div class="${cn('stat-icon', resolveUtility('spacing', 'ml', 3), resolveUtility('text', variant))}" data-ref="icon" aria-hidden="true">
-                                <i class="bi bi-${escapeHtml(icon)}" style="font-size: 2rem; opacity: 0.7;"></i>
+                                <i class="${escapeHtml(resolveIcon(icon))}" style="font-size: 2rem; opacity: 0.7;"></i>
                             </div>
                         ` : ''}
                     </div>

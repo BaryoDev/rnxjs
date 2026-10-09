@@ -5,6 +5,43 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- **The Tailwind `Switch` renders different markup.** It is now a native
+  checkbox with `role="switch"`, followed by a track span and a thumb span.
+  `className` goes on the track. Code or CSS that targeted the old markup
+  needs updating. (#68)
+- **Icons come from the theme.** Components and the toast plugin no longer
+  hardcode Bootstrap Icons classes; they call `resolveIcon(name)`, which reads
+  the theme's `utilities.icon.className`. Both built-in themes map to
+  `bi bi-<name>`, so output is unchanged by default. Set your own mapping to
+  use another icon set. (#11)
+
+### Added
+
+- `@arnelirobles/rnxjs/tailwind` preset (ESM and CJS). Spread its `content`
+  into your Tailwind config so the classes rnxJS emits are not purged. (#65)
+- `resolveIcon` export.
+
+### Fixed
+
+- The Tailwind theme no longer depends on `tailwindcss-animate`; the toast
+  uses `motion-safe:animate-rnx-toast-in` from the preset. (#65)
+- sr-only text, spinners and the `FileUpload` remove button take their classes
+  from the theme, with an inline style fallback for custom themes. (#66)
+- Tailwind text and buttons that failed WCAG AA contrast moved to darker
+  shades (amber, emerald and sky text to 700, placeholders to slate-500,
+  success and info buttons to `bg-*-700`). A test now checks the pairs. (#67)
+- Tailwind checkbox, radio and select render styled without the forms plugin.
+  (#68)
+- `cn()` treated arbitrary `bg-[url(...)]` and gradient values as colours, so
+  a background colour and a background image could drop each other. (#68)
+- `EmptyState` and `ErrorState` broke icon names containing a dash
+  (`exclamation-triangle`) by encoding the dash. `Button` did not escape its
+  icon name.
+
 ## [2.1.0] - 2026-08-31
 
 The suite was reporting success while exiting 1, so nothing it covered was

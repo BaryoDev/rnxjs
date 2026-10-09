@@ -10,6 +10,7 @@ import { escapeHtml } from '../../utils/security.js';
 import { srOnlyAttr } from '../../utils/srOnly.js';
 import themeProvider, { resolveClasses, resolvePartClasses, resolveUtility } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
+import { resolveIcon } from '../../utils/icon.js';
 
 const themeState = (component, state) => {
     const theme = themeProvider.getTheme();
@@ -193,13 +194,13 @@ export function DataTable({
                             <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
                                 <span>${escapeHtml(col.label)}</span>
                                 ${isSortable ? `
-                                    <i aria-hidden="true" class="bi ${
+                                    <i aria-hidden="true" class="${escapeHtml(resolveIcon(
                                         isSorted
                                             ? sortDirection === 'asc'
-                                                ? 'bi-sort-up'
-                                                : 'bi-sort-down'
-                                            : 'bi-arrow-down-up'
-                                    }" style="opacity: 0.5;"></i>
+                                                ? 'sort-up'
+                                                : 'sort-down'
+                                            : 'arrow-down-up'
+                                    ))}" style="opacity: 0.5;"></i>
                                 ` : ''}
                             </div>
                         </th>
@@ -239,7 +240,7 @@ export function DataTable({
                 <tbody class="${bodyClass}">
                     <tr>
                         <td colspan="${colSpan}" class="${resolveUtility('text', 'danger')}" style="${centered}" role="alert">
-                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                            <i class="${escapeHtml(resolveIcon('exclamation-triangle'))}" aria-hidden="true"></i>
                             ${escapeHtml(error)}
                         </td>
                     </tr>
@@ -318,7 +319,7 @@ export function DataTable({
                     <ul class="${listClass}" style="margin-bottom: 0; list-style: none;">
                         <li class="${cn(itemClass, currentPage === 1 ? disabledState : '')}">
                             <button type="button" class="${cn(linkClass, 'datatable-prev-page')}" aria-label="Previous page" ${currentPage === 1 ? 'disabled aria-disabled="true"' : ''}>
-                                <i class="bi bi-chevron-left" aria-hidden="true"></i>
+                                <i class="${escapeHtml(resolveIcon('chevron-left'))}" aria-hidden="true"></i>
                             </button>
                         </li>
                         <li class="${cn(itemClass, activeState)}" aria-current="page">
@@ -328,7 +329,7 @@ export function DataTable({
                         </li>
                         <li class="${cn(itemClass, currentPage >= totalPages ? disabledState : '')}">
                             <button type="button" class="${cn(linkClass, 'datatable-next-page')}" aria-label="Next page" ${currentPage >= totalPages ? 'disabled aria-disabled="true"' : ''}>
-                                <i class="bi bi-chevron-right" aria-hidden="true"></i>
+                                <i class="${escapeHtml(resolveIcon('chevron-right'))}" aria-hidden="true"></i>
                             </button>
                         </li>
                     </ul>

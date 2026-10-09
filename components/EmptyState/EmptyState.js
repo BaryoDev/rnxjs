@@ -6,9 +6,10 @@
  */
 
 import { createComponent } from '../../utils/createComponent.js';
-import { escapeHtml, escapeAttribute } from '../../utils/security.js';
+import { escapeHtml } from '../../utils/security.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
+import { resolveIcon } from '../../utils/icon.js';
 
 /**
  * Create an empty state display
@@ -70,7 +71,7 @@ export function EmptyState({
             <div class="${containerClass}" data-ref="container">
                 ${icon ? `
                     <div class="${iconClass}" aria-hidden="true">
-                        <i class="bi bi-${escapeAttribute(icon)}" style="font-size: 3rem;"></i>
+                        <i class="${escapeHtml(resolveIcon(icon))}" style="font-size: 3rem;"></i>
                     </div>
                 ` : ''}
                 <h4 class="${titleClass}">${escapeHtml(title)}</h4>

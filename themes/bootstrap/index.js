@@ -607,6 +607,11 @@ export const bootstrapTheme = {
   // ============================================================================
 
   utilities: {
+    // Icon set used by every component; replace className to use another set
+    icon: {
+      className: (name) => `bi bi-${name}`
+    },
+
     a11y: {
       srOnly: 'visually-hidden'
     },

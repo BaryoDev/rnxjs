@@ -2,6 +2,7 @@ import { createComponent } from '../../utils/createComponent.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 import { escapeHtml, sanitizeUrl } from '../../utils/security.js';
+import { resolveIcon } from '../../utils/icon.js';
 
 /**
  * NavigationDrawer Component - CSS Framework Agnostic
@@ -62,7 +63,7 @@ export function NavigationDrawer({
                   data-rnx-ignore="true"
                   ${link.active ? 'aria-current="page"' : ''}
                >
-                  ${link.icon ? `<i class="bi bi-${escapeHtml(link.icon)}" aria-hidden="true"></i> ` : ''}
+                  ${link.icon ? `<i class="${escapeHtml(resolveIcon(link.icon))}" aria-hidden="true"></i> ` : ''}
                   ${escapeHtml(link.label)}
                </a>
              `).join('')}

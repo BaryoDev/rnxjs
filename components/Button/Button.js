@@ -2,6 +2,7 @@ import { createComponent } from '../../utils/createComponent.js';
 import { resolveClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 import { escapeHtml } from '../../utils/security.js';
+import { resolveIcon } from '../../utils/icon.js';
 
 /**
  * Button Component - CSS Framework Agnostic
@@ -56,7 +57,7 @@ export function Button({
     className // User classes applied last (highest priority)
   );
 
-  const iconClass = cn(resolveClasses('icon'), icon ? `bi bi-${icon}` : '');
+  const iconClass = cn(resolveClasses('icon'), resolveIcon(icon));
 
   const clickAttr = (typeof onclick === 'string') ? `onclick="${escapeHtml(onclick)}"` : '';
 

@@ -2,6 +2,7 @@ import { createComponent } from '../../utils/createComponent.js';
 import { resolveClasses, resolvePartClasses, resolveUtility } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 import { escapeHtml } from '../../utils/security.js';
+import { resolveIcon } from '../../utils/icon.js';
 
 /**
  * NavigationBar Component - CSS Framework Agnostic
@@ -56,7 +57,7 @@ export function NavigationBar({
                 data-rnx-ignore="true"
                 data-ref="nav-${idx}"
                 ${idx === activeIndex ? 'aria-current="page"' : ''}>
-           ${item.icon ? `<i class="bi bi-${escapeHtml(item.icon)}" aria-hidden="true"></i>` : ''}
+           ${item.icon ? `<i class="${escapeHtml(resolveIcon(item.icon))}" aria-hidden="true"></i>` : ''}
            <span class="navigation-bar-label">${escapeHtml(item.label)}</span>
         </button>
       `).join('')}

@@ -520,18 +520,29 @@ See [full benchmarks](./docs/BENCHMARKS.md) for detailed performance comparisons
 
 ## Icons
 
-rnxJS now uses **Bootstrap Icons** by default. Ensure you include the Bootstrap Icons stylesheet in your project:
+rnxJS uses **Bootstrap Icons** by default. Ensure you include the Bootstrap Icons stylesheet in your project:
 
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 ```
 
-When using the `icon` prop in components like `Button`, `FAB`, `Icon`, etc., simply provide the icon name (e.g., `moon-stars`, `check-circle`). The library automatically applies the `bi bi-[name]` classes.
+When using the `icon` prop in components like `Button`, `FAB`, `Icon`, etc., simply provide the icon name (e.g., `moon-stars`, `check-circle`). The library applies the `bi bi-[name]` classes.
 
 ```html
 <Button icon="moon-stars" label="Theme" />
 <Icon name="check-circle" color="text-success" />
 ```
+
+To use another icon set, give the theme an icon mapping. Every component and the toast plugin read it:
+
+```js
+import { tailwindTheme, setTheme } from '@arnelirobles/rnxjs';
+
+tailwindTheme.utilities.icon.className = (name) => `ph ph-${name}`; // Phosphor
+setTheme('tailwind');
+```
+
+A custom theme sets `utilities.icon.className` the same way. Without one, it falls back to Bootstrap Icons. Icon names are passed through as given, so use names your set has.
 
 ## Documentation
 

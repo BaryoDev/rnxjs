@@ -2,6 +2,7 @@ import { createComponent } from '../../utils/createComponent.js';
 import { escapeHtml } from '../../utils/security.js';
 import themeProvider, { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
+import { resolveIcon } from '../../utils/icon.js';
 
 const themeState = (component, state) => {
   const theme = themeProvider.getTheme();
@@ -55,7 +56,7 @@ export function SegmentedButton({ options = [], selected = '', onchange, label =
                   data-rnx-ignore="true"
                   data-ref="btn-${escapeHtml(String(opt.value ?? ''))}"
                   aria-pressed="${isSelected ? 'true' : 'false'}">
-            ${isSelected ? '<i class="bi bi-check" aria-hidden="true"></i>' : (opt.icon ? `<i class="bi bi-${escapeHtml(opt.icon)}" aria-hidden="true"></i>` : '')}
+            ${isSelected ? `<i class="${escapeHtml(resolveIcon('check'))}" aria-hidden="true"></i>` : (opt.icon ? `<i class="${escapeHtml(resolveIcon(opt.icon))}" aria-hidden="true"></i>` : '')}
             ${escapeHtml(opt.label || '')}
           </button>
         `;
