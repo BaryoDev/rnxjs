@@ -1,7 +1,9 @@
 import { createComponent } from '../../utils/createComponent.js';
 import { escapeHtml } from '../../utils/security.js';
-import { resolveClasses } from '../../utils/ThemeProvider.js';
+import themeProvider, { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
+
+let tooltipIdCounter = 0;
 
 /**
  * Tooltip Component - CSS Framework Agnostic
@@ -44,6 +46,43 @@ export function Tooltip({
     }
 
     // Declarative mode: wrap children in a tooltip trigger
+    const popupPart = resolvePartClasses('tooltip', 'popup');
+
+    if (popupPart) {
+        // Themes with a popup part (Tailwind) need no Bootstrap JS: CSS shows it on hover and focus
+        const theme = themeProvider.getTheme();
+        const states = (theme && theme.components.tooltip && theme.components.tooltip.states) || {};
+        const triggerClass = cn(resolvePartClasses('tooltip', 'trigger'), className);
+        const popupClass = cn(popupPart, states[placement] || states.top || '');
+        const popupId = `rnx-tooltip-${++tooltipIdCounter}`;
+        const popupTemplate = () => `
+            <span class="${triggerClass}" data-slot><span role="tooltip" id="${popupId}" class="${popupClass}">${escapeHtml(title)}</span></span>
+        `;
+        const popupComponent = createComponent(popupTemplate, { title, placement, children, className });
+        popupComponent.useEffect((el) => {
+            const popup = el.querySelector('[role="tooltip"]');
+            const target = Array.from(el.children).find(c => c !== popup);
+            if (target) target.setAttribute('aria-describedby', popupId);
+
+            // Escape hides the popup until the pointer or focus comes back
+            const dismiss = (e) => {
+                if (e.key === 'Escape' && popup) popup.style.visibility = 'hidden';
+            };
+            const reveal = () => {
+                if (popup) popup.style.visibility = '';
+            };
+            document.addEventListener('keydown', dismiss);
+            el.addEventListener('mouseenter', reveal);
+            el.addEventListener('focusin', reveal);
+            return () => {
+                document.removeEventListener('keydown', dismiss);
+                el.removeEventListener('mouseenter', reveal);
+                el.removeEventListener('focusin', reveal);
+            };
+        });
+        return popupComponent;
+    }
+
     const tooltipClass = cn(resolveClasses('tooltip'), className);
 
     const template = () => `

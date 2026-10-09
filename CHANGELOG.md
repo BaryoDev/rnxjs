@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- Modal under Tailwind is hidden when closed, centred over a dark-mode-aware scrim when open, closes on Escape or a backdrop click, returns focus to the trigger, and no longer needs Bootstrap JS (it ignores it, so no `Illegal invocation` and no stuck `modal-open` on body).
+- Stepper under Tailwind lays the steps out as a row with the label under each circle.
+- ProgressBar takes its fill colour from the theme per variant instead of the Bootstrap `bg-*` names.
+- Tooltip under Tailwind puts the bubble classes on a popup element that shows on hover and focus, with no Bootstrap JS.
+- Input and Select under Tailwind show the label above the field. Bootstrap keeps its floating label.
+- Under Tailwind, Modal no longer uses Bootstrap JS. A `data-bs-toggle="modal"` trigger is not supported there, so use the Modal API. Escape closes only the topmost of stacked modals, body scroll is locked while one is open, and `getInstance()` returns an object with show, hide and toggle.
+- The imperative `Tooltip({element})` under Tailwind now shows on hover and focus, not always. The declarative tooltip sets `aria-describedby` on its trigger and Escape dismisses it.
+- ProgressBar falls back to the primary fill for a variant the theme does not define.
+- Input under Tailwind no longer repeats the label as the placeholder, and its icon centres on the field. A vertical Stepper puts the label beside the circle.
+- Skeleton renders the requested number of lines when `lines`, `rows` or `cols` arrive as strings such as `"3"`, and caps each at 100.
+
 ## [2.3.0] - 2026-10-09
 
 Dark mode, and a Tailwind theme that reads the `--rnx-*` tokens. `npm test`

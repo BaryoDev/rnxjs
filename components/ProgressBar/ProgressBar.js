@@ -6,7 +6,7 @@
  */
 
 import { createComponent } from '../../utils/createComponent.js';
-import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
+import { resolveClasses, resolvePartClasses, resolveUtility } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 import { escapeHtml } from '../../utils/security.js';
 
@@ -65,7 +65,7 @@ export function ProgressBar({
         resolvePartClasses('progressbar', 'bar'),
         'progress-bar',
         `progress-bar-${variant}`,
-        `bg-${variant}`, // Color utility
+        resolveUtility('background', variant) || resolveUtility('background', 'primary') || `bg-${variant}`,
         striped ? 'striped progress-bar-striped bg-gradient-to-r' : '',
         animated && striped ? 'animated progress-bar-animated animate-pulse' : '',
         indeterminate ? 'indeterminate progress-indeterminate' : ''

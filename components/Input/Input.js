@@ -92,13 +92,15 @@ export function Input({
     label ? resolvePartClasses('input', 'floatingWrapper') : ''
   );
 
-  const labelClass = resolvePartClasses('input', 'label');
+  const labelClass = cn(resolvePartClasses('input', 'label'), label ? resolvePartClasses('input', 'floatingLabel') : '');
+  const fieldClass = resolvePartClasses('input', 'field');
   const iconClass = resolvePartClasses('input', 'icon');
   const helpClass = resolvePartClasses('input', 'help') || resolvePartClasses('formgroup', 'help');
   const errorClass = resolvePartClasses('input', 'error') || resolvePartClasses('formgroup', 'error');
 
   const template = () => `
     <div class="${wrapperClass}">
+      ${fieldClass ? `<div class="${fieldClass}">` : ''}
       ${icon ? `<span class="${iconClass}" aria-hidden="true"><i class="${escapeHtml(resolveIcon(icon))}"></i></span>` : ''}
       <input
         class="${inputClass}"
@@ -106,7 +108,7 @@ export function Input({
         type="${escapeHtml(type)}"
         name="${escapeHtml(name)}"
         value="${escapeHtml(value)}"
-        placeholder="${escapeHtml(placeholder || (label ? label : ''))}"
+        placeholder="${escapeHtml(placeholder || (label && !fieldClass ? label : ''))}"
         ${isRequired ? 'required aria-required="true"' : ''}
         ${isDisabled ? 'disabled' : ''}
         ${isReadonly ? 'readonly' : ''}
@@ -116,6 +118,7 @@ export function Input({
         data-rnx-ignore="true"
         ${attrs}
       >
+      ${fieldClass ? '</div>' : ''}
       ${label ? `<label for="${escapeHtml(finalId)}" class="${labelClass}">${escapeHtml(label)}</label>` : ''}
       ${help ? `<div id="${escapeHtml(helpId)}" class="${helpClass}">${escapeHtml(help)}</div>` : ''}
       ${error ? `<div id="${escapeHtml(errorId)}" class="${errorClass}">${escapeHtml(error)}</div>` : ''}
