@@ -401,7 +401,7 @@ export const tailwindTheme = {
         close: 'absolute top-3 right-3 p-1.5 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500'
       },
       states: {
-        show: 'animate-in slide-in-from-top'
+        show: 'motion-safe:animate-rnx-toast-in'
       }
     },
 

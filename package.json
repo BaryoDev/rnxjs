@@ -9,6 +9,7 @@
       "import": "./dist/rnx.esm.js",
       "require": "./index.js"
     },
+    "./tailwind": "./tailwind.preset.js",
     "./dist/*": "./dist/*",
     "./css/bootstrap-m3-theme.css": "./css/bootstrap-m3-theme.css",
     "./css/*": "./css/*",
@@ -49,6 +50,7 @@
   "files": [
     "index.js",
     "index.d.ts",
+    "tailwind.preset.js",
     "utils/",
     "framework/",
     "components/",

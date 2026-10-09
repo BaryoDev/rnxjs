@@ -160,6 +160,36 @@ registered theme:
 
 Switch with `setTheme('bootstrap')` or `setTheme('tailwind')`.
 
+#### Tailwind setup
+
+Tailwind only generates classes it finds in your source, and the Tailwind
+theme's classes live inside `node_modules`. Without scanning them you get an
+unstyled app (for example `sr-only` on the Spinner label is never generated, so
+"Loading..." shows as visible text). Classes are in the component JS as well as
+`themes/tailwind/index.js`, so the glob must cover the whole package. Add the
+preset, which sets `content` for you and adds the toast entrance animation:
+
+```js
+// tailwind.config.js
+import rnx from '@arnelirobles/rnxjs/tailwind';
+
+export default {
+  presets: [rnx],
+  content: ['./src/**/*.{html,js}']
+};
+```
+
+Or do it by hand:
+
+```js
+content: [
+  './src/**/*.{html,js}',
+  './node_modules/@arnelirobles/rnxjs/**/*.js' // required
+]
+```
+
+Without the preset the toast still works, it just appears without the slide-in.
+
 ### What is not supported yet
 
 Changing a component's internal markup. `Autocomplete` and `VirtualList` accept
