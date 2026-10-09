@@ -4,6 +4,7 @@ import { Checkbox } from '../components/Checkbox/Checkbox.js';
 import { Radio } from '../components/Radio/Radio.js';
 import { Select } from '../components/Select/Select.js';
 import { setTheme, registerTheme } from '../utils/ThemeProvider.js';
+import { tailwindTheme } from '../themes/tailwind/index.js';
 import { createReactiveState } from '../utils/createReactiveState.js';
 import { bindData } from '../framework/DataBinder.js';
 
@@ -77,7 +78,9 @@ describe('Switch theming', () => {
       const input = sw.querySelector('input');
       const track = input.nextElementSibling;
       expect(track.className).toContain('bg-red-500');
-      expect(track.className).not.toContain('bg-slate-300');
+      const themeTrackBg = tailwindTheme.components.switch.base.split(' ').find((c) => c.startsWith('bg-[color:'));
+      expect(themeTrackBg).toBeTruthy();
+      expect(track.className.split(/\s+/)).not.toContain(themeTrackBg);
       expect(input.parentElement.className).not.toContain('bg-red-500');
     });
 
@@ -161,7 +164,7 @@ describe('Tailwind form controls without @tailwindcss/forms', () => {
     const cls = Select({ options: [{ value: 'a', label: 'A' }] }).querySelector('select').className;
     expect(cls).toContain('appearance-none');
     expect(cls).toContain('bg-[url(data:image/svg+xml');
-    expect(cls).toContain('disabled:bg-[color:var(--rnx-surface,#f8fafc)]');
+    expect(cls).toContain('disabled:bg-[color:var(--rnx-surface-hover,#f8fafc)]');
   });
 
   it('cn() keeps arbitrary background colour, image, position and size', async () => {

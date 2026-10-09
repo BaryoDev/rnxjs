@@ -256,7 +256,7 @@ describe('cn', () => {
 
 describe('cn with token-aware arbitrary colours', () => {
     const c = (name) => `${name}-[color:var(--rnx-primary,#4f46e5)]`;
-    const mix = 'color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_20%,var(--rnx-background,#ffffff))';
+    const mix = 'color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_20%,var(--rnx-surface,#ffffff))';
 
     it('keeps a font size next to an arbitrary text colour', () => {
         expect(cn('text-sm', c('text'))).toBe(`text-sm ${c('text')}`);
