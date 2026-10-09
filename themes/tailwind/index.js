@@ -12,9 +12,10 @@
  * - Complete interactive states: hover, active press, focus-visible ring,
  *   disabled, on every control; motion-reduce respected
  * - WCAG AA: text colours reach 4.5:1 on white, checked by
- *   tests/tailwindContrast.test.js. Excluded: decorative text (breadcrumb
- *   separator), icons and close buttons (graphics, not text), and text on
- *   dark or coloured fills (warning button uses dark text on amber-400).
+ *   tests/tailwindContrast.test.js, against the fill in the same class string
+ *   (white if none). Excluded: decorative text (breadcrumb separator) and
+ *   icons and close buttons (graphics, not text). Warning buttons use dark
+ *   text on amber-400.
  *
  * @module themes/tailwind
  */
@@ -38,10 +39,10 @@ export const tailwindTheme = {
         // Color variants
         primary: 'bg-indigo-600 text-white shadow-sm hover:bg-indigo-700 active:bg-indigo-800',
         secondary: 'bg-white text-slate-700 border border-slate-300 shadow-sm hover:bg-slate-50 active:bg-slate-100',
-        success: 'bg-emerald-600 text-white shadow-sm hover:bg-emerald-700 active:bg-emerald-800 focus-visible:ring-emerald-500',
+        success: 'bg-emerald-700 text-white shadow-sm hover:bg-emerald-800 active:bg-emerald-900 focus-visible:ring-emerald-500',
         danger: 'bg-red-600 text-white shadow-sm hover:bg-red-700 active:bg-red-800 focus-visible:ring-red-500',
         warning: 'bg-amber-400 text-amber-950 shadow-sm hover:bg-amber-500 active:bg-amber-600 focus-visible:ring-amber-400',
-        info: 'bg-sky-600 text-white shadow-sm hover:bg-sky-700 active:bg-sky-800 focus-visible:ring-sky-500',
+        info: 'bg-sky-700 text-white shadow-sm hover:bg-sky-800 active:bg-sky-900 focus-visible:ring-sky-500',
         light: 'bg-slate-100 text-slate-700 hover:bg-slate-200 active:bg-slate-300 focus-visible:ring-slate-400',
         dark: 'bg-slate-900 text-white shadow-sm hover:bg-slate-800 active:bg-slate-700 focus-visible:ring-slate-600'
       },
@@ -754,10 +755,10 @@ export const tailwindTheme = {
     background: {
       primary: 'bg-indigo-600',
       secondary: 'bg-slate-600',
-      success: 'bg-emerald-600',
+      success: 'bg-emerald-700',
       danger: 'bg-red-600',
       warning: 'bg-amber-400',
-      info: 'bg-sky-600',
+      info: 'bg-sky-700',
       light: 'bg-slate-100',
       dark: 'bg-slate-900',
       white: 'bg-white',
