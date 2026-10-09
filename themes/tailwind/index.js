@@ -237,9 +237,6 @@ export const tailwindTheme = {
       parts: {
         wrapper: 'flex items-center gap-2',
         label: 'text-sm text-slate-700 select-none'
-      },
-      states: {
-        disabled: 'opacity-50 cursor-not-allowed'
       }
     },
 
@@ -248,9 +245,6 @@ export const tailwindTheme = {
       parts: {
         wrapper: 'flex items-center gap-2',
         label: 'text-sm text-slate-700 select-none'
-      },
-      states: {
-        disabled: 'opacity-50 cursor-not-allowed'
       }
     },
 

@@ -3,7 +3,7 @@ import { Switch } from '../components/Switch/Switch.js';
 import { Checkbox } from '../components/Checkbox/Checkbox.js';
 import { Radio } from '../components/Radio/Radio.js';
 import { Select } from '../components/Select/Select.js';
-import { setTheme } from '../utils/ThemeProvider.js';
+import { setTheme, registerTheme } from '../utils/ThemeProvider.js';
 import { createReactiveState } from '../utils/createReactiveState.js';
 import { bindData } from '../framework/DataBinder.js';
 
@@ -67,6 +67,38 @@ describe('Switch theming', () => {
       expect(input.checked).toBe(true);
       expect(input.disabled).toBe(true);
       expect(input.required).toBe(true);
+    });
+
+    it('puts className on the track, not the wrapper label', async () => {
+      setTheme('tailwind');
+      const sw = Switch({ className: 'ml-8 bg-red-500' });
+      document.body.appendChild(sw);
+      await tick();
+      const input = sw.querySelector('input');
+      const track = input.nextElementSibling;
+      expect(track.className).toContain('bg-red-500');
+      expect(track.className).not.toContain('bg-slate-300');
+      expect(input.parentElement.className).not.toContain('bg-red-500');
+    });
+
+    it('falls back to the input-only markup for a theme with a thumb but no input/control parts', async () => {
+      registerTheme({
+        name: 'legacy-tw',
+        components: {
+          switch: {
+            base: 'relative inline-flex h-6 w-11 rounded-full',
+            parts: { wrapper: 'flex', label: 'lbl', thumb: 'thumb-x' },
+            states: { checked: 'bg-indigo-600', unchecked: 'bg-slate-300' }
+          }
+        }
+      });
+      setTheme('legacy-tw');
+      const sw = Switch({ label: 'Alerts' });
+      document.body.appendChild(sw);
+      await tick();
+      const input = sw.querySelector('input');
+      expect(input.className).toContain('rounded-full');
+      expect(sw.querySelector('[data-part="thumb"]')).toBeNull();
     });
 
     it('works with data binding', async () => {
@@ -136,6 +168,14 @@ describe('Tailwind form controls without @tailwindcss/forms', () => {
     const { cn } = await import('../utils/classNames.js');
     const input = 'bg-white bg-[url(x.svg)] bg-[position:right_center] bg-[length:1rem_1rem]';
     expect(cn(input)).toBe(input);
+  });
+
+  it('cn() treats gradient and image-set arbitrary values as images', async () => {
+    const { cn } = await import('../utils/classNames.js');
+    expect(cn('bg-[url(a.png)] bg-[linear-gradient(red,blue)]')).toBe('bg-[linear-gradient(red,blue)]');
+    expect(cn('bg-[url(a.png)] bg-[radial-gradient(red,blue)]')).toBe('bg-[radial-gradient(red,blue)]');
+    expect(cn('bg-[url(a.png)] bg-[conic-gradient(red,blue)]')).toBe('bg-[conic-gradient(red,blue)]');
+    expect(cn('bg-[url(a.png)] bg-[image-set(url(a.png)_1x)]')).toBe('bg-[image-set(url(a.png)_1x)]');
   });
 
   it('bootstrap checkbox and select classes are unchanged', () => {

@@ -258,7 +258,10 @@ function getGroup(raw) {
       return 'bg-image';
     }
     // Arbitrary values: url(...) and typed hints are not colours
-    if (v.startsWith('[url(') || v.startsWith('[image:')) return 'bg-image';
+    if (['[url(', '[image:', '[linear-gradient(', '[radial-gradient(',
+         '[conic-gradient(', '[image-set('].some(pre => v.startsWith(pre))) {
+      return 'bg-image';
+    }
     if (v.startsWith('[position:')) return 'bg-position';
     if (v.startsWith('[length:') || v.startsWith('[size:')) return 'bg-size';
     return 'bg-color';

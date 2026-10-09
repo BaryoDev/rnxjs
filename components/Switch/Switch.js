@@ -74,15 +74,19 @@ export function Switch({
   // checkbox stays in the DOM (visually hidden, still focusable) so the
   // switch submits with a form and keeps its keyboard and screen reader
   // behaviour. Themes without a thumb (Bootstrap) restyle the input itself.
-  const hasThumb = !!thumbClass;
+  const hasThumb = !!(
+    thumbClass &&
+    resolvePartClasses('switch', 'input') &&
+    resolvePartClasses('switch', 'control')
+  );
   const inputClass = hasThumb
     ? resolvePartClasses('switch', 'input')
     : switchClass;
   const trackClass = hasThumb
-    ? resolveClasses('switch', { disabled: isDisabled })
+    ? cn(resolveClasses('switch', { disabled: isDisabled }), className)
     : '';
   const controlClass = hasThumb
-    ? cn(resolvePartClasses('switch', 'control'), className)
+    ? resolvePartClasses('switch', 'control')
     : '';
 
   const inputHtml = `
