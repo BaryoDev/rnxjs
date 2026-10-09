@@ -486,6 +486,9 @@
  "components.stepper.parts.connectorVertical": [
   ["bg-slate-200", "#e2e8f0", null]
  ],
+ "components.stepper.parts.contentVertical": [
+  ["text-slate-500", "#64748b", null]
+ ],
  "components.stepper.parts.label": [
   ["text-slate-500", "#64748b", null]
  ],

@@ -190,4 +190,17 @@ describe('Stepper vertical under Tailwind', () => {
         const h = await mount(Stepper({ steps: [{ title: 'A' }, { title: 'B' }] }));
         expect(h.querySelector('.stepper-step-header').className).toContain('flex-col');
     });
+
+    it('indents the step content to the label column', async () => {
+        const v = await mount(Stepper({ orientation: 'vertical', steps: [{ title: 'A', content: 'Create it' }] }));
+        const content = v.querySelector('.stepper-content').className;
+        expect(content).toContain('ml-12');
+        expect(content).toContain('text-sm');
+    });
+
+    it('Bootstrap keeps the bare stepper-content class', async () => {
+        themeProvider.setTheme('bootstrap');
+        const v = await mount(Stepper({ orientation: 'vertical', steps: [{ title: 'A', content: 'x' }] }));
+        expect(v.querySelector('.stepper-content').getAttribute('class')).toBe('stepper-content');
+    });
 });

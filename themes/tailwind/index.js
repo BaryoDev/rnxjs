@@ -479,6 +479,7 @@ export const tailwindTheme = {
         stepVertical: 'flex flex-col',
         header: 'flex flex-col items-center gap-2',
         headerVertical: 'flex flex-row items-center gap-3',
+        contentVertical: 'ml-12 mt-1 text-sm text-[color:var(--rnx-text-secondary,#64748b)]',
         connector: 'flex-1 h-0.5 mt-[1.0625rem] mx-3 bg-[color:var(--rnx-border-color,#e2e8f0)]',
         connectorVertical: 'w-0.5 h-6 ml-[1.0625rem] mt-2 bg-[color:var(--rnx-border-color,#e2e8f0)]',
         circle: 'w-9 h-9 shrink-0 rounded-full border-2 flex items-center justify-center text-sm font-semibold transition-colors duration-150 motion-reduce:transition-none',

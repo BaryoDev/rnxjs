@@ -99,7 +99,7 @@ export const Stepper = (props = {}) => {
                     ${steps.map((step, index) => `
                         <li ${stepAttrs(index, true)}>
                             ${renderStepHeader(step, index, true)}
-                            <div class="stepper-content">
+                            <div class="${cn(resolvePartClasses('stepper', 'contentVertical'), 'stepper-content')}">
                                 ${step.content ? sanitizeHtml(step.content) : ''}
                             </div>
                             ${index < steps.length - 1 ? `<div class="${cn(resolvePartClasses('stepper', 'connectorVertical') || connectorPart, 'stepper-connector-vertical')}" aria-hidden="true"></div>` : ''}
