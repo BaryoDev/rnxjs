@@ -1,17 +1,12 @@
-import { fileURLToPath } from 'node:url';
-import { dirname } from 'node:path';
+// CommonJS copy of tailwind.preset.js. Keep the two in sync (a test checks it).
+const root = __dirname.split('\\').join('/');
 
-const root = dirname(fileURLToPath(import.meta.url)).split('\\').join('/');
-
-// Classes live in component JS as well as the theme file, so scan both.
-// Tailwind 3 does not merge a preset's content with yours, so spread this
-// into your own content array. See the README.
-export const content = [
+const content = [
   `${root}/components/**/*.js`,
   `${root}/themes/tailwind/**/*.js`
 ];
 
-export default {
+module.exports = {
   content,
   theme: {
     extend: {
@@ -27,3 +22,5 @@ export default {
     }
   }
 };
+module.exports.default = module.exports;
+module.exports.content = content;

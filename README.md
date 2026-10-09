@@ -166,20 +166,34 @@ Tailwind only generates classes it finds in your source, and the Tailwind
 theme's classes live inside `node_modules`. Without scanning them you get an
 unstyled app (for example `sr-only` on the Spinner label is never generated, so
 "Loading..." shows as visible text). Classes are in the component JS as well as
-`themes/tailwind/index.js`, so the glob must cover the whole package. Add the
-preset, which sets `content` for you and adds the toast entrance animation:
+`themes/tailwind/index.js`, so the glob must cover the whole package.
+
+Tailwind 3 does not merge a preset's `content` with yours, your own `content`
+replaces it. So the preset exports its globs and you spread them into your
+array. The preset itself adds the toast entrance animation:
 
 ```js
 // tailwind.config.js
-import rnx from '@arnelirobles/rnxjs/tailwind';
+import rnx, { content } from '@arnelirobles/rnxjs/tailwind';
 
 export default {
   presets: [rnx],
-  content: ['./src/**/*.{html,js}']
+  content: ['./src/**/*.{html,js}', ...content]
 };
 ```
 
-Or do it by hand:
+CommonJS works too:
+
+```js
+const rnx = require('@arnelirobles/rnxjs/tailwind');
+
+module.exports = {
+  presets: [rnx],
+  content: ['./src/**/*.{html,js}', ...rnx.content]
+};
+```
+
+Or skip the preset and add the glob by hand (no toast animation):
 
 ```js
 content: [

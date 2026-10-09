@@ -1,4 +1,6 @@
-import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync, mkdtempSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { createRequire } from 'node:module';
 import { join } from 'node:path';
 import { describe, it, expect } from 'vitest';
 import preset, { content } from '../tailwind.preset.js';
@@ -37,7 +39,48 @@ describe('tailwind preset', () => {
 
   it('is exported and published', () => {
     const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
-    expect(pkg.exports['./tailwind']).toBe('./tailwind.preset.js');
+    expect(pkg.exports['./tailwind']).toEqual({
+      import: './tailwind.preset.js',
+      require: './tailwind.preset.cjs'
+    });
     expect(pkg.files).toContain('tailwind.preset.js');
+    expect(pkg.files).toContain('tailwind.preset.cjs');
+  });
+});
+
+describe('real tailwind build', () => {
+  const require = createRequire(import.meta.url);
+  const postcss = require('postcss');
+  const tailwind = require('tailwindcss');
+  const cjsPreset = require('../tailwind.preset.cjs');
+
+  async function build(config) {
+    const dir = mkdtempSync(join(tmpdir(), 'rnx-tw-'));
+    writeFileSync(join(dir, 'index.html'), '<div class="p-4"></div>');
+    const cfg = { ...config, content: config.content.map((c) => (c.startsWith('/') ? c : join(dir, c))) };
+    const css = '@tailwind base;@tailwind components;@tailwind utilities;';
+    const out = await postcss([tailwind(cfg)]).process(css, { from: undefined });
+    return out.css;
+  }
+
+  const assertFull = (css) => {
+    expect(css).toContain('.sr-only');
+    expect(css).toContain('animate-rnx-toast-in');
+    expect(css).toContain('@keyframes rnx-toast-in');
+  };
+
+  it('generates theme classes and keyframes with the spread content (ESM)', async () => {
+    assertFull(await build({ presets: [preset], content: ['index.html', ...content] }));
+  });
+
+  it('works through the CJS entry', async () => {
+    expect(cjsPreset.content).toEqual(content);
+    expect(cjsPreset.theme).toEqual(preset.theme);
+    assertFull(await build({ presets: [cjsPreset], content: ['index.html', ...cjsPreset.content] }));
+  });
+
+  it('misses them when content is not spread (tailwind does not merge preset content)', async () => {
+    const css = await build({ presets: [preset], content: ['index.html'] });
+    expect(css).not.toContain('.sr-only');
   });
 });
