@@ -30,11 +30,13 @@
   --rnx-primary-active: #0a4552;
   --rnx-primary-rgb: 15, 92, 107;
   --rnx-text-on-primary: #ffffff;
+  --rnx-text-on-warning: #ffffff;
 
   /* status. These carry meaning, so they stay distinct from the brand. */
   --rnx-success: #12664a;
   --rnx-danger: #9a3b2c;
   --rnx-warning: #8a5a12;
+  --rnx-warning-hover: #744a0e;
   --rnx-info: #1f5e7a;
 
   /* surfaces */

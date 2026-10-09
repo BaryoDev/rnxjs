@@ -1,0 +1,787 @@
+{
+ "components.button.base": [
+  ["focus-visible:ring-indigo-500", "#6366f1", null]
+ ],
+ "components.button.variants.filled": [
+  ["bg-indigo-600", "#4f46e5", null],
+  ["text-white", "#ffffff", null],
+  ["hover:bg-indigo-700", "#4338ca", null],
+  ["active:bg-indigo-800", "#3730a3", null]
+ ],
+ "components.button.variants.outlined": [
+  ["border-slate-300", "#cbd5e1", null],
+  ["bg-white", "#ffffff", null],
+  ["text-slate-700", "#334155", null],
+  ["hover:bg-slate-50", "#f8fafc", null],
+  ["active:bg-slate-100", "#f1f5f9", null]
+ ],
+ "components.button.variants.text": [
+  ["text-indigo-600", "#4f46e5", null],
+  ["hover:bg-indigo-50", "#eef2ff", null],
+  ["active:bg-indigo-100", "#e0e7ff", null]
+ ],
+ "components.button.variants.elevated": [
+  ["bg-white", "#ffffff", null],
+  ["text-indigo-600", "#4f46e5", null],
+  ["hover:bg-indigo-50", "#eef2ff", null],
+  ["active:bg-indigo-100", "#e0e7ff", null]
+ ],
+ "components.button.variants.tonal": [
+  ["bg-indigo-50", "#eef2ff", null],
+  ["text-indigo-700", "#4338ca", null],
+  ["hover:bg-indigo-100", "#e0e7ff", null],
+  ["active:bg-indigo-200", "#c7d2fe", null]
+ ],
+ "components.button.variants.primary": [
+  ["bg-indigo-600", "#4f46e5", null],
+  ["text-white", "#ffffff", null],
+  ["hover:bg-indigo-700", "#4338ca", null],
+  ["active:bg-indigo-800", "#3730a3", null]
+ ],
+ "components.button.variants.secondary": [
+  ["bg-white", "#ffffff", null],
+  ["text-slate-700", "#334155", null],
+  ["border-slate-300", "#cbd5e1", null],
+  ["hover:bg-slate-50", "#f8fafc", null],
+  ["active:bg-slate-100", "#f1f5f9", null]
+ ],
+ "components.button.variants.success": [
+  ["bg-emerald-700", "#047857", null],
+  ["text-white", "#ffffff", null],
+  ["hover:bg-emerald-800", "#065f46", null],
+  ["active:bg-emerald-900", "#064e3b", null],
+  ["focus-visible:ring-emerald-500", "#10b981", null]
+ ],
+ "components.button.variants.danger": [
+  ["bg-red-600", "#dc2626", null],
+  ["text-white", "#ffffff", null],
+  ["hover:bg-red-700", "#b91c1c", null],
+  ["active:bg-red-800", "#991b1b", null],
+  ["focus-visible:ring-red-500", "#ef4444", null]
+ ],
+ "components.button.variants.warning": [
+  ["bg-amber-400", "#fbbf24", null],
+  ["text-amber-950", "#451a03", null],
+  ["hover:bg-amber-500", "#f59e0b", null],
+  ["active:bg-amber-600", "#d97706", null],
+  ["focus-visible:ring-amber-400", "#fbbf24", null]
+ ],
+ "components.button.variants.info": [
+  ["bg-sky-700", "#0369a1", null],
+  ["text-white", "#ffffff", null],
+  ["hover:bg-sky-800", "#075985", null],
+  ["active:bg-sky-900", "#0c4a6e", null],
+  ["focus-visible:ring-sky-500", "#0ea5e9", null]
+ ],
+ "components.button.variants.light": [
+  ["bg-slate-100", "#f1f5f9", null],
+  ["text-slate-700", "#334155", null],
+  ["hover:bg-slate-200", "#e2e8f0", null],
+  ["active:bg-slate-300", "#cbd5e1", null],
+  ["focus-visible:ring-slate-400", "#94a3b8", null]
+ ],
+ "components.button.variants.dark": [
+  ["bg-slate-900", "#0f172a", null],
+  ["text-white", "#ffffff", null],
+  ["hover:bg-slate-800", "#1e293b", null],
+  ["active:bg-slate-700", "#334155", null],
+  ["focus-visible:ring-slate-600", "#475569", null]
+ ],
+ "components.badge.variants.primary": [
+  ["bg-indigo-50", "#eef2ff", null],
+  ["text-indigo-700", "#4338ca", null],
+  ["ring-indigo-600/20", "#4f46e5", 20]
+ ],
+ "components.badge.variants.secondary": [
+  ["bg-slate-50", "#f8fafc", null],
+  ["text-slate-700", "#334155", null],
+  ["ring-slate-500/20", "#64748b", 20]
+ ],
+ "components.badge.variants.success": [
+  ["bg-emerald-50", "#ecfdf5", null],
+  ["text-emerald-700", "#047857", null],
+  ["ring-emerald-600/20", "#059669", 20]
+ ],
+ "components.badge.variants.danger": [
+  ["bg-red-50", "#fef2f2", null],
+  ["text-red-700", "#b91c1c", null],
+  ["ring-red-600/20", "#dc2626", 20]
+ ],
+ "components.badge.variants.warning": [
+  ["bg-amber-50", "#fffbeb", null],
+  ["text-amber-800", "#92400e", null],
+  ["ring-amber-600/20", "#d97706", 20]
+ ],
+ "components.badge.variants.info": [
+  ["bg-sky-50", "#f0f9ff", null],
+  ["text-sky-700", "#0369a1", null],
+  ["ring-sky-600/20", "#0284c7", 20]
+ ],
+ "components.badge.variants.light": [
+  ["bg-slate-50", "#f8fafc", null],
+  ["text-slate-600", "#475569", null],
+  ["ring-slate-400/20", "#94a3b8", 20]
+ ],
+ "components.badge.variants.dark": [
+  ["bg-slate-900", "#0f172a", null],
+  ["text-white", "#ffffff", null],
+  ["ring-slate-900", "#0f172a", null]
+ ],
+ "components.alert.variants.primary": [
+  ["bg-indigo-50", "#eef2ff", null],
+  ["border-indigo-200", "#c7d2fe", null],
+  ["text-indigo-800", "#3730a3", null]
+ ],
+ "components.alert.variants.secondary": [
+  ["bg-slate-50", "#f8fafc", null],
+  ["border-slate-200", "#e2e8f0", null],
+  ["text-slate-700", "#334155", null]
+ ],
+ "components.alert.variants.success": [
+  ["bg-emerald-50", "#ecfdf5", null],
+  ["border-emerald-200", "#a7f3d0", null],
+  ["text-emerald-800", "#065f46", null]
+ ],
+ "components.alert.variants.danger": [
+  ["bg-red-50", "#fef2f2", null],
+  ["border-red-200", "#fecaca", null],
+  ["text-red-800", "#991b1b", null]
+ ],
+ "components.alert.variants.warning": [
+  ["bg-amber-50", "#fffbeb", null],
+  ["border-amber-200", "#fde68a", null],
+  ["text-amber-800", "#92400e", null]
+ ],
+ "components.alert.variants.info": [
+  ["bg-sky-50", "#f0f9ff", null],
+  ["border-sky-200", "#bae6fd", null],
+  ["text-sky-800", "#075985", null]
+ ],
+ "components.alert.variants.light": [
+  ["bg-white", "#ffffff", null],
+  ["border-slate-200", "#e2e8f0", null],
+  ["text-slate-700", "#334155", null]
+ ],
+ "components.alert.variants.dark": [
+  ["bg-slate-900", "#0f172a", null],
+  ["border-slate-800", "#1e293b", null],
+  ["text-slate-100", "#f1f5f9", null]
+ ],
+ "components.spinner.base": [
+  ["border-slate-200", "#e2e8f0", null]
+ ],
+ "components.spinner.variants.border": [
+  ["border-t-indigo-600", "#4f46e5", null]
+ ],
+ "components.card.base": [
+  ["bg-white", "#ffffff", null]
+ ],
+ "components.card.variants.outlined": [
+  ["border-slate-200", "#e2e8f0", null]
+ ],
+ "components.card.variants.filled": [
+  ["bg-slate-50", "#f8fafc", null],
+  ["border-slate-200", "#e2e8f0", null]
+ ],
+ "components.card.parts.header": [
+  ["border-slate-200", "#e2e8f0", null]
+ ],
+ "components.card.parts.footer": [
+  ["border-slate-200", "#e2e8f0", null],
+  ["bg-slate-50", "#f8fafc", null],
+  ["text-slate-600", "#475569", null]
+ ],
+ "components.card.parts.title": [
+  ["text-slate-900", "#0f172a", null]
+ ],
+ "components.card.parts.subtitle": [
+  ["text-slate-500", "#64748b", null]
+ ],
+ "components.statcard.base": [
+  ["bg-white", "#ffffff", null],
+  ["border-slate-200", "#e2e8f0", null]
+ ],
+ "components.statcard.parts.title": [
+  ["text-slate-500", "#64748b", null]
+ ],
+ "components.statcard.parts.value": [
+  ["text-slate-900", "#0f172a", null]
+ ],
+ "components.statcard.parts.trend": [
+  ["text-slate-500", "#64748b", null]
+ ],
+ "components.statcard.parts.footer": [
+  ["border-slate-200", "#e2e8f0", null]
+ ],
+ "components.input.base": [
+  ["border-slate-300", "#cbd5e1", null],
+  ["bg-white", "#ffffff", null],
+  ["text-slate-900", "#0f172a", null],
+  ["placeholder:text-slate-500", "#64748b", null],
+  ["focus-visible:ring-indigo-500", "#6366f1", null],
+  ["focus-visible:border-indigo-500", "#6366f1", null]
+ ],
+ "components.input.states.disabled": [
+  ["bg-slate-50", "#f8fafc", null],
+  ["text-slate-500", "#64748b", null]
+ ],
+ "components.input.states.readonly": [
+  ["bg-slate-50", "#f8fafc", null]
+ ],
+ "components.input.states.error": [
+  ["border-red-500", "#ef4444", null],
+  ["focus:ring-red-500", "#ef4444", null],
+  ["focus:border-red-500", "#ef4444", null]
+ ],
+ "components.input.parts.label": [
+  ["text-slate-700", "#334155", null]
+ ],
+ "components.input.parts.icon": [
+  ["text-slate-400", "#94a3b8", null]
+ ],
+ "components.input.parts.help": [
+  ["text-slate-500", "#64748b", null]
+ ],
+ "components.input.parts.error": [
+  ["text-red-600", "#dc2626", null]
+ ],
+ "components.textarea.base": [
+  ["border-slate-300", "#cbd5e1", null],
+  ["bg-white", "#ffffff", null],
+  ["text-slate-900", "#0f172a", null],
+  ["placeholder:text-slate-500", "#64748b", null],
+  ["focus-visible:ring-indigo-500", "#6366f1", null],
+  ["focus-visible:border-indigo-500", "#6366f1", null]
+ ],
+ "components.textarea.states.disabled": [
+  ["bg-slate-50", "#f8fafc", null],
+  ["text-slate-500", "#64748b", null]
+ ],
+ "components.textarea.states.readonly": [
+  ["bg-slate-50", "#f8fafc", null]
+ ],
+ "components.select.base": [
+  ["border-slate-300", "#cbd5e1", null],
+  ["bg-white", "#ffffff", null],
+  ["text-slate-900", "#0f172a", null],
+  ["focus-visible:ring-indigo-500", "#6366f1", null],
+  ["focus-visible:border-indigo-500", "#6366f1", null],
+  ["disabled:bg-slate-50", "#f8fafc", null],
+  ["disabled:text-slate-500", "#64748b", null]
+ ],
+ "components.select.states.disabled": [
+  ["bg-slate-50", "#f8fafc", null],
+  ["text-slate-500", "#64748b", null]
+ ],
+ "components.checkbox.base": [
+  ["border-slate-300", "#cbd5e1", null],
+  ["bg-white", "#ffffff", null],
+  ["checked:border-indigo-600", "#4f46e5", null],
+  ["checked:bg-indigo-600", "#4f46e5", null],
+  ["focus-visible:ring-indigo-500", "#6366f1", null]
+ ],
+ "components.checkbox.parts.label": [
+  ["text-slate-700", "#334155", null]
+ ],
+ "components.radio.base": [
+  ["border-slate-300", "#cbd5e1", null],
+  ["bg-white", "#ffffff", null],
+  ["checked:border-indigo-600", "#4f46e5", null],
+  ["checked:bg-indigo-600", "#4f46e5", null],
+  ["focus-visible:ring-indigo-500", "#6366f1", null]
+ ],
+ "components.radio.parts.label": [
+  ["text-slate-700", "#334155", null]
+ ],
+ "components.switch.base": [
+  ["bg-slate-300", "#cbd5e1", null],
+  ["peer-checked:bg-indigo-600", "#4f46e5", null],
+  ["peer-focus-visible:ring-indigo-500", "#6366f1", null]
+ ],
+ "components.switch.parts.label": [
+  ["text-slate-700", "#334155", null]
+ ],
+ "components.switch.parts.thumb": [
+  ["bg-white", "#ffffff", null]
+ ],
+ "components.slider.base": [
+  ["bg-slate-200", "#e2e8f0", null],
+  ["accent-indigo-600", "#4f46e5", null],
+  ["focus-visible:ring-indigo-500", "#6366f1", null]
+ ],
+ "components.formgroup.parts.label": [
+  ["text-slate-700", "#334155", null]
+ ],
+ "components.formgroup.parts.help": [
+  ["text-slate-500", "#64748b", null]
+ ],
+ "components.formgroup.parts.error": [
+  ["text-red-600", "#dc2626", null]
+ ],
+ "components.navigationbar.base": [
+  ["bg-white", "#ffffff", null],
+  ["border-slate-200", "#e2e8f0", null]
+ ],
+ "components.navigationbar.variants.light": [
+  ["bg-white", "#ffffff", null],
+  ["text-slate-900", "#0f172a", null]
+ ],
+ "components.navigationbar.variants.dark": [
+  ["bg-slate-900", "#0f172a", null],
+  ["text-white", "#ffffff", null],
+  ["border-slate-800", "#1e293b", null]
+ ],
+ "components.navigationbar.variants.primary": [
+  ["bg-indigo-600", "#4f46e5", null],
+  ["text-white", "#ffffff", null],
+  ["border-indigo-700", "#4338ca", null]
+ ],
+ "components.navigationbar.parts.toggler": [
+  ["hover:bg-slate-100", "#f1f5f9", null],
+  ["focus-visible:ring-indigo-500", "#6366f1", null]
+ ],
+ "components.navigationbar.parts.link": [
+  ["text-slate-600", "#475569", null],
+  ["hover:text-slate-900", "#0f172a", null],
+  ["hover:bg-slate-100", "#f1f5f9", null],
+  ["focus-visible:ring-indigo-500", "#6366f1", null]
+ ],
+ "components.navigationdrawer.base": [
+  ["bg-white", "#ffffff", null]
+ ],
+ "components.navigationdrawer.parts.header": [
+  ["border-slate-200", "#e2e8f0", null]
+ ],
+ "components.navigationdrawer.parts.title": [
+  ["text-slate-900", "#0f172a", null]
+ ],
+ "components.navigationdrawer.parts.overlay": [
+  ["bg-slate-900/50", "#0f172a", 50]
+ ],
+ "components.sidebar.base": [
+  ["bg-white", "#ffffff", null],
+  ["border-slate-200", "#e2e8f0", null]
+ ],
+ "components.sidebar.parts.link": [
+  ["text-slate-600", "#475569", null],
+  ["hover:text-slate-900", "#0f172a", null],
+  ["hover:bg-slate-100", "#f1f5f9", null],
+  ["focus-visible:ring-indigo-500", "#6366f1", null]
+ ],
+ "components.sidebar.states.active": [
+  ["bg-indigo-50", "#eef2ff", null],
+  ["text-indigo-700", "#4338ca", null]
+ ],
+ "components.topappbar.base": [
+  ["bg-white", "#ffffff", null],
+  ["border-slate-200", "#e2e8f0", null]
+ ],
+ "components.topappbar.parts.brand": [
+  ["text-slate-900", "#0f172a", null]
+ ],
+ "components.breadcrumb.parts.item": [
+  ["text-slate-500", "#64748b", null],
+  ["hover:text-slate-900", "#0f172a", null]
+ ],
+ "components.breadcrumb.parts.active": [
+  ["text-slate-900", "#0f172a", null]
+ ],
+ "components.breadcrumb.parts.separator": [
+  ["text-slate-300", "#cbd5e1", null]
+ ],
+ "components.tabs.base": [
+  ["border-slate-200", "#e2e8f0", null]
+ ],
+ "components.tabs.parts.link": [
+  ["text-slate-500", "#64748b", null],
+  ["hover:text-slate-700", "#334155", null],
+  ["hover:border-slate-300", "#cbd5e1", null],
+  ["focus-visible:ring-indigo-500", "#6366f1", null]
+ ],
+ "components.tabs.states.active": [
+  ["border-indigo-600", "#4f46e5", null],
+  ["text-indigo-600", "#4f46e5", null]
+ ],
+ "components.modal.parts.overlay": [
+  ["bg-slate-900/50", "#0f172a", 50]
+ ],
+ "components.modal.parts.dialog": [
+  ["bg-white", "#ffffff", null]
+ ],
+ "components.modal.parts.header": [
+  ["border-slate-200", "#e2e8f0", null]
+ ],
+ "components.modal.parts.body": [
+  ["text-slate-700", "#334155", null]
+ ],
+ "components.modal.parts.footer": [
+  ["border-slate-200", "#e2e8f0", null],
+  ["bg-slate-50", "#f8fafc", null]
+ ],
+ "components.modal.parts.title": [
+  ["text-slate-900", "#0f172a", null]
+ ],
+ "components.modal.parts.close": [
+  ["text-slate-400", "#94a3b8", null],
+  ["hover:text-slate-600", "#475569", null],
+  ["hover:bg-slate-100", "#f1f5f9", null],
+  ["focus-visible:ring-indigo-500", "#6366f1", null]
+ ],
+ "components.toast.base": [
+  ["bg-white", "#ffffff", null],
+  ["ring-slate-900/10", "#0f172a", 10]
+ ],
+ "components.toast.parts.header": [
+  ["border-slate-100", "#f1f5f9", null],
+  ["text-slate-900", "#0f172a", null]
+ ],
+ "components.toast.parts.body": [
+  ["text-slate-700", "#334155", null]
+ ],
+ "components.toast.parts.close": [
+  ["text-slate-400", "#94a3b8", null],
+  ["hover:text-slate-600", "#475569", null],
+  ["hover:bg-slate-100", "#f1f5f9", null],
+  ["focus-visible:ring-indigo-500", "#6366f1", null]
+ ],
+ "components.tooltip.base": [
+  ["text-white", "#ffffff", null],
+  ["bg-slate-900", "#0f172a", null]
+ ],
+ "components.tooltip.parts.arrow": [
+  ["bg-slate-900", "#0f172a", null]
+ ],
+ "components.dropdown.parts.menu": [
+  ["bg-white", "#ffffff", null],
+  ["ring-slate-900/10", "#0f172a", 10]
+ ],
+ "components.dropdown.parts.item": [
+  ["text-slate-700", "#334155", null],
+  ["hover:bg-slate-100", "#f1f5f9", null],
+  ["hover:text-slate-900", "#0f172a", null],
+  ["focus-visible:bg-slate-100", "#f1f5f9", null]
+ ],
+ "components.dropdown.parts.divider": [
+  ["bg-slate-200", "#e2e8f0", null]
+ ],
+ "components.progressbar.base": [
+  ["bg-slate-200", "#e2e8f0", null]
+ ],
+ "components.progressbar.parts.bar": [
+  ["bg-indigo-600", "#4f46e5", null]
+ ],
+ "components.progressbar.variants.striped": [
+  ["from-indigo-600", "#4f46e5", null],
+  ["to-indigo-500", "#6366f1", null]
+ ],
+ "components.stepper.parts.connector": [
+  ["bg-slate-200", "#e2e8f0", null]
+ ],
+ "components.stepper.parts.label": [
+  ["text-slate-500", "#64748b", null]
+ ],
+ "components.stepper.states.active": [
+  ["border-indigo-600", "#4f46e5", null],
+  ["bg-indigo-600", "#4f46e5", null],
+  ["text-white", "#ffffff", null]
+ ],
+ "components.stepper.states.completed": [
+  ["border-indigo-600", "#4f46e5", null],
+  ["bg-white", "#ffffff", null],
+  ["text-indigo-600", "#4f46e5", null]
+ ],
+ "components.stepper.states.pending": [
+  ["border-slate-300", "#cbd5e1", null],
+  ["bg-white", "#ffffff", null],
+  ["text-slate-500", "#64748b", null]
+ ],
+ "components.skeleton.parts.item": [
+  ["bg-slate-200", "#e2e8f0", null]
+ ],
+ "components.skeleton.variants.text": [
+  ["bg-slate-200", "#e2e8f0", null]
+ ],
+ "components.skeleton.variants.circle": [
+  ["bg-slate-200", "#e2e8f0", null]
+ ],
+ "components.skeleton.variants.rect": [
+  ["bg-slate-200", "#e2e8f0", null]
+ ],
+ "components.datatable.base": [
+  ["divide-slate-200", "#e2e8f0", null]
+ ],
+ "components.datatable.variants.striped": [
+  ["[&_tbody_tr:nth-child(odd)]:bg-slate-50/60", "#f8fafc", 60]
+ ],
+ "components.datatable.variants.bordered": [
+  ["border-slate-200", "#e2e8f0", null]
+ ],
+ "components.datatable.variants.hover": [
+  ["[&_tbody_tr]:hover:bg-slate-50", "#f8fafc", null]
+ ],
+ "components.datatable.parts.wrapper": [
+  ["border-slate-200", "#e2e8f0", null]
+ ],
+ "components.datatable.parts.head": [
+  ["bg-slate-50", "#f8fafc", null]
+ ],
+ "components.datatable.parts.body": [
+  ["bg-white", "#ffffff", null],
+  ["divide-slate-100", "#f1f5f9", null]
+ ],
+ "components.datatable.parts.th": [
+  ["text-slate-600", "#475569", null]
+ ],
+ "components.datatable.parts.td": [
+  ["text-slate-700", "#334155", null]
+ ],
+ "components.list.base": [
+  ["divide-slate-100", "#f1f5f9", null],
+  ["border-slate-200", "#e2e8f0", null],
+  ["bg-white", "#ffffff", null]
+ ],
+ "components.list.parts.item": [
+  ["text-slate-700", "#334155", null],
+  ["hover:bg-slate-50", "#f8fafc", null]
+ ],
+ "components.list.states.active": [
+  ["bg-indigo-50", "#eef2ff", null],
+  ["text-indigo-700", "#4338ca", null]
+ ],
+ "components.accordion.base": [
+  ["divide-slate-200", "#e2e8f0", null],
+  ["border-slate-200", "#e2e8f0", null],
+  ["bg-white", "#ffffff", null]
+ ],
+ "components.accordion.parts.button": [
+  ["text-slate-900", "#0f172a", null],
+  ["hover:bg-slate-50", "#f8fafc", null],
+  ["focus-visible:ring-indigo-500", "#6366f1", null]
+ ],
+ "components.accordion.parts.body": [
+  ["text-slate-600", "#475569", null]
+ ],
+ "components.pagination.parts.link": [
+  ["border-slate-300", "#cbd5e1", null],
+  ["bg-white", "#ffffff", null],
+  ["text-slate-700", "#334155", null],
+  ["hover:bg-slate-50", "#f8fafc", null],
+  ["active:bg-slate-100", "#f1f5f9", null],
+  ["focus-visible:ring-indigo-500", "#6366f1", null]
+ ],
+ "components.pagination.states.active": [
+  ["bg-indigo-600", "#4f46e5", null],
+  ["text-white", "#ffffff", null],
+  ["border-indigo-600", "#4f46e5", null],
+  ["hover:bg-indigo-700", "#4338ca", null],
+  ["active:bg-indigo-800", "#3730a3", null]
+ ],
+ "components.chips.variants.primary": [
+  ["bg-indigo-50", "#eef2ff", null],
+  ["text-indigo-700", "#4338ca", null],
+  ["ring-indigo-600/20", "#4f46e5", 20]
+ ],
+ "components.chips.variants.secondary": [
+  ["bg-slate-50", "#f8fafc", null],
+  ["text-slate-700", "#334155", null],
+  ["ring-slate-500/20", "#64748b", 20]
+ ],
+ "components.chips.variants.success": [
+  ["bg-emerald-50", "#ecfdf5", null],
+  ["text-emerald-700", "#047857", null],
+  ["ring-emerald-600/20", "#059669", 20]
+ ],
+ "components.chips.variants.danger": [
+  ["bg-red-50", "#fef2f2", null],
+  ["text-red-700", "#b91c1c", null],
+  ["ring-red-600/20", "#dc2626", 20]
+ ],
+ "components.fab.base": [
+  ["bg-indigo-600", "#4f46e5", null],
+  ["text-white", "#ffffff", null],
+  ["hover:bg-indigo-700", "#4338ca", null],
+  ["active:bg-indigo-800", "#3730a3", null],
+  ["focus-visible:ring-indigo-500", "#6366f1", null]
+ ],
+ "components.segmentedbutton.base": [
+  ["bg-slate-100", "#f1f5f9", null]
+ ],
+ "components.segmentedbutton.parts.button": [
+  ["text-slate-600", "#475569", null],
+  ["hover:text-slate-900", "#0f172a", null],
+  ["focus-visible:ring-indigo-500", "#6366f1", null]
+ ],
+ "components.segmentedbutton.states.active": [
+  ["bg-white", "#ffffff", null],
+  ["text-slate-900", "#0f172a", null]
+ ],
+ "components.autocomplete.parts.input": [
+  ["border-slate-300", "#cbd5e1", null],
+  ["bg-white", "#ffffff", null],
+  ["text-slate-900", "#0f172a", null],
+  ["placeholder:text-slate-500", "#64748b", null],
+  ["focus-visible:ring-indigo-500", "#6366f1", null],
+  ["focus-visible:border-indigo-500", "#6366f1", null]
+ ],
+ "components.autocomplete.parts.dropdown": [
+  ["bg-white", "#ffffff", null],
+  ["ring-slate-900/10", "#0f172a", 10]
+ ],
+ "components.autocomplete.parts.item": [
+  ["text-slate-700", "#334155", null],
+  ["hover:bg-slate-100", "#f1f5f9", null]
+ ],
+ "components.search.parts.input": [
+  ["border-slate-300", "#cbd5e1", null],
+  ["bg-white", "#ffffff", null],
+  ["text-slate-900", "#0f172a", null],
+  ["placeholder:text-slate-500", "#64748b", null],
+  ["focus-visible:ring-indigo-500", "#6366f1", null],
+  ["focus-visible:border-indigo-500", "#6366f1", null]
+ ],
+ "components.search.parts.icon": [
+  ["text-slate-400", "#94a3b8", null]
+ ],
+ "components.search.parts.button": [
+  ["bg-indigo-600", "#4f46e5", null],
+  ["text-white", "#ffffff", null],
+  ["hover:bg-indigo-700", "#4338ca", null],
+  ["active:bg-indigo-800", "#3730a3", null],
+  ["focus-visible:ring-indigo-500", "#6366f1", null]
+ ],
+ "components.datepicker.parts.input": [
+  ["border-slate-300", "#cbd5e1", null],
+  ["bg-white", "#ffffff", null],
+  ["text-slate-900", "#0f172a", null],
+  ["focus-visible:ring-indigo-500", "#6366f1", null],
+  ["focus-visible:border-indigo-500", "#6366f1", null]
+ ],
+ "components.datepicker.parts.calendar": [
+  ["bg-white", "#ffffff", null],
+  ["ring-slate-900/10", "#0f172a", 10]
+ ],
+ "components.datepicker.parts.day": [
+  ["hover:bg-slate-100", "#f1f5f9", null]
+ ],
+ "components.datepicker.states.selected": [
+  ["bg-indigo-600", "#4f46e5", null],
+  ["text-white", "#ffffff", null],
+  ["hover:bg-indigo-700", "#4338ca", null]
+ ],
+ "components.datepicker.states.today": [
+  ["text-indigo-600", "#4f46e5", null]
+ ],
+ "components.fileupload.parts.zone": [
+  ["border-slate-300", "#cbd5e1", null],
+  ["bg-white", "#ffffff", null],
+  ["hover:border-indigo-400", "#818cf8", null],
+  ["hover:bg-indigo-50/30", "#eef2ff", 30]
+ ],
+ "components.fileupload.parts.label": [
+  ["text-slate-700", "#334155", null]
+ ],
+ "components.fileupload.parts.icon": [
+  ["text-slate-400", "#94a3b8", null]
+ ],
+ "components.fileupload.states.dragover": [
+  ["border-indigo-500", "#6366f1", null],
+  ["bg-indigo-50", "#eef2ff", null]
+ ],
+ "components.emptystate.parts.icon": [
+  ["text-slate-300", "#cbd5e1", null]
+ ],
+ "components.emptystate.parts.title": [
+  ["text-slate-900", "#0f172a", null]
+ ],
+ "components.emptystate.parts.description": [
+  ["text-slate-500", "#64748b", null]
+ ],
+ "components.emptystate.parts.action": [
+  ["bg-indigo-600", "#4f46e5", null],
+  ["text-white", "#ffffff", null],
+  ["hover:bg-indigo-700", "#4338ca", null],
+  ["active:bg-indigo-800", "#3730a3", null],
+  ["focus-visible:ring-indigo-500", "#6366f1", null]
+ ],
+ "components.errorstate.base": [
+  ["bg-red-50", "#fef2f2", null],
+  ["border-red-200", "#fecaca", null]
+ ],
+ "components.errorstate.parts.icon": [
+  ["text-red-500", "#ef4444", null]
+ ],
+ "components.errorstate.parts.title": [
+  ["text-red-800", "#991b1b", null]
+ ],
+ "components.errorstate.parts.message": [
+  ["text-red-700", "#b91c1c", null]
+ ],
+ "components.errorstate.parts.action": [
+  ["bg-red-600", "#dc2626", null],
+  ["text-white", "#ffffff", null],
+  ["hover:bg-red-700", "#b91c1c", null],
+  ["active:bg-red-800", "#991b1b", null],
+  ["focus-visible:ring-red-500", "#ef4444", null]
+ ],
+ "components.errorboundary.base": [
+  ["bg-red-50", "#fef2f2", null],
+  ["border-red-200", "#fecaca", null]
+ ],
+ "components.errorboundary.parts.title": [
+  ["text-red-800", "#991b1b", null]
+ ],
+ "components.errorboundary.parts.message": [
+  ["text-red-700", "#b91c1c", null]
+ ],
+ "components.errorboundary.parts.stack": [
+  ["bg-red-100", "#fee2e2", null]
+ ],
+ "utilities.text.muted": [
+  ["text-slate-500", "#64748b", null]
+ ],
+ "utilities.text.primary": [
+  ["text-indigo-600", "#4f46e5", null]
+ ],
+ "utilities.text.secondary": [
+  ["text-slate-600", "#475569", null]
+ ],
+ "utilities.text.success": [
+  ["text-emerald-700", "#047857", null]
+ ],
+ "utilities.text.danger": [
+  ["text-red-600", "#dc2626", null]
+ ],
+ "utilities.text.warning": [
+  ["text-amber-700", "#b45309", null]
+ ],
+ "utilities.text.info": [
+  ["text-sky-700", "#0369a1", null]
+ ],
+ "utilities.background.primary": [
+  ["bg-indigo-600", "#4f46e5", null]
+ ],
+ "utilities.background.secondary": [
+  ["bg-slate-600", "#475569", null]
+ ],
+ "utilities.background.success": [
+  ["bg-emerald-700", "#047857", null]
+ ],
+ "utilities.background.danger": [
+  ["bg-red-600", "#dc2626", null]
+ ],
+ "utilities.background.warning": [
+  ["bg-amber-400", "#fbbf24", null]
+ ],
+ "utilities.background.info": [
+  ["bg-sky-700", "#0369a1", null]
+ ],
+ "utilities.background.light": [
+  ["bg-slate-100", "#f1f5f9", null]
+ ],
+ "utilities.background.dark": [
+  ["bg-slate-900", "#0f172a", null]
+ ],
+ "utilities.background.white": [
+  ["bg-white", "#ffffff", null]
+ ]
+}

@@ -155,7 +155,7 @@ registered theme:
 ```html
 <Button variant="primary" label="Save changes"></Button>
 <!-- bootstrap: class="btn btn-primary" -->
-<!-- tailwind:  class="inline-flex items-center ... bg-indigo-600 text-white ..." -->
+<!-- tailwind:  class="inline-flex items-center ... bg-[color:var(--rnx-primary,#4f46e5)] ..." -->
 ```
 
 Switch with `setTheme('bootstrap')` or `setTheme('tailwind')`.
@@ -203,6 +203,52 @@ content: [
 ```
 
 Without the preset the toast still works, it just appears without the slide-in.
+
+#### Restyle the Tailwind theme
+
+Every colour in the Tailwind theme reads an `--rnx-*` CSS variable and falls
+back to the Tailwind colour it used before, for example
+`bg-[color:var(--rnx-primary,#4f46e5)]`. Set the variables in your own CSS. No
+Tailwind config change, no fork:
+
+```css
+:root {
+  --rnx-primary: #7c3aed;
+  --rnx-primary-hover: #6d28d9;
+  --rnx-primary-active: #5b21b6;
+}
+```
+
+Linking `css/rnx.css` feeds its colours into the Tailwind theme, so the two
+themes look alike without extra work. Set a variable after it to override one.
+Token values must be full colours (`#7c3aed`, `rgb(124 58 237)`), not
+space-separated triplets like `79 70 229`.
+
+With nothing set, every colour in the theme resolves to the Tailwind colour it
+had before, exactly (a rounding of 1 per channel at most in the `color-mix()`
+tints). `tests/tailwindDefaults.test.js` pins this against a frozen table.
+
+`--rnx-background` is the page and `--rnx-surface` is the card. Cards, inputs,
+modals, dropdowns and table rows use `--rnx-surface`. Hover and footer fills use
+`--rnx-surface-hover`.
+
+Tokens it reads:
+
+- `--rnx-primary`, `-hover`, `-active`
+- `--rnx-secondary`
+- `--rnx-success`, `--rnx-danger`, `--rnx-warning`, `--rnx-info`, each with `-hover`
+- `--rnx-surface`, `--rnx-surface-hover`, `--rnx-surface-variant`
+- `--rnx-text-primary`, `--rnx-text-secondary`, `--rnx-text-disabled`
+- `--rnx-text-on-primary`, `--rnx-text-on-warning` (the label on the warning button)
+- `--rnx-border-color`, `--rnx-border-color-light`
+
+Tints and shades that have no token of their own (the light alert backgrounds,
+focus rings) are `color-mix()` of one of these with `--rnx-surface` or
+`--rnx-text-primary`, so they follow when you change the token. This needs a
+browser with `color-mix()` (Chrome 111, Safari 16.2, Firefox 113 or newer).
+
+The select chevron, checkbox tick, radio dot and ring offset are white and do
+not follow tokens.
 
 ### What is not supported yet
 
