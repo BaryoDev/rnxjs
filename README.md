@@ -219,20 +219,36 @@ Tailwind config change, no fork:
 }
 ```
 
-With nothing set, the theme looks as it did before. Tokens it reads:
+Linking `css/rnx.css` feeds its colours into the Tailwind theme, so the two
+themes look alike without extra work. Set a variable after it to override one.
+Token values must be full colours (`#7c3aed`, `rgb(124 58 237)`), not
+space-separated triplets like `79 70 229`.
+
+With nothing set, every colour in the theme resolves to the Tailwind colour it
+had before, exactly (a rounding of 1 per channel at most in the `color-mix()`
+tints). `tests/tailwindDefaults.test.js` pins this against a frozen table.
+
+`--rnx-background` is the page and `--rnx-surface` is the card. Cards, inputs,
+modals, dropdowns and table rows use `--rnx-surface`. Hover and footer fills use
+`--rnx-surface-hover`.
+
+Tokens it reads:
 
 - `--rnx-primary`, `-hover`, `-active`
 - `--rnx-secondary`
 - `--rnx-success`, `--rnx-danger`, `--rnx-warning`, `--rnx-info`, each with `-hover`
-- `--rnx-background`, `--rnx-surface`, `--rnx-surface-variant`
-- `--rnx-text-primary`, `--rnx-text-secondary`, `--rnx-text-disabled`, `--rnx-text-on-primary`
+- `--rnx-surface`, `--rnx-surface-hover`, `--rnx-surface-variant`
+- `--rnx-text-primary`, `--rnx-text-secondary`, `--rnx-text-disabled`
+- `--rnx-text-on-primary`, `--rnx-text-on-warning` (the label on the warning button)
 - `--rnx-border-color`, `--rnx-border-color-light`
 
 Tints and shades that have no token of their own (the light alert backgrounds,
-hover fills, focus rings) are `color-mix()` of one of these with
-`--rnx-background` or `--rnx-text-primary`, so they follow when you change the
-token. They land within a few points of the old shade. This needs a browser
-with `color-mix()` (Chrome 111, Safari 16.2, Firefox 113 or newer).
+focus rings) are `color-mix()` of one of these with `--rnx-surface` or
+`--rnx-text-primary`, so they follow when you change the token. This needs a
+browser with `color-mix()` (Chrome 111, Safari 16.2, Firefox 113 or newer).
+
+The select chevron, checkbox tick, radio dot and ring offset are white and do
+not follow tokens.
 
 ### What is not supported yet
 
