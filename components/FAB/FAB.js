@@ -2,6 +2,7 @@ import { createComponent } from '../../utils/createComponent.js';
 import { escapeHtml } from '../../utils/security.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
+import { resolveIcon } from '../../utils/icon.js';
 
 const VARIANT_SIZE = { small: 'sm', standard: 'md', large: 'lg' };
 
@@ -35,7 +36,7 @@ export function FAB({ icon = 'add', label = '', variant = 'standard', onclick = 
 
   const template = ({ icon, label }) => `
     <button type="button" class="${fabClass}" data-ref="btn" data-rnx-ignore="true"${accessibleName ? ` aria-label="${escapeHtml(accessibleName)}"` : ''}>
-      <i class="bi bi-${escapeHtml(icon)}" aria-hidden="true"></i>
+      <i class="${escapeHtml(resolveIcon(icon))}" aria-hidden="true"></i>
       ${label ? `<span class="${labelClass}">${escapeHtml(label)}</span>` : ''}
     </button>
   `;

@@ -6,9 +6,10 @@
  */
 
 import { createComponent } from '../../utils/createComponent.js';
-import { escapeHtml, escapeAttribute } from '../../utils/security.js';
+import { escapeHtml } from '../../utils/security.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
+import { resolveIcon } from '../../utils/icon.js';
 
 /**
  * Create an error state display
@@ -67,8 +68,7 @@ export function ErrorState({
             className
         );
         const iconClass = cn(
-            'bi',
-            `bi-${escapeAttribute(icon)}`,
+            resolveIcon(icon),
             resolvePartClasses('errorstate', 'icon')
         );
         const titleClass = cn(
@@ -97,7 +97,7 @@ export function ErrorState({
         return `
             <div class="${containerClass}" role="alert" data-ref="container">
                 <div class="error-state-icon" aria-hidden="true">
-                    <i class="${iconClass}" style="font-size: 3rem;"></i>
+                    <i class="${escapeHtml(iconClass)}" style="font-size: 3rem;"></i>
                 </div>
                 <h4 class="${titleClass}">${escapeHtml(title)}</h4>
                 ${message ? `

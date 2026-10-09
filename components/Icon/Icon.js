@@ -2,12 +2,13 @@ import { createComponent } from '../../utils/createComponent.js';
 import { resolveClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 import { escapeHtml } from '../../utils/security.js';
+import { resolveIcon } from '../../utils/icon.js';
 
 /**
  * Icon Component - CSS Framework Agnostic
  *
  * Works with any registered theme (Bootstrap, Tailwind, custom).
- * Uses Bootstrap Icons by default, but can work with any icon system.
+ * Uses the theme's icon set (Bootstrap Icons by default); see utilities.icon.
  * Supports Blazor-style class customization via the className prop.
  *
  * Icons are decorative (aria-hidden) unless a label is provided,
@@ -40,17 +41,12 @@ export function Icon({
   label = '',
   className = ''
 } = {}) {
-  // Handle both 'heart' and 'bi-heart' formats
-  const iconName = name ? (name.startsWith('bi-') ? name : `bi-${name}`) : '';
-
   // Resolve base classes from active theme
   const iconClass = cn(
     resolveClasses('icon', {
       size: size || 'md'
     }),
-    // Add icon system base class (bi for Bootstrap Icons)
-    'bi',
-    iconName,
+    resolveIcon(name),
     // Add color utilities if provided
     color,
     className // User classes applied last (highest priority)

@@ -25,6 +25,7 @@ export {
   resolvePartClasses,
   resolveUtility
 } from './utils/ThemeProvider.js';
+export { resolveIcon } from './utils/icon.js';
 export { cn, cls, twMerge } from './utils/classNames.js';
 export { bootstrapTheme } from './themes/bootstrap/index.js';
 // v3 custom elements. Opt-in for now: v2's loadComponents() still works.

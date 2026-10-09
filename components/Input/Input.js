@@ -2,6 +2,7 @@ import { createComponent } from '../../utils/createComponent.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 import { escapeHtml } from '../../utils/security.js';
+import { resolveIcon } from '../../utils/icon.js';
 
 let inputUid = 0;
 
@@ -98,7 +99,7 @@ export function Input({
 
   const template = () => `
     <div class="${wrapperClass}">
-      ${icon ? `<span class="${iconClass}" aria-hidden="true"><i class="bi bi-${escapeHtml(icon)}"></i></span>` : ''}
+      ${icon ? `<span class="${iconClass}" aria-hidden="true"><i class="${escapeHtml(resolveIcon(icon))}"></i></span>` : ''}
       <input
         class="${inputClass}"
         id="${escapeHtml(finalId)}"

@@ -2,6 +2,7 @@ import { createComponent } from '../../utils/createComponent.js';
 import { escapeHtml } from '../../utils/security.js';
 import themeProvider, { resolveClasses, resolvePartClasses, resolveUtility } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
+import { resolveIcon } from '../../utils/icon.js';
 
 const themeState = (component, state) => {
   const theme = themeProvider.getTheme();
@@ -57,7 +58,7 @@ export function List({ items = [], className = '' } = {}) {
 
            ${item.leadingIcon ? `
              <span class="${leadingClass}" aria-hidden="true">
-               <i class="bi bi-${escapeHtml(item.leadingIcon)}"></i>
+               <i class="${escapeHtml(resolveIcon(item.leadingIcon))}"></i>
              </span>
            ` : ''}
 
@@ -68,7 +69,7 @@ export function List({ items = [], className = '' } = {}) {
 
            ${item.trailingIcon ? `
              <span class="${trailingClass}" aria-hidden="true">
-               <i class="bi bi-${escapeHtml(item.trailingIcon)}"></i>
+               <i class="${escapeHtml(resolveIcon(item.trailingIcon))}"></i>
              </span>
            ` : ''}
         </li>

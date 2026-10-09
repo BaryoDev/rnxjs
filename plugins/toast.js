@@ -20,6 +20,8 @@
  * rnx.toast.show('Custom message', 'custom', 5000);
  */
 
+import { resolveIcon } from '../utils/icon.js';
+
 export function toastPlugin(options = {}) {
   const {
     position = 'top-right',
@@ -72,10 +74,10 @@ export function toastPlugin(options = {}) {
         const icon = icons[type] || icons.info;
 
         toast.innerHTML = `
-          <i class="bi bi-${icon}"></i>
+          <i class="${escapeHtml(resolveIcon(icon))}" aria-hidden="true"></i>
           <span class="rnx-toast-message">${escapeHtml(message)}</span>
           <button class="rnx-toast-close" aria-label="Close notification">
-            <i class="bi bi-x"></i>
+            <i class="${escapeHtml(resolveIcon('x'))}" aria-hidden="true"></i>
           </button>
         `;
 
