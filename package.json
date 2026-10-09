@@ -9,6 +9,10 @@
       "import": "./dist/rnx.esm.js",
       "require": "./index.js"
     },
+    "./tailwind": {
+      "import": "./tailwind.preset.js",
+      "require": "./tailwind.preset.cjs"
+    },
     "./dist/*": "./dist/*",
     "./css/bootstrap-m3-theme.css": "./css/bootstrap-m3-theme.css",
     "./css/*": "./css/*",
@@ -49,6 +53,8 @@
   "files": [
     "index.js",
     "index.d.ts",
+    "tailwind.preset.js",
+    "tailwind.preset.cjs",
     "utils/",
     "framework/",
     "components/",
@@ -77,6 +83,7 @@
     "@vitest/ui": "^4.0.16",
     "esbuild": "^0.27.0",
     "happy-dom": "^20.0.11",
+    "tailwindcss": "^3.4.19",
     "typescript": "^5.9.3",
     "vitest": "^4.0.16"
   },
