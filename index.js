@@ -21,6 +21,9 @@ export {
   themeProvider,
   setTheme,
   registerTheme,
+  setMode,
+  getMode,
+  getResolvedMode,
   resolveClasses,
   resolvePartClasses,
   resolveUtility

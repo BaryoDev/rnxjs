@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Dark mode. `setMode('light' | 'dark' | 'system')`, `getMode()` and
+  `getResolvedMode()` set `data-mode` on `<html>`, save the choice in
+  `localStorage` (`rnx-mode`) and follow `prefers-color-scheme` live in
+  `system` mode. The default stays light. `css/rnx.css` gains a dark token
+  block on `[data-mode="dark"]` and `[data-theme="dark"]`, and a test checks
+  that it overrides every colour the Tailwind theme reads and that the text
+  pairs reach AA on the dark tokens. (#9)
+
+### Changed
+
+- **The Tailwind theme reads `--rnx-*` tokens.** Colours come from CSS
+  variables with the old Tailwind hex as the fallback, so with nothing set the
+  look is unchanged. Remapping `colors.indigo` in your Tailwind config no
+  longer affects the theme; set the tokens instead. Tints, hover fills and
+  focus rings use `color-mix()`, so browsers without it (Chrome 111, Safari
+  16.2, Firefox 113) lose them. (#72, via #71)
+- The focus ring offset follows `--rnx-surface` instead of white.
+
+### Fixed
+
+- `Toast`, `StatCard` and `TopAppBar` build their spacing classes as literal
+  strings, so Tailwind generates them. (#71)
+
 ## [2.2.0] - 2026-10-09
 
 The Tailwind theme now works without extra plugins, passes AA contrast, and

@@ -247,8 +247,22 @@ focus rings) are `color-mix()` of one of these with `--rnx-surface` or
 `--rnx-text-primary`, so they follow when you change the token. This needs a
 browser with `color-mix()` (Chrome 111, Safari 16.2, Firefox 113 or newer).
 
-The select chevron, checkbox tick, radio dot and ring offset are white and do
-not follow tokens.
+The select chevron, checkbox tick and radio dot are white and do not follow
+tokens. The ring offset follows `--rnx-surface`.
+
+### Dark mode
+
+```js
+import { setMode } from '@arnelirobles/rnxjs';
+setMode('dark');   // 'light' (default), 'dark' or 'system'
+```
+
+`setMode` sets `data-mode` on `<html>` and saves the choice in `localStorage`
+(`rnx-mode`). `css/rnx.css` has a dark token block on `[data-mode="dark"]`, so
+without JavaScript you can write `<html data-mode="dark">` yourself. `'system'`
+follows the OS setting live. `getMode()` returns the choice and
+`getResolvedMode()` returns `'light'` or `'dark'`. The CSS has no
+`prefers-color-scheme` rule; the mode comes from the attribute only.
 
 ### What is not supported yet
 
