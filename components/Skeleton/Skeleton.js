@@ -49,6 +49,14 @@ export function Skeleton({
     animation = 'wave',
     className = ''
 } = {}) {
+    const count = (n, fallback) => {
+        const v = Math.floor(Number(n));
+        return Number.isFinite(v) && v >= 0 ? v : fallback;
+    };
+    lines = count(lines, 3);
+    rows = count(rows, 5);
+    cols = count(cols, 4);
+
     // Validate variant
     const validVariants = ['text', 'circle', 'rectangle', 'card', 'table'];
     if (!validVariants.includes(variant)) {
