@@ -1,5 +1,6 @@
 import { createComponent } from '../../utils/createComponent.js';
 import { resolveClasses, themeProvider } from '../../utils/ThemeProvider.js';
+import { srOnlyAttr } from '../../utils/srOnly.js';
 import { cn } from '../../utils/classNames.js';
 import { escapeHtml } from '../../utils/security.js';
 
@@ -47,11 +48,9 @@ export function Spinner({
     className // User classes applied last (highest priority)
   );
 
-  const srOnly = themeProvider.resolveUtility('a11y', 'srOnly');
-
   const template = () => `
     <div class="${escapeHtml(spinnerClass)}" role="status" aria-label="${escapeHtml(label || 'Loading...')}">
-      <span class="${escapeHtml(srOnly)}">${escapeHtml(label || 'Loading...')}</span>
+      <span ${srOnlyAttr()}>${escapeHtml(label || 'Loading...')}</span>
     </div>
   `;
 

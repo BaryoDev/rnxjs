@@ -76,6 +76,23 @@ describe('Bootstrap-only classes under the Tailwind theme', () => {
     });
 });
 
+describe('Custom theme without utilities', () => {
+    afterEach(() => {
+        themeProvider.setTheme('bootstrap');
+        document.body.innerHTML = '';
+    });
+
+    it.each(['Spinner', 'DataTable loading', 'Autocomplete loading'])('%s keeps Loading text hidden', async (name) => {
+        themeProvider.registerTheme({ name: 'bare-custom', components: { button: { base: 'x' } } });
+        themeProvider.setTheme('bare-custom');
+        const container = await cases[name]();
+        const span = Array.from(container.querySelectorAll('span')).find((s) => s.textContent.includes('Loading'));
+        expect(span).toBeDefined();
+        expect(span.getAttribute('class') || '').toBe('');
+        expect(span.getAttribute('style')).toContain('clip');
+    });
+});
+
 describe('Bootstrap output is unchanged', () => {
     beforeEach(() => themeProvider.setTheme('bootstrap'));
     afterEach(() => {
@@ -97,6 +114,7 @@ describe('Bootstrap output is unchanged', () => {
     it('Autocomplete loading', async () => {
         const html = (await cases['Autocomplete loading']()).innerHTML;
         expect(html).toContain('spinner-border-sm');
+        expect(html).not.toContain('spinner-border spinner-border ');
         expect(html).toContain('visually-hidden');
     });
 

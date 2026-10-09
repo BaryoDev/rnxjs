@@ -7,6 +7,7 @@
 
 import { createComponent } from '../../utils/createComponent.js';
 import { escapeHtml } from '../../utils/security.js';
+import { srOnlyAttr } from '../../utils/srOnly.js';
 import themeProvider, { resolveClasses, resolvePartClasses, resolveUtility } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 
@@ -224,8 +225,8 @@ export function DataTable({
                 <tbody class="${bodyClass}">
                     <tr>
                         <td colspan="${colSpan}" style="${centered}">
-                            <div class="${resolveClasses('spinner', { variant: 'border', size: 'sm' })}" role="status">
-                                <span class="${resolveUtility('a11y', 'srOnly')}">Loading...</span>
+                            <div class="${cn(resolveClasses('spinner', { variant: 'border', size: 'sm' }))}" role="status">
+                                <span ${srOnlyAttr()}>Loading...</span>
                             </div>
                         </td>
                     </tr>
