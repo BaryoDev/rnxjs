@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- Toast: `autohide: false` now emits `data-bs-autohide="false"`, so the Bootstrap path no longer hides it after the delay.
+- NavigationDrawer: an open drawer gets `show` under the Bootstrap theme, so the panel paints and not only the backdrop. Its links are styled in `rnx.css`.
+- Sidebar: the Bootstrap theme maps the header, toggle, menu and submenu parts, so there are no list bullets or native hamburger button, and `rnx.css` styles the sidebar.
+- Stepper, Breadcrumb, Dropdown trigger and FileUpload have `rnx.css` styles under the Bootstrap theme. The Tailwind theme is not touched.
+- TopAppBar no longer hardcodes `navbar-light bg-light`. It reads the surface and text tokens, so it follows dark mode. The filled Card variant no longer uses `bg-light`.
+- Chips, Badge, Spinner and the Slider thumb read `--rnx-primary` instead of Bootstrap blue.
+- `rnx.css` now sets Bootstrap's `--bs-primary` and `--bs-primary-rgb` from `--rnx-primary` and `--rnx-primary-rgb`. When you override the brand colour, set both. The Breadcrumb and Slider rules are scoped to `rnx-breadcrumb` and `rnx-slider`, so other Bootstrap breadcrumbs and range inputs on the page are untouched.
+- Toast: the delay and the autohide decision use one rule, so only `true` or `'true'` hides it.
+
 ## [2.3.0] - 2026-10-09
 
 Dark mode, and a Tailwind theme that reads the `--rnx-*` tokens. `npm test`

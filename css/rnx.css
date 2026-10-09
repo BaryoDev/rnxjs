@@ -17,6 +17,10 @@
  *   }
  *
  * Token names match css/themes/base.css.
+ *
+ * Set --rnx-primary-rgb together with --rnx-primary (for example
+ * --rnx-primary-rgb: 124, 58, 237). Bootstrap's .bg-primary and .text-primary
+ * read the rgb form, and this file points --bs-primary-rgb at it.
  */
 
 /* ============================================================
@@ -274,6 +278,7 @@ code, pre, kbd, samp, .rnx-mono { font-family: var(--rnx-font-family-monospace);
 
 .modal-content, .dropdown-menu, .offcanvas, .popover, .list-group {
   --bs-modal-bg: var(--rnx-surface);
+  --bs-offcanvas-bg: var(--rnx-surface);
   --bs-dropdown-bg: var(--rnx-surface);
   --bs-dropdown-border-color: var(--rnx-border-color);
   --bs-dropdown-link-active-bg: var(--rnx-primary);
@@ -287,6 +292,174 @@ code, pre, kbd, samp, .rnx-mono { font-family: var(--rnx-font-family-monospace);
 .pagination { --bs-pagination-active-bg: var(--rnx-primary); --bs-pagination-active-border-color: var(--rnx-primary); }
 .progress { --bs-progress-bar-bg: var(--rnx-primary); }
 .alert { --bs-alert-border-color: var(--rnx-border-color); border-radius: var(--rnx-border-radius); }
+
+/* Brand colour for the pieces Bootstrap compiles to a literal. Utilities such
+   as .bg-primary and .text-primary read --bs-primary-rgb, so chips, badges and
+   spinners follow --rnx-primary, and the dark block moves them with it. */
+:root {
+  --bs-primary: var(--rnx-primary);
+  --bs-primary-rgb: var(--rnx-primary-rgb);
+}
+
+.rnx-slider .form-range::-webkit-slider-thumb { background-color: var(--rnx-primary); }
+.rnx-slider .form-range::-moz-range-thumb { background-color: var(--rnx-primary); }
+.rnx-slider .form-range::-webkit-slider-thumb:active { background-color: var(--rnx-primary-active); }
+.rnx-slider .form-range::-moz-range-thumb:active { background-color: var(--rnx-primary-active); }
+.rnx-slider .form-range:focus::-webkit-slider-thumb { box-shadow: 0 0 0 1px var(--rnx-surface), var(--rnx-focus-ring); }
+.rnx-slider .form-range:focus::-moz-range-thumb { box-shadow: 0 0 0 1px var(--rnx-surface), var(--rnx-focus-ring); }
+
+/* 2c. components Bootstrap has no styles for. The Bootstrap theme adds the
+   rnx-* marker classes, so these rules never touch the Tailwind theme. */
+
+.rnx-topappbar {
+  background: var(--rnx-surface);
+  color: var(--rnx-text-primary);
+  border-bottom: var(--rnx-border-width) solid var(--rnx-border-color);
+  --bs-navbar-color: var(--rnx-text-secondary);
+  --bs-navbar-hover-color: var(--rnx-text-primary);
+  --bs-navbar-active-color: var(--rnx-text-primary);
+  --bs-navbar-brand-color: var(--rnx-text-primary);
+  --bs-navbar-brand-hover-color: var(--rnx-text-primary);
+}
+
+/* A coloured bar (className "navbar-dark bg-primary") keeps readable text. */
+.rnx-topappbar.navbar-dark.bg-primary {
+  color: var(--rnx-text-on-primary);
+  --bs-navbar-color: var(--rnx-text-on-primary);
+  --bs-navbar-hover-color: var(--rnx-text-on-primary);
+  --bs-navbar-active-color: var(--rnx-text-on-primary);
+  --bs-navbar-brand-color: var(--rnx-text-on-primary);
+  --bs-navbar-brand-hover-color: var(--rnx-text-on-primary);
+}
+
+.rnx-card-filled { --bs-card-bg: var(--rnx-surface-variant); }
+
+.rnx-breadcrumb-separator { padding: 0 0.5rem; color: var(--rnx-text-disabled); }
+.rnx-breadcrumb { --bs-breadcrumb-item-active-color: var(--rnx-text-secondary); }
+.rnx-breadcrumb a { color: var(--rnx-primary); text-decoration: none; }
+.rnx-breadcrumb a:hover { color: var(--rnx-primary-hover); text-decoration: underline; }
+
+.btn.dropdown-trigger { display: inline-flex; align-items: center; gap: 0.5rem; }
+.btn.dropdown-trigger::after { display: none; }
+.dropdown-menu {
+  --bs-dropdown-color: var(--rnx-text-primary);
+  --bs-dropdown-link-color: var(--rnx-text-primary);
+  --bs-dropdown-link-hover-color: var(--rnx-primary);
+  --bs-dropdown-link-hover-bg: var(--rnx-surface-hover);
+  --bs-dropdown-link-active-color: var(--rnx-text-on-primary);
+  --bs-dropdown-link-disabled-color: var(--rnx-text-disabled);
+}
+.dropdown-menu .dropdown-item-link { display: flex; align-items: center; gap: 0.5rem; }
+
+.offcanvas .m3-drawer-link {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--rnx-border-radius-sm);
+  color: var(--rnx-text-primary);
+  text-decoration: none;
+}
+.offcanvas .m3-drawer-link:hover { background: var(--rnx-surface-hover); }
+.offcanvas .m3-drawer-link.active {
+  background: color-mix(in srgb, var(--rnx-primary) 12%, transparent);
+  color: var(--rnx-primary);
+  font-weight: 600;
+}
+
+.rnx-sidebar {
+  background: var(--rnx-surface);
+  border: var(--rnx-border-width) solid var(--rnx-border-color);
+  border-radius: var(--rnx-border-radius);
+  overflow: hidden;
+}
+.rnx-sidebar .sidebar-header { padding: 0.65rem 0.85rem; border-bottom: var(--rnx-border-width) solid var(--rnx-border-color-light); }
+.rnx-sidebar .sidebar-nav { padding: 0.5rem; }
+.rnx-sidebar .sidebar-item-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.5rem 0.65rem;
+  border: 0;
+  background: transparent;
+  border-radius: var(--rnx-border-radius-sm);
+  color: var(--rnx-text-primary);
+  text-align: left;
+  text-decoration: none;
+}
+.rnx-sidebar .sidebar-item-btn:hover { background: var(--rnx-surface-hover); }
+.rnx-sidebar .sidebar-submenu { padding-left: 1.75rem; }
+.rnx-sidebar .sidebar-submenu-arrow { margin-left: auto; display: inline-flex; }
+.rnx-sidebar .sidebar-item.active > .sidebar-item-btn,
+.rnx-sidebar .sidebar-item.active > .sidebar-parent-toggle > .sidebar-item-btn,
+.rnx-sidebar .sidebar-subitem.active > .sidebar-subitem-link {
+  background: color-mix(in srgb, var(--rnx-primary) 12%, transparent);
+  color: var(--rnx-primary);
+  font-weight: 600;
+}
+
+.rnx-stepper .stepper-steps,
+.rnx-stepper.stepper-horizontal .stepper-steps { display: flex; align-items: flex-start; }
+.rnx-stepper .stepper-vertical { display: flex; flex-direction: column; }
+.rnx-stepper .stepper-step { display: flex; flex: 1 1 0; align-items: center; min-width: 0; }
+.rnx-stepper .stepper-step:last-child { flex: 0 0 auto; }
+.rnx-stepper .stepper-vertical .stepper-step { display: block; flex: 0 0 auto; }
+.rnx-stepper .stepper-step-header { display: flex; align-items: center; gap: 0.6rem; }
+.rnx-stepper .stepper-step-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 2px solid var(--rnx-border-color);
+  background: var(--rnx-surface);
+  color: var(--rnx-text-secondary);
+  font-size: var(--rnx-font-size-sm);
+  font-weight: 600;
+}
+.rnx-stepper .stepper-step-indicator.active { border-color: var(--rnx-primary); color: var(--rnx-primary); }
+.rnx-stepper .stepper-step-indicator.completed { border-color: var(--rnx-primary); background: var(--rnx-primary); color: var(--rnx-text-on-primary); }
+.rnx-stepper .stepper-step-title { font-size: var(--rnx-font-size-sm); font-weight: 500; color: var(--rnx-text-secondary); white-space: nowrap; }
+.rnx-stepper .stepper-step.active .stepper-step-title { color: var(--rnx-text-primary); font-weight: 600; }
+.rnx-stepper .stepper-connector { flex: 1 1 auto; height: 2px; margin: 0 0.75rem; background: var(--rnx-border-color); }
+.rnx-stepper .stepper-step.completed .stepper-connector { background: var(--rnx-primary); }
+.rnx-stepper .stepper-connector-vertical { width: 2px; height: 1.25rem; margin: 0.25rem 0 0.25rem 1rem; background: var(--rnx-border-color); }
+.rnx-stepper .stepper-step.completed .stepper-connector-vertical { background: var(--rnx-primary); }
+.rnx-stepper .stepper-content { margin-top: 1rem; color: var(--rnx-text-primary); }
+
+.rnx-file-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  background: var(--rnx-surface-variant);
+  border: 2px dashed var(--rnx-border-color);
+  border-radius: var(--rnx-border-radius);
+  transition: var(--rnx-transition-fast);
+}
+.rnx-file-upload:hover,
+.rnx-file-upload.drag-over { border-color: var(--rnx-primary); background: var(--rnx-surface-hover); }
+.rnx-file-upload p { margin: 0; }
+.rnx-file-upload .upload-main { font-weight: 600; color: var(--rnx-text-primary); }
+.rnx-file-upload .upload-sub,
+.rnx-file-upload .upload-hint { font-size: var(--rnx-font-size-xs); color: var(--rnx-text-secondary); }
+.rnx-file-upload .file-upload-button {
+  padding: 0.4rem 1rem;
+  border: var(--rnx-border-width) solid var(--rnx-border-color);
+  border-radius: var(--rnx-border-radius-sm);
+  background: var(--rnx-surface);
+  color: var(--rnx-text-primary);
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--rnx-transition-fast);
+}
+.rnx-file-upload .file-upload-button:hover { border-color: var(--rnx-primary); color: var(--rnx-primary); }
+.rnx-file-upload .file-upload-button:focus-visible { outline: 2px solid var(--rnx-primary); outline-offset: 2px; }
 
 /* ============================================================
    3. Page furniture.
