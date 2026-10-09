@@ -107,13 +107,13 @@ export function StatCard({
                             ` : ''}
                         </div>
                         ${icon ? `
-                            <div class="${cn('stat-icon', resolveUtility('spacing', 'ml', 3), resolveUtility('text', variant))}" data-ref="icon" aria-hidden="true">
+                            <div class="${cn('stat-icon', resolvePartClasses('statcard', 'icon'), resolveUtility('text', variant))}" data-ref="icon" aria-hidden="true">
                                 <i class="${escapeHtml(resolveIcon(icon))}" style="font-size: 2rem; opacity: 0.7;"></i>
                             </div>
                         ` : ''}
                     </div>
                     ${footer ? `
-                        <div class="${cn(resolveUtility('spacing', 'mt', 3), resolveUtility('spacing', 'pt', 3), resolveUtility('borders', 'borderTop'))}">
+                        <div class="${resolvePartClasses('statcard', 'footer')}">
                             <small class="${resolveUtility('text', 'muted')}">${escapeHtml(footer)}</small>
                         </div>
                     ` : ''}

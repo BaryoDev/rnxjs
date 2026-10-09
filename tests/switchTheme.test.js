@@ -4,6 +4,7 @@ import { Checkbox } from '../components/Checkbox/Checkbox.js';
 import { Radio } from '../components/Radio/Radio.js';
 import { Select } from '../components/Select/Select.js';
 import { setTheme, registerTheme } from '../utils/ThemeProvider.js';
+import { tailwindTheme } from '../themes/tailwind/index.js';
 import { createReactiveState } from '../utils/createReactiveState.js';
 import { bindData } from '../framework/DataBinder.js';
 
@@ -32,7 +33,7 @@ describe('Switch theming', () => {
       expect(thumb).not.toBeNull();
       expect(thumb.className).toContain('peer-checked:translate-x-5');
       // track is a sibling after the input so peer-* variants apply
-      expect(input.nextElementSibling.className).toContain('peer-checked:bg-indigo-600');
+      expect(input.nextElementSibling.className).toContain('peer-checked:bg-[color:var(--rnx-primary,#4f46e5)]');
     });
 
     it('toggles checked, aria-checked and fires onchange', async () => {
@@ -77,7 +78,9 @@ describe('Switch theming', () => {
       const input = sw.querySelector('input');
       const track = input.nextElementSibling;
       expect(track.className).toContain('bg-red-500');
-      expect(track.className).not.toContain('bg-slate-300');
+      const themeTrackBg = tailwindTheme.components.switch.base.split(' ').find((c) => c.startsWith('bg-[color:'));
+      expect(themeTrackBg).toBeTruthy();
+      expect(track.className.split(/\s+/)).not.toContain(themeTrackBg);
       expect(input.parentElement.className).not.toContain('bg-red-500');
     });
 
@@ -142,7 +145,7 @@ describe('Tailwind form controls without @tailwindcss/forms', () => {
   it('checkbox is appearance-none with a check mark and focus ring', () => {
     setTheme('tailwind');
     const cls = Checkbox({ label: 'x' }).querySelector('input').className;
-    for (const c of ['appearance-none', 'h-4', 'w-4', 'border', 'checked:bg-indigo-600', 'focus-visible:ring-2', 'disabled:opacity-50']) {
+    for (const c of ['appearance-none', 'h-4', 'w-4', 'border', 'checked:bg-[color:var(--rnx-primary,#4f46e5)]', 'focus-visible:ring-2', 'disabled:opacity-50']) {
       expect(cls).toContain(c);
     }
     expect(cls).toContain('checked:bg-[url(data:image/svg+xml');
@@ -161,7 +164,7 @@ describe('Tailwind form controls without @tailwindcss/forms', () => {
     const cls = Select({ options: [{ value: 'a', label: 'A' }] }).querySelector('select').className;
     expect(cls).toContain('appearance-none');
     expect(cls).toContain('bg-[url(data:image/svg+xml');
-    expect(cls).toContain('disabled:bg-slate-50');
+    expect(cls).toContain('disabled:bg-[color:var(--rnx-surface-hover,#f8fafc)]');
   });
 
   it('cn() keeps arbitrary background colour, image, position and size', async () => {

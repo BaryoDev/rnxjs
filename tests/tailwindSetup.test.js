@@ -79,6 +79,30 @@ describe('real tailwind build', () => {
     assertFull(await build({ presets: [cjsPreset], content: ['index.html', ...cjsPreset.content] }));
   });
 
+  it('builds every spacing class the components emit', async () => {
+    const { setTheme } = await import('../utils/ThemeProvider.js');
+    const { StatCard } = await import('../components/StatCard/StatCard.js');
+    const { Toast } = await import('../components/Toast/Toast.js');
+    const { TopAppBar } = await import('../components/TopAppBar/TopAppBar.js');
+    setTheme('tailwind');
+    try {
+      const els = [
+        StatCard({ label: 'L', value: 1, icon: 'people', footer: 'f' }),
+        Toast({ title: 'T', message: 'm' }),
+        TopAppBar({ title: 'T' })
+      ];
+      const classes = new Set(els.flatMap((el) =>
+        [el, ...el.querySelectorAll('[class]')].flatMap((n) => [...n.classList])));
+      const spacing = [...classes].filter((c) => /^-?[mp][trblxyse]?-/.test(c));
+      expect(spacing).toEqual(expect.arrayContaining(['ml-3', 'mt-3', 'pt-3', 'mr-auto', 'm-0']));
+      const css = await build({ presets: [preset], content: ['index.html', ...content] });
+      const escape = (c) => c.replace(/[.:/\[\]]/g, (ch) => '\\' + ch);
+      expect(spacing.filter((c) => !css.includes(`.${escape(c)}`))).toEqual([]);
+    } finally {
+      setTheme('bootstrap');
+    }
+  });
+
   it('misses them when content is not spread (tailwind does not merge preset content)', async () => {
     const css = await build({ presets: [preset], content: ['index.html'] });
     expect(css).not.toContain('.sr-only');

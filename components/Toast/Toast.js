@@ -1,5 +1,5 @@
 import { createComponent } from '../../utils/createComponent.js';
-import { resolveClasses, resolvePartClasses, resolveUtility } from '../../utils/ThemeProvider.js';
+import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 import { escapeHtml } from '../../utils/security.js';
 import { bs } from '../../utils/bootstrap.js';
@@ -43,7 +43,7 @@ export function Toast({
   const headerClass = resolvePartClasses('toast', 'header');
   const bodyClass = resolvePartClasses('toast', 'body');
   const closeClass = resolvePartClasses('toast', 'close') || 'btn-close';
-  const titleClass = resolveUtility('spacing', 'mr', 'auto');
+  const titleClass = resolvePartClasses('toast', 'title');
 
   const template = () => `
     <div class="${escapeHtml(toastClass)}" role="status" aria-live="polite" aria-atomic="true" data-bs-delay="${escapeHtml(delay)}">
