@@ -245,15 +245,29 @@ describe('tailwind theme contrast', () => {
     });
 });
 
-function parseRoot(file) {
-    const css = readFileSync(new URL(file, import.meta.url), 'utf8');
-    const root = css.match(/:root\s*\{([\s\S]*?)\n\}/);
-    if (!root) throw new Error(`no :root block in ${file}`);
+function readCss(file) {
+    return readFileSync(new URL(file, import.meta.url), 'utf8');
+}
+
+function parseTokens(body) {
     const tokens = {};
-    for (const m of root[1].matchAll(/--rnx-([a-z-]+):\s*(#[0-9a-fA-F]{6})\s*;/g)) {
+    for (const m of body.matchAll(/--rnx-([a-z-]+):\s*(#[0-9a-fA-F]{6})\s*;/g)) {
         tokens[m[1]] = m[2].toLowerCase();
     }
     return tokens;
+}
+
+function parseRoot(file) {
+    const root = readCss(file).match(/:root\s*\{([\s\S]*?)\n\}/);
+    if (!root) throw new Error(`no :root block in ${file}`);
+    return parseTokens(root[1]);
+}
+
+// The dark block of rnx.css: only the tokens it overrides.
+function parseDark(file) {
+    const m = readCss(file).match(/\[data-theme="dark"\],\s*\[data-mode="dark"\]\s*\{([\s\S]*?)\n\}/);
+    if (!m) throw new Error(`no dark block in ${file}`);
+    return parseTokens(m[1]);
 }
 
 // Failures that come from the palette in css/rnx.css, not from the theme.
@@ -288,6 +302,50 @@ describe('tailwind theme contrast with the css/rnx.css tokens', () => {
         const str = 'text-[color:var(--rnx-text-secondary,#64748b)]';
         expect(check([{ path: 'x', str }])).toEqual([]);
         expect(check([{ path: 'x', str }], { 'text-secondary': '#aaaaaa' })).toHaveLength(1);
+    });
+});
+
+describe('tailwind theme contrast with the css/rnx.css dark tokens', () => {
+    const entries = collect(tailwindTheme, [], []);
+    const light = parseRoot('../css/rnx.css');
+    const dark = parseDark('../css/rnx.css');
+    // The dark block sits on top of :root, so a token it does not set stays light.
+    const tokens = { ...light, ...dark };
+
+    it('parses the tokens from the dark block', () => {
+        expect(dark.surface).not.toBe(light.surface);
+        expect(dark['text-primary']).not.toBe(light['text-primary']);
+        expect(Object.keys(dark).length).toBeGreaterThan(15);
+    });
+
+    it('every text colour reaches AA with the dark tokens set', () => {
+        expect(check(entries, tokens).join('\n')).toBe('');
+    });
+
+    it('the labels on the brand and status fills reach AA', () => {
+        for (const fill of ['primary', 'primary-hover', 'primary-active', 'success', 'danger', 'info']) {
+            expect(contrast(tokens['text-on-primary'], tokens[fill])).toBeGreaterThanOrEqual(AA_NORMAL);
+        }
+        expect(contrast(tokens['text-on-warning'], tokens.warning)).toBeGreaterThanOrEqual(AA_NORMAL);
+        expect(contrast(tokens['text-on-warning'], tokens['warning-hover'])).toBeGreaterThanOrEqual(AA_NORMAL);
+    });
+
+    it('overrides every colour token that the theme reads', () => {
+        const read = new Set();
+        for (const { str } of entries) {
+            for (const m of str.matchAll(/var\(--rnx-([a-z-]+),/g)) read.add(m[1]);
+        }
+        const missing = Object.keys(light).filter((t) => read.has(t) && !(t in dark));
+        expect(missing).toEqual([]);
+        // Tokens that :root leaves to their fallbacks need a dark value too.
+        expect([...read].filter((t) => !(t in dark))).toEqual([]);
+        // The theme must read something, or the check above proves nothing.
+        expect(read.size).toBeGreaterThan(15);
+    });
+
+    it('a light colour left in the dark block fails the contrast check', () => {
+        const broken = { ...tokens, 'text-primary': light['text-primary'] };
+        expect(check(entries, broken).length).toBeGreaterThan(0);
     });
 });
 
