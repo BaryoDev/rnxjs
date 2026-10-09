@@ -257,6 +257,10 @@ function getGroup(raw) {
         v.startsWith('radial-') || v.startsWith('conic-')) {
       return 'bg-image';
     }
+    // Arbitrary values: url(...) and typed hints are not colours
+    if (v.startsWith('[url(') || v.startsWith('[image:')) return 'bg-image';
+    if (v.startsWith('[position:')) return 'bg-position';
+    if (v.startsWith('[length:') || v.startsWith('[size:')) return 'bg-size';
     return 'bg-color';
   }
 

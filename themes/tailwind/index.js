@@ -221,7 +221,7 @@ export const tailwindTheme = {
     },
 
     select: {
-      base: 'w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:border-indigo-500',
+      base: 'w-full appearance-none rounded-md border border-slate-300 bg-white bg-[position:right_0.5rem_center] bg-[length:1.25rem_1.25rem] bg-no-repeat bg-[url(data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2020%2020%27%3E%3Cpath%20fill=%27none%27%20stroke=%27%2364748b%27%20stroke-width=%271.5%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27%20d=%27M6%208l4%204%204-4%27/%3E%3C/svg%3E)] px-3 py-2 pr-9 text-sm text-slate-900 shadow-sm transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:border-indigo-500 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-500 [&[multiple]]:bg-none [&[multiple]]:pr-3',
       sizes: {
         sm: 'h-8 px-2.5 text-xs',
         md: 'h-9 px-3 text-sm',
@@ -233,40 +233,41 @@ export const tailwindTheme = {
     },
 
     checkbox: {
-      base: 'w-4 h-4 rounded border-slate-300 text-indigo-600 shadow-sm transition-colors duration-150 motion-reduce:transition-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1',
+      base: 'h-4 w-4 rounded shrink-0 appearance-none border border-slate-300 bg-white bg-center bg-no-repeat bg-contain shadow-sm transition-colors duration-150 motion-reduce:transition-none checked:border-indigo-600 checked:bg-indigo-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 checked:bg-[url(data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2016%2016%27%3E%3Cpath%20fill=%27none%27%20stroke=%27white%27%20stroke-width=%272%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27%20d=%27M3.5%208.5l3%203%206-6.5%27/%3E%3C/svg%3E)]',
       parts: {
         wrapper: 'flex items-center gap-2',
         label: 'text-sm text-slate-700 select-none'
       },
       states: {
-        checked: 'bg-indigo-600 border-indigo-600',
         disabled: 'opacity-50 cursor-not-allowed'
       }
     },
 
     radio: {
-      base: 'w-4 h-4 border-slate-300 text-indigo-600 shadow-sm transition-colors duration-150 motion-reduce:transition-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1',
+      base: 'h-4 w-4 rounded-full shrink-0 appearance-none border border-slate-300 bg-white bg-center bg-no-repeat bg-contain shadow-sm transition-colors duration-150 motion-reduce:transition-none checked:border-indigo-600 checked:bg-indigo-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 checked:bg-[url(data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2016%2016%27%3E%3Ccircle%20cx=%278%27%20cy=%278%27%20r=%273%27%20fill=%27white%27/%3E%3C/svg%3E)]',
       parts: {
         wrapper: 'flex items-center gap-2',
         label: 'text-sm text-slate-700 select-none'
       },
       states: {
-        checked: 'bg-indigo-600 border-indigo-600',
         disabled: 'opacity-50 cursor-not-allowed'
       }
     },
 
     switch: {
-      base: 'relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2',
+      // The input is a visually hidden native checkbox (peer). Track and thumb
+      // are siblings that react to its state through peer-* variants, so the
+      // control submits with a form and stays keyboard accessible.
+      base: 'absolute inset-0 rounded-full bg-slate-300 transition-colors duration-150 motion-reduce:transition-none peer-checked:bg-indigo-600 peer-focus-visible:ring-2 peer-focus-visible:ring-indigo-500 peer-focus-visible:ring-offset-2 peer-disabled:opacity-50',
       parts: {
         wrapper: 'flex items-center gap-3',
         label: 'text-sm text-slate-700 select-none',
-        thumb: 'inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform duration-150 motion-reduce:transition-none'
+        control: 'relative inline-flex h-6 w-11 shrink-0 cursor-pointer',
+        input: 'peer sr-only',
+        thumb: 'absolute left-1 top-1 h-4 w-4 rounded-full bg-white shadow transition-transform duration-150 motion-reduce:transition-none peer-checked:translate-x-5 peer-disabled:opacity-50'
       },
       states: {
-        checked: 'bg-indigo-600',
-        unchecked: 'bg-slate-300',
-        disabled: 'opacity-50 cursor-not-allowed'
+        disabled: 'cursor-not-allowed'
       }
     },
 
