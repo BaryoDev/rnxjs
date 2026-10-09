@@ -92,7 +92,7 @@ export function Input({
     label ? resolvePartClasses('input', 'floatingWrapper') : ''
   );
 
-  const labelClass = resolvePartClasses('input', 'label');
+  const labelClass = cn(resolvePartClasses('input', 'label'), label ? resolvePartClasses('input', 'floatingLabel') : '');
   const iconClass = resolvePartClasses('input', 'icon');
   const helpClass = resolvePartClasses('input', 'help') || resolvePartClasses('formgroup', 'help');
   const errorClass = resolvePartClasses('input', 'error') || resolvePartClasses('formgroup', 'error');

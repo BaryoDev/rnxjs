@@ -50,7 +50,7 @@ export const Stepper = (props = {}) => {
                 : themeState('stepper', 'pending');
 
         return `
-            <div class="stepper-step-header">
+            <div class="${cn(resolvePartClasses('stepper', 'header'), 'stepper-step-header')}">
                 <div class="${cn(circlePart, circleState, 'stepper-step-indicator')}" aria-hidden="true">
                     ${isCompleted ? '✓' : index + 1}
                 </div>
@@ -59,8 +59,8 @@ export const Stepper = (props = {}) => {
         `;
     };
 
-    const stepAttrs = (index) => {
-        const stepPart = resolvePartClasses('stepper', 'step');
+    const stepAttrs = (index, vertical = false) => {
+        const stepPart = (vertical && resolvePartClasses('stepper', 'stepVertical')) || resolvePartClasses('stepper', 'step');
         const isActive = index === activeStep;
         const isCompleted = index < activeStep;
         return `class="${cn(stepPart, 'stepper-step', isActive ? 'active' : '', isCompleted ? 'completed' : '')}" data-step="${index}"${isActive ? ' aria-current="step"' : ''}`;
@@ -78,7 +78,7 @@ export const Stepper = (props = {}) => {
         if (orientation === 'horizontal') {
             return `
                 <div class="${stepperClass}" data-ref="stepper">
-                    <ol class="stepper-steps" style="list-style: none; margin: 0; padding: 0;">
+                    <ol class="${cn(resolvePartClasses('stepper', 'list'), 'stepper-steps')}" style="list-style: none; margin: 0; padding: 0;">
                         ${steps.map((step, index) => `
                             <li ${stepAttrs(index)}>
                                 ${renderStepHeader(step, index)}
@@ -95,14 +95,14 @@ export const Stepper = (props = {}) => {
 
         return `
             <div class="${stepperClass}" data-ref="stepper">
-                <ol class="stepper-vertical" style="list-style: none; margin: 0; padding: 0;">
+                <ol class="${cn(resolvePartClasses('stepper', 'listVertical'), 'stepper-vertical')}" style="list-style: none; margin: 0; padding: 0;">
                     ${steps.map((step, index) => `
-                        <li ${stepAttrs(index)}>
+                        <li ${stepAttrs(index, true)}>
                             ${renderStepHeader(step, index)}
                             <div class="stepper-content">
                                 ${step.content ? sanitizeHtml(step.content) : ''}
                             </div>
-                            ${index < steps.length - 1 ? `<div class="${cn(connectorPart, 'stepper-connector-vertical')}" aria-hidden="true"></div>` : ''}
+                            ${index < steps.length - 1 ? `<div class="${cn(resolvePartClasses('stepper', 'connectorVertical') || connectorPart, 'stepper-connector-vertical')}" aria-hidden="true"></div>` : ''}
                         </li>
                     `).join('')}
                 </ol>

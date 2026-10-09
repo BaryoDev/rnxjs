@@ -216,7 +216,8 @@ export const tailwindTheme = {
       parts: {
         wrapper: 'relative',
         label: 'block text-sm font-medium text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_34%,var(--rnx-secondary,#46576b))] mb-1.5',
-        floatingWrapper: 'relative',
+        floatingWrapper: 'relative flex flex-col',
+        floatingLabel: 'order-first',
         icon: 'absolute left-3 top-1/2 -translate-y-1/2 text-[color:var(--rnx-text-disabled,#94a3b8)] pointer-events-none',
         help: 'mt-1.5 text-xs text-[color:var(--rnx-text-secondary,#64748b)]',
         error: 'mt-1.5 text-xs text-[color:var(--rnx-danger,#dc2626)]'
@@ -382,6 +383,10 @@ export const tailwindTheme = {
 
     modal: {
       base: 'fixed inset-0 z-50 overflow-y-auto',
+      states: {
+        open: 'flex items-center justify-center',
+        closed: 'hidden'
+      },
       sizes: {
         sm: 'max-w-sm',
         md: 'max-w-md',
@@ -392,7 +397,7 @@ export const tailwindTheme = {
       },
       parts: {
         overlay: 'fixed inset-0 bg-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_50%,transparent)] [[data-mode=dark]_&]:bg-[color:rgb(0_0_0/0.6)] [[data-theme=dark]_&]:bg-[color:rgb(0_0_0/0.6)] transition-opacity motion-reduce:transition-none',
-        dialog: 'relative bg-[color:var(--rnx-surface,#ffffff)] rounded-lg shadow-xl mx-auto my-8 w-full',
+        dialog: 'relative bg-[color:var(--rnx-surface,#ffffff)] rounded-lg shadow-xl mx-auto my-8 w-full max-w-lg',
         content: 'relative',
         header: 'flex items-start justify-between px-5 py-4 border-b border-[color:var(--rnx-border-color,#e2e8f0)]',
         body: 'px-5 py-4 text-sm text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_34%,var(--rnx-secondary,#46576b))]',
@@ -420,10 +425,18 @@ export const tailwindTheme = {
     },
 
     tooltip: {
-      base: 'absolute z-50 px-2.5 py-1.5 text-xs font-medium text-[color:var(--rnx-surface,#ffffff)] bg-[color:var(--rnx-text-primary,#0f172a)] rounded-md shadow-md max-w-xs',
+      base: 'absolute z-50 px-2.5 py-1.5 text-xs font-medium text-[color:var(--rnx-surface,#ffffff)] bg-[color:var(--rnx-text-primary,#0f172a)] rounded-md shadow-md max-w-xs invisible opacity-0 transition-opacity motion-reduce:transition-none [&.visible]:visible [&.visible]:opacity-100',
       parts: {
+        trigger: 'relative inline-flex group',
+        popup: 'absolute z-50 px-2.5 py-1.5 text-xs font-medium whitespace-nowrap pointer-events-none text-[color:var(--rnx-surface,#ffffff)] bg-[color:var(--rnx-text-primary,#0f172a)] rounded-md shadow-md invisible opacity-0 transition-opacity motion-reduce:transition-none group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100',
         arrow: 'absolute w-2 h-2 bg-[color:var(--rnx-text-primary,#0f172a)] transform rotate-45',
         inner: ''
+      },
+      states: {
+        top: 'bottom-full left-1/2 -translate-x-1/2 mb-2',
+        bottom: 'top-full left-1/2 -translate-x-1/2 mt-2',
+        left: 'right-full top-1/2 -translate-y-1/2 mr-2',
+        right: 'left-full top-1/2 -translate-y-1/2 ml-2'
       }
     },
 
@@ -448,7 +461,7 @@ export const tailwindTheme = {
     progressbar: {
       base: 'w-full bg-[color:var(--rnx-border-color,#e2e8f0)] rounded-full h-2 overflow-hidden',
       parts: {
-        bar: 'h-full bg-[color:var(--rnx-primary,#4f46e5)] rounded-full transition-[width] duration-300 motion-reduce:transition-none'
+        bar: 'h-full rounded-full transition-[width] duration-300 motion-reduce:transition-none'
       },
       variants: {
         striped: 'bg-gradient-to-r from-[color:var(--rnx-primary,#4f46e5)] to-[color:color-mix(in_srgb,var(--rnx-surface,#ffffff)_14%,var(--rnx-primary,#4a4def))]',
@@ -457,12 +470,17 @@ export const tailwindTheme = {
     },
 
     stepper: {
-      base: 'flex items-center',
+      base: 'w-full',
       parts: {
-        step: 'flex items-center relative',
-        connector: 'flex-1 h-0.5 bg-[color:var(--rnx-border-color,#e2e8f0)] mx-4',
-        circle: 'w-9 h-9 rounded-full border-2 flex items-center justify-center text-sm font-semibold transition-colors duration-150 motion-reduce:transition-none',
-        label: 'absolute top-11 left-1/2 -translate-x-1/2 text-xs font-medium text-[color:var(--rnx-text-secondary,#64748b)] whitespace-nowrap'
+        list: 'flex items-start w-full',
+        listVertical: 'flex flex-col gap-6',
+        step: 'flex flex-1 items-start last:flex-none',
+        stepVertical: 'flex flex-col',
+        header: 'flex flex-col items-center gap-2',
+        connector: 'flex-1 h-0.5 mt-[1.0625rem] mx-3 bg-[color:var(--rnx-border-color,#e2e8f0)]',
+        connectorVertical: 'w-0.5 h-6 ml-[1.0625rem] mt-2 bg-[color:var(--rnx-border-color,#e2e8f0)]',
+        circle: 'w-9 h-9 shrink-0 rounded-full border-2 flex items-center justify-center text-sm font-semibold transition-colors duration-150 motion-reduce:transition-none',
+        label: 'text-xs font-medium text-center whitespace-nowrap text-[color:var(--rnx-text-secondary,#64748b)]'
       },
       states: {
         active: 'border-[color:var(--rnx-primary,#4f46e5)] bg-[color:var(--rnx-primary,#4f46e5)] text-[color:var(--rnx-text-on-primary,#ffffff)]',

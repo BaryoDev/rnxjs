@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- Modal under Tailwind is hidden when closed, centred over a dark-mode-aware scrim when open, closes on Escape or a backdrop click, returns focus to the trigger, and no longer needs Bootstrap JS (it ignores it, so no `Illegal invocation` and no stuck `modal-open` on body).
+- Stepper under Tailwind lays the steps out as a row with the label under each circle.
+- ProgressBar takes its fill colour from the theme per variant instead of the Bootstrap `bg-*` names.
+- Tooltip under Tailwind puts the bubble classes on a popup element that shows on hover and focus, with no Bootstrap JS.
+- Input and Select under Tailwind show the label above the field. Bootstrap keeps its floating label.
+- Skeleton renders the requested number of lines when `lines`, `rows` or `cols` arrive as strings such as `"3"`.
+
 ## [2.3.0] - 2026-10-09
 
 Dark mode, and a Tailwind theme that reads the `--rnx-*` tokens. `npm test`

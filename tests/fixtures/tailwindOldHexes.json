@@ -453,6 +453,10 @@
   ["text-white", "#ffffff", null],
   ["bg-slate-900", "#0f172a", null]
  ],
+ "components.tooltip.parts.popup": [
+  ["text-white", "#ffffff", null],
+  ["bg-slate-900", "#0f172a", null]
+ ],
  "components.tooltip.parts.arrow": [
   ["bg-slate-900", "#0f172a", null]
  ],
@@ -472,14 +476,14 @@
  "components.progressbar.base": [
   ["bg-slate-200", "#e2e8f0", null]
  ],
- "components.progressbar.parts.bar": [
-  ["bg-indigo-600", "#4f46e5", null]
- ],
  "components.progressbar.variants.striped": [
   ["from-indigo-600", "#4f46e5", null],
   ["to-indigo-500", "#6366f1", null]
  ],
  "components.stepper.parts.connector": [
+  ["bg-slate-200", "#e2e8f0", null]
+ ],
+ "components.stepper.parts.connectorVertical": [
   ["bg-slate-200", "#e2e8f0", null]
  ],
  "components.stepper.parts.label": [

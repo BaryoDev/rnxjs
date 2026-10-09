@@ -2,10 +2,95 @@ import { createComponent } from '../../utils/createComponent.js';
 import { bs } from '../../utils/bootstrap.js';
 import { createFocusTrap, announce } from '../../utils/a11y.js';
 import { sanitizeHtml, escapeHtml } from '../../utils/security.js';
-import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
+import themeProvider, { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 
 let modalIdCounter = 0;
+
+const themeState = (component, state) => {
+  const theme = themeProvider.getTheme();
+  return (theme && theme.components[component] && theme.components[component].states &&
+    theme.components[component].states[state]) || '';
+};
+
+const tokens = (str) => String(str || '').split(/\s+/).filter(Boolean);
+
+/**
+ * Show/hide behaviour for themes without Bootstrap JS.
+ * Fires shown.bs.modal / hidden.bs.modal so existing listeners keep working.
+ */
+function setupStandaloneModal(el, { title, dismissable, overlayClass }) {
+  const dialog = el.querySelector('[data-ref="dialog"]');
+  const focusTrap = dialog ? createFocusTrap(dialog) : null;
+  const openTokens = tokens(themeState('modal', 'open'));
+  const closedTokens = tokens(themeState('modal', 'closed'));
+  let isOpen = false;
+  let trigger = null;
+
+  const overlay = document.createElement('div');
+  overlay.className = overlayClass || '';
+  overlay.setAttribute('data-ref', 'overlay');
+  overlay.setAttribute('aria-hidden', 'true');
+  el.insertBefore(overlay, el.firstChild);
+
+  const apply = () => {
+    openTokens.forEach(t => el.classList.toggle(t, isOpen));
+    closedTokens.forEach(t => el.classList.toggle(t, !isOpen));
+    el.style.display = isOpen ? '' : 'none';
+    el.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+  };
+
+  const show = () => {
+    if (isOpen) return;
+    isOpen = true;
+    trigger = document.activeElement;
+    apply();
+    if (focusTrap) focusTrap.activate();
+    if (dialog && !dialog.contains(document.activeElement)) el.focus();
+    if (title) announce(`${title} dialog opened`, 'polite');
+    el.dispatchEvent(new Event('shown.bs.modal'));
+  };
+
+  const hide = () => {
+    if (!isOpen) return;
+    isOpen = false;
+    apply();
+    if (focusTrap) focusTrap.deactivate(false);
+    if (trigger && typeof trigger.focus === 'function' && document.contains(trigger)) trigger.focus();
+    trigger = null;
+    if (title) announce(`${title} dialog closed`, 'polite');
+    el.dispatchEvent(new Event('hidden.bs.modal'));
+  };
+
+  const onKeydown = (e) => {
+    if (e.key === 'Escape' && dismissable) hide();
+  };
+  const onClick = (e) => {
+    const t = e.target;
+    if (dismissable && (t === el || t === overlay)) return hide();
+    if (t.closest && t.closest('[data-bs-dismiss="modal"]') && el.contains(t.closest('[data-bs-dismiss="modal"]'))) hide();
+  };
+  const onDocKeydown = (e) => {
+    if (isOpen && e.key === 'Escape' && dismissable) hide();
+  };
+
+  el.addEventListener('keydown', onKeydown);
+  el.addEventListener('click', onClick);
+  document.addEventListener('keydown', onDocKeydown);
+
+  el.show = show;
+  el.hide = hide;
+  el.toggle = () => (isOpen ? hide() : show());
+  apply();
+
+  return () => {
+    el.removeEventListener('keydown', onKeydown);
+    el.removeEventListener('click', onClick);
+    document.removeEventListener('keydown', onDocKeydown);
+    if (focusTrap && focusTrap.isActive()) focusTrap.deactivate();
+    overlay.remove();
+  };
+}
 
 /**
  * Modal Component - CSS Framework Agnostic
@@ -85,9 +170,12 @@ export function Modal({ id = '', title = '', dismissable = true, children = [], 
   const component = createComponent(template, { id: modalId, title, children: mainContent, footer: footerContent });
 
   component.useEffect((el) => {
-    // Check if Bootstrap JS is available
+    // Themes that declare a modal open state (Tailwind) drive themselves, even when Bootstrap JS is on the page
+    if (themeState('modal', 'open')) {
+      return setupStandaloneModal(el, { title, dismissable, overlayClass: resolvePartClasses('modal', 'overlay') });
+    }
+
     if (!bs.isAvailable() || !bs.Modal) {
-      // Graceful fallback or no-op
       return;
     }
 
@@ -98,7 +186,7 @@ export function Modal({ id = '', title = '', dismissable = true, children = [], 
 
     // Initialize Bootstrap Modal
     // We try to get existing instance or create new one
-    let modalInstance = bs.Modal.getInstance(el);
+    let modalInstance = typeof bs.Modal.getInstance === 'function' ? bs.Modal.getInstance(el) : null;
     if (!modalInstance) {
       modalInstance = new bs.Modal(el, dismissable ? {} : { backdrop: 'static', keyboard: false });
     }
@@ -175,7 +263,7 @@ export function Modal({ id = '', title = '', dismissable = true, children = [], 
 
       // If the modal is still open, hide it before disposing
       // This prevents backdrop from getting stuck
-      if (modalInstance) {
+      if (modalInstance && typeof modalInstance.dispose === 'function') {
         // We carefully check if the element is still in DOM to avoid errors
         modalInstance.dispose();
       }
