@@ -219,37 +219,45 @@
    Dark Mode Support
    ============================================================================ */
 
-@media (prefers-color-scheme: dark) {
-  .rnx-toast {
-    background-color: #2d2d2d;
-  }
-
-  .rnx-toast-message {
-    color: #f0f0f0;
-  }
-
-  .rnx-toast.rnx-toast-success {
-    background-color: #0d2818;
-  }
-
-  .rnx-toast.rnx-toast-error {
-    background-color: #2d0f14;
-  }
-
-  .rnx-toast.rnx-toast-warning {
-    background-color: #2d2415;
-  }
-
-  .rnx-toast.rnx-toast-info {
-    background-color: #0f2028;
-  }
-
-  .rnx-toast-close {
-    color: #adb5bd;
-  }
-
-  .rnx-toast-close:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: #f0f0f0;
-  }
+/* Follows setMode() through data-mode; no prefers-color-scheme rule. */
+[data-mode="dark"] .rnx-toast,
+[data-theme="dark"] .rnx-toast {
+  background-color: #2d2d2d;
 }
+
+[data-mode="dark"] .rnx-toast-message,
+[data-theme="dark"] .rnx-toast-message {
+  color: #f0f0f0;
+}
+
+[data-mode="dark"] .rnx-toast.rnx-toast-success,
+[data-theme="dark"] .rnx-toast.rnx-toast-success {
+  background-color: #0d2818;
+}
+
+[data-mode="dark"] .rnx-toast.rnx-toast-error,
+[data-theme="dark"] .rnx-toast.rnx-toast-error {
+  background-color: #2d0f14;
+}
+
+[data-mode="dark"] .rnx-toast.rnx-toast-warning,
+[data-theme="dark"] .rnx-toast.rnx-toast-warning {
+  background-color: #2d2415;
+}
+
+[data-mode="dark"] .rnx-toast.rnx-toast-info,
+[data-theme="dark"] .rnx-toast.rnx-toast-info {
+  background-color: #0f2028;
+}
+
+[data-mode="dark"] .rnx-toast-close,
+[data-theme="dark"] .rnx-toast-close {
+  color: #adb5bd;
+}
+
+[data-mode="dark"] .rnx-toast-close:hover,
+[data-theme="dark"] .rnx-toast-close:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #f0f0f0;
+}
+

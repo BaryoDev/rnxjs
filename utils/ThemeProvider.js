@@ -10,11 +10,21 @@
 import { bootstrapTheme } from '../themes/bootstrap/index.js';
 import { tailwindTheme } from '../themes/tailwind/index.js';
 
+const MODE_KEY = 'rnx-mode';
+const MODES = ['light', 'dark', 'system'];
+const DARK_QUERY = '(prefers-color-scheme: dark)';
+
 class ThemeProvider {
   constructor() {
     this.themes = new Map();
     this.activeTheme = null;
     this.subscribers = new Set();
+
+    // Colour mode. Default is light so existing apps see no change.
+    this.mode = 'light';
+    this.resolvedMode = 'light';
+    this.mediaQuery = null;
+    this.onSystemChange = null;
 
     // Register default themes
     this.registerTheme(bootstrapTheme);
@@ -23,6 +33,10 @@ class ThemeProvider {
     // Default to Bootstrap so existing apps look unchanged after upgrading;
     // Tailwind is a one-line opt-in via setTheme('tailwind')
     this.setTheme('bootstrap');
+
+    // Restore a saved choice. With nothing saved, leave the document alone.
+    const stored = this.readStoredMode();
+    if (stored) this.setMode(stored, { persist: false });
   }
 
   /**
@@ -104,9 +118,118 @@ class ThemeProvider {
   }
 
   /**
+   * Set the colour mode
+   *
+   * @param {'light'|'dark'|'system'} mode - 'system' follows prefers-color-scheme live
+   * @param {Object} [options]
+   * @param {boolean} [options.persist=true] - Save the choice to localStorage
+   *
+   * @example
+   * import { setMode } from '@arnelirobles/rnxjs';
+   * setMode('dark');
+   */
+  setMode(mode, { persist = true } = {}) {
+    if (!MODES.includes(mode)) {
+      console.error(`[rnxJS] Mode "${mode}" is not valid. Use one of:`, MODES);
+      return;
+    }
+
+    this.stopWatchingSystem();
+    this.mode = mode;
+
+    if (mode === 'system') this.watchSystem();
+    this.resolvedMode = this.resolveMode();
+
+    if (persist) this.storeMode(mode);
+    this.applyMode();
+    this.notifySubscribers();
+  }
+
+  /**
+   * Get the stored colour choice
+   *
+   * @returns {'light'|'dark'|'system'}
+   */
+  getMode() {
+    return this.mode;
+  }
+
+  /**
+   * Get the colour mode in effect
+   *
+   * @returns {'light'|'dark'} - What 'system' currently resolves to, otherwise the choice
+   */
+  getResolvedMode() {
+    return this.resolvedMode;
+  }
+
+  /** @private */
+  resolveMode() {
+    if (this.mode !== 'system') return this.mode;
+    return this.mediaQuery && this.mediaQuery.matches ? 'dark' : 'light';
+  }
+
+  /** @private */
+  applyMode() {
+    if (typeof document === 'undefined') return;
+    document.documentElement.setAttribute('data-mode', this.resolvedMode);
+    // Bootstrap 5.3 has its own dark mode, keyed on this attribute.
+    document.documentElement.setAttribute('data-bs-theme', this.resolvedMode);
+  }
+
+  /** @private */
+  watchSystem() {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
+    this.mediaQuery = window.matchMedia(DARK_QUERY);
+    this.onSystemChange = () => {
+      this.resolvedMode = this.resolveMode();
+      this.applyMode();
+      this.notifySubscribers();
+    };
+    if (this.mediaQuery.addEventListener) {
+      this.mediaQuery.addEventListener('change', this.onSystemChange);
+    } else if (this.mediaQuery.addListener) {
+      this.mediaQuery.addListener(this.onSystemChange);
+    }
+  }
+
+  /** @private */
+  stopWatchingSystem() {
+    const mq = this.mediaQuery;
+    if (mq && this.onSystemChange) {
+      if (mq.removeEventListener) {
+        mq.removeEventListener('change', this.onSystemChange);
+      } else if (mq.removeListener) {
+        mq.removeListener(this.onSystemChange);
+      }
+    }
+    this.mediaQuery = null;
+    this.onSystemChange = null;
+  }
+
+  /** @private */
+  readStoredMode() {
+    try {
+      const value = localStorage.getItem(MODE_KEY);
+      return MODES.includes(value) ? value : null;
+    } catch {
+      return null;
+    }
+  }
+
+  /** @private */
+  storeMode(mode) {
+    try {
+      localStorage.setItem(MODE_KEY, mode);
+    } catch {
+      // storage is off or full: the mode still applies for this page
+    }
+  }
+
+  /**
    * Subscribe to theme changes
    *
-   * @param {Function} callback - Called when theme changes
+   * @param {Function} callback - Called with (theme, { mode, resolvedMode }) when the theme or mode changes
    * @returns {Function} - Unsubscribe function
    *
    * @example
@@ -132,7 +255,7 @@ class ThemeProvider {
   notifySubscribers() {
     this.subscribers.forEach(cb => {
       try {
-        cb(this.activeTheme);
+        cb(this.activeTheme, { mode: this.mode, resolvedMode: this.resolvedMode });
       } catch (error) {
         console.error('[rnxJS] Error in theme subscriber:', error);
       }
@@ -312,12 +435,18 @@ class ThemeProvider {
 export const themeProvider = new ThemeProvider();
 
 // Convenience exports for common operations
-export const { resolveClasses, resolvePartClasses, resolveUtility, setTheme, registerTheme } = {
+export const {
+  resolveClasses, resolvePartClasses, resolveUtility, setTheme, registerTheme,
+  setMode, getMode, getResolvedMode
+} = {
   resolveClasses: (...args) => themeProvider.resolveClasses(...args),
   resolvePartClasses: (...args) => themeProvider.resolvePartClasses(...args),
   resolveUtility: (...args) => themeProvider.resolveUtility(...args),
   setTheme: (name) => themeProvider.setTheme(name),
-  registerTheme: (theme) => themeProvider.registerTheme(theme)
+  registerTheme: (theme) => themeProvider.registerTheme(theme),
+  setMode: (mode, options) => themeProvider.setMode(mode, options),
+  getMode: () => themeProvider.getMode(),
+  getResolvedMode: () => themeProvider.getResolvedMode()
 };
 
 export default themeProvider;

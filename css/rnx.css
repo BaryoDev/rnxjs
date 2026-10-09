@@ -89,6 +89,57 @@
 }
 
 /* ============================================================
+   1b. Dark tokens.
+
+   Driven by the data-mode attribute only. There is deliberately no
+   @media (prefers-color-scheme: dark) rule here: utils/ThemeProvider.js
+   resolves "system" and sets the attribute, so JavaScript is the single
+   source of truth. Without JavaScript, set it yourself:
+   <html data-mode="dark">.
+
+   Every colour token in :root above is overridden here, plus the ones the
+   Tailwind theme reads that :root leaves to their fallbacks. A test checks it.
+   ============================================================ */
+
+[data-theme="dark"],
+[data-mode="dark"] {
+  --rnx-primary: #5cc0d1;
+  --rnx-primary-hover: #7fd0de;
+  --rnx-primary-active: #46a9ba;
+  --rnx-primary-rgb: 92, 192, 209;
+  --rnx-text-on-primary: #0b1216;
+  --rnx-text-on-warning: #1a1203;
+
+  --rnx-success: #4cc38a;
+  --rnx-danger: #f08a7a;
+  --rnx-warning: #e0a23c;
+  --rnx-warning-hover: #eab45a;
+  --rnx-info: #5fb4e0;
+
+  /* Not in :root, but the Tailwind theme reads them with light fallbacks. */
+  --rnx-secondary: #a8b5c2;
+  --rnx-success-hover: #6dd3a1;
+  --rnx-danger-hover: #f5a193;
+  --rnx-info-hover: #86c6e8;
+
+  --rnx-background: #0f1419;
+  --rnx-surface: #171d24;
+  --rnx-surface-variant: #1c242c;
+  --rnx-surface-hover: #232d37;
+
+  --rnx-text-primary: #e8edf2;
+  --rnx-text-secondary: #9fadba;
+  --rnx-text-disabled: #8f9dab;
+
+  --rnx-border-color: #34414d;
+  --rnx-border-color-light: #27323c;
+
+  --rnx-shadow-sm: 0 1px 0 rgba(0, 0, 0, 0.3);
+  --rnx-shadow-md: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --rnx-shadow-lg: 0 12px 32px -24px rgba(0, 0, 0, 0.7);
+}
+
+/* ============================================================
    2. Bridge to Bootstrap.
 
    Bootstrap 5.3 has two kinds of custom property and they behave

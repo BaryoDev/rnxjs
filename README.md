@@ -102,18 +102,7 @@ worth knowing:
 | `--rnx-border-color` `--rnx-border-radius` | lines and corners |
 | `--rnx-font-family` `--rnx-font-family-display` `--rnx-font-family-monospace` | body, headings, code |
 
-A dark theme is the same tokens under a media query:
-
-```css
-@media (prefers-color-scheme: dark) {
-  :root {
-    --rnx-background: #0f1418;
-    --rnx-surface: #161d23;
-    --rnx-text-primary: #e6ecf1;
-    --rnx-border-color: #26313a;
-  }
-}
-```
+Dark values are built in. See [Dark mode](#dark-mode) below.
 
 ### 2. Override one component
 
@@ -247,8 +236,48 @@ focus rings) are `color-mix()` of one of these with `--rnx-surface` or
 `--rnx-text-primary`, so they follow when you change the token. This needs a
 browser with `color-mix()` (Chrome 111, Safari 16.2, Firefox 113 or newer).
 
-The select chevron, checkbox tick, radio dot and ring offset are white and do
-not follow tokens.
+The select chevron is slate (`#64748b`) and does not follow tokens. The
+checkbox tick and radio dot are white in light mode and `#0b1216` in dark mode,
+set in the theme, not by tokens. The ring offset follows `--rnx-surface`.
+
+### Dark mode
+
+```js
+import { setMode } from '@arnelirobles/rnxjs';
+setMode('dark');   // 'light' (default), 'dark' or 'system'
+```
+
+`setMode` sets `data-mode` and `data-bs-theme` on `<html>` and saves the
+choice in `localStorage` (`rnx-mode`). `css/rnx.css` has a dark token block on
+`[data-mode="dark"]` (and `[data-theme="dark"]`), so without JavaScript you can
+write `<html data-mode="dark">` yourself. `'system'` follows the OS setting
+live. `getMode()` returns the choice and `getResolvedMode()` returns `'light'`
+or `'dark'`. No stylesheet has a `prefers-color-scheme` rule; the mode comes
+from the attribute only.
+
+- Bootstrap's own dark styling (`bg-light`, navbars, `btn-light`) follows
+  `data-bs-theme`, which needs Bootstrap 5.3 or newer.
+- A saved choice overrides a `data-mode` attribute written in the HTML.
+- To avoid a light flash, put this in `<head>` before the stylesheets:
+
+```html
+<script>
+try {
+  var m = localStorage.getItem('rnx-mode');
+  if (m === 'system') m = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  if (m === 'light' || m === 'dark') {
+    document.documentElement.setAttribute('data-mode', m);
+    document.documentElement.setAttribute('data-bs-theme', m);
+  }
+} catch (e) {}
+</script>
+```
+
+- Loading `css/themes/base.css` together with `css/rnx.css` is not supported
+  for dark mode. Use one of them.
+- A brand override in `:root` (say `--rnx-primary: #7c3aed`) also applies in
+  dark mode, because both rules have the same weight and yours comes later.
+  If it should change in dark, add a matching `[data-mode="dark"]` override.
 
 ### What is not supported yet
 

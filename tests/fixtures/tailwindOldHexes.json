@@ -1,5 +1,6 @@
 {
  "components.button.base": [
+  ["focus-visible:ring-offset-white", "#ffffff", null],
   ["focus-visible:ring-indigo-500", "#6366f1", null]
  ],
  "components.button.variants.filled": [
@@ -278,7 +279,8 @@
   ["bg-white", "#ffffff", null],
   ["checked:border-indigo-600", "#4f46e5", null],
   ["checked:bg-indigo-600", "#4f46e5", null],
-  ["focus-visible:ring-indigo-500", "#6366f1", null]
+  ["focus-visible:ring-indigo-500", "#6366f1", null],
+  ["focus-visible:ring-offset-white", "#ffffff", null]
  ],
  "components.checkbox.parts.label": [
   ["text-slate-700", "#334155", null]
@@ -288,7 +290,8 @@
   ["bg-white", "#ffffff", null],
   ["checked:border-indigo-600", "#4f46e5", null],
   ["checked:bg-indigo-600", "#4f46e5", null],
-  ["focus-visible:ring-indigo-500", "#6366f1", null]
+  ["focus-visible:ring-indigo-500", "#6366f1", null],
+  ["focus-visible:ring-offset-white", "#ffffff", null]
  ],
  "components.radio.parts.label": [
   ["text-slate-700", "#334155", null]
@@ -296,7 +299,8 @@
  "components.switch.base": [
   ["bg-slate-300", "#cbd5e1", null],
   ["peer-checked:bg-indigo-600", "#4f46e5", null],
-  ["peer-focus-visible:ring-indigo-500", "#6366f1", null]
+  ["peer-focus-visible:ring-indigo-500", "#6366f1", null],
+  ["peer-focus-visible:ring-offset-white", "#ffffff", null]
  ],
  "components.switch.parts.label": [
   ["text-slate-700", "#334155", null]
@@ -307,7 +311,8 @@
  "components.slider.base": [
   ["bg-slate-200", "#e2e8f0", null],
   ["accent-indigo-600", "#4f46e5", null],
-  ["focus-visible:ring-indigo-500", "#6366f1", null]
+  ["focus-visible:ring-indigo-500", "#6366f1", null],
+  ["focus-visible:ring-offset-white", "#ffffff", null]
  ],
  "components.formgroup.parts.label": [
   ["text-slate-700", "#334155", null]
@@ -601,7 +606,8 @@
   ["text-white", "#ffffff", null],
   ["hover:bg-indigo-700", "#4338ca", null],
   ["active:bg-indigo-800", "#3730a3", null],
-  ["focus-visible:ring-indigo-500", "#6366f1", null]
+  ["focus-visible:ring-indigo-500", "#6366f1", null],
+  ["focus-visible:ring-offset-white", "#ffffff", null]
  ],
  "components.segmentedbutton.base": [
   ["bg-slate-100", "#f1f5f9", null]
@@ -701,7 +707,8 @@
   ["text-white", "#ffffff", null],
   ["hover:bg-indigo-700", "#4338ca", null],
   ["active:bg-indigo-800", "#3730a3", null],
-  ["focus-visible:ring-indigo-500", "#6366f1", null]
+  ["focus-visible:ring-indigo-500", "#6366f1", null],
+  ["focus-visible:ring-offset-white", "#ffffff", null]
  ],
  "components.errorstate.base": [
   ["bg-red-50", "#fef2f2", null],
@@ -721,7 +728,8 @@
   ["text-white", "#ffffff", null],
   ["hover:bg-red-700", "#b91c1c", null],
   ["active:bg-red-800", "#991b1b", null],
-  ["focus-visible:ring-red-500", "#ef4444", null]
+  ["focus-visible:ring-red-500", "#ef4444", null],
+  ["focus-visible:ring-offset-white", "#ffffff", null]
  ],
  "components.errorboundary.base": [
   ["bg-red-50", "#fef2f2", null],

@@ -39,7 +39,7 @@ export const tailwindTheme = {
     // ============================================================================
 
     button: {
-      base: 'inline-flex items-center justify-center gap-2 font-medium rounded-md select-none transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-surface,#ffffff)_14%,var(--rnx-primary,#4a4def))] disabled:opacity-50 disabled:pointer-events-none',
+      base: 'inline-flex items-center justify-center gap-2 font-medium rounded-md select-none transition-colors duration-150 motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--rnx-surface,#ffffff)] focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-surface,#ffffff)_14%,var(--rnx-primary,#4a4def))] disabled:opacity-50 disabled:pointer-events-none',
       variants: {
         filled: 'bg-[color:var(--rnx-primary,#4f46e5)] text-[color:var(--rnx-text-on-primary,#ffffff)] shadow-sm hover:bg-[color:var(--rnx-primary-hover,#4338ca)] active:bg-[color:var(--rnx-primary-active,#3730a3)]',
         outlined: 'border border-[color:color-mix(in_srgb,var(--rnx-surface,#ffffff)_75%,var(--rnx-secondary,#2f5787))] bg-[color:var(--rnx-surface,#ffffff)] text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_34%,var(--rnx-secondary,#46576b))] shadow-sm hover:bg-[color:var(--rnx-surface-hover,#f8fafc)] active:bg-[color:var(--rnx-surface-variant,#f1f5f9)]',
@@ -249,7 +249,7 @@ export const tailwindTheme = {
     },
 
     checkbox: {
-      base: 'h-4 w-4 rounded shrink-0 appearance-none border border-[color:color-mix(in_srgb,var(--rnx-surface,#ffffff)_75%,var(--rnx-secondary,#2f5787))] bg-[color:var(--rnx-surface,#ffffff)] bg-center bg-no-repeat bg-contain shadow-sm transition-colors duration-150 motion-reduce:transition-none checked:border-[color:var(--rnx-primary,#4f46e5)] checked:bg-[color:var(--rnx-primary,#4f46e5)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-surface,#ffffff)_14%,var(--rnx-primary,#4a4def))] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 checked:bg-[url(data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2016%2016%27%3E%3Cpath%20fill=%27none%27%20stroke=%27white%27%20stroke-width=%272%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27%20d=%27M3.5%208.5l3%203%206-6.5%27/%3E%3C/svg%3E)]',
+      base: 'h-4 w-4 rounded shrink-0 appearance-none border border-[color:color-mix(in_srgb,var(--rnx-surface,#ffffff)_75%,var(--rnx-secondary,#2f5787))] bg-[color:var(--rnx-surface,#ffffff)] bg-center bg-no-repeat bg-contain shadow-sm transition-colors duration-150 motion-reduce:transition-none checked:border-[color:var(--rnx-primary,#4f46e5)] checked:bg-[color:var(--rnx-primary,#4f46e5)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-surface,#ffffff)_14%,var(--rnx-primary,#4a4def))] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--rnx-surface,#ffffff)] disabled:cursor-not-allowed disabled:opacity-50 checked:bg-[url(data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2016%2016%27%3E%3Cpath%20fill=%27none%27%20stroke=%27white%27%20stroke-width=%272%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27%20d=%27M3.5%208.5l3%203%206-6.5%27/%3E%3C/svg%3E)] [[data-mode=dark]_&]:checked:bg-[url(data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2016%2016%27%3E%3Cpath%20fill=%27none%27%20stroke=%27%230b1216%27%20stroke-width=%272%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27%20d=%27M3.5%208.5l3%203%206-6.5%27/%3E%3C/svg%3E)] [[data-theme=dark]_&]:checked:bg-[url(data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2016%2016%27%3E%3Cpath%20fill=%27none%27%20stroke=%27%230b1216%27%20stroke-width=%272%27%20stroke-linecap=%27round%27%20stroke-linejoin=%27round%27%20d=%27M3.5%208.5l3%203%206-6.5%27/%3E%3C/svg%3E)]',
       parts: {
         wrapper: 'flex items-center gap-2',
         label: 'text-sm text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_34%,var(--rnx-secondary,#46576b))] select-none'
@@ -257,7 +257,7 @@ export const tailwindTheme = {
     },
 
     radio: {
-      base: 'h-4 w-4 rounded-full shrink-0 appearance-none border border-[color:color-mix(in_srgb,var(--rnx-surface,#ffffff)_75%,var(--rnx-secondary,#2f5787))] bg-[color:var(--rnx-surface,#ffffff)] bg-center bg-no-repeat bg-contain shadow-sm transition-colors duration-150 motion-reduce:transition-none checked:border-[color:var(--rnx-primary,#4f46e5)] checked:bg-[color:var(--rnx-primary,#4f46e5)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-surface,#ffffff)_14%,var(--rnx-primary,#4a4def))] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 checked:bg-[url(data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2016%2016%27%3E%3Ccircle%20cx=%278%27%20cy=%278%27%20r=%273%27%20fill=%27white%27/%3E%3C/svg%3E)]',
+      base: 'h-4 w-4 rounded-full shrink-0 appearance-none border border-[color:color-mix(in_srgb,var(--rnx-surface,#ffffff)_75%,var(--rnx-secondary,#2f5787))] bg-[color:var(--rnx-surface,#ffffff)] bg-center bg-no-repeat bg-contain shadow-sm transition-colors duration-150 motion-reduce:transition-none checked:border-[color:var(--rnx-primary,#4f46e5)] checked:bg-[color:var(--rnx-primary,#4f46e5)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-surface,#ffffff)_14%,var(--rnx-primary,#4a4def))] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--rnx-surface,#ffffff)] disabled:cursor-not-allowed disabled:opacity-50 checked:bg-[url(data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2016%2016%27%3E%3Ccircle%20cx=%278%27%20cy=%278%27%20r=%273%27%20fill=%27white%27/%3E%3C/svg%3E)] [[data-mode=dark]_&]:checked:bg-[url(data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2016%2016%27%3E%3Ccircle%20cx=%278%27%20cy=%278%27%20r=%273%27%20fill=%27%230b1216%27/%3E%3C/svg%3E)] [[data-theme=dark]_&]:checked:bg-[url(data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%2016%2016%27%3E%3Ccircle%20cx=%278%27%20cy=%278%27%20r=%273%27%20fill=%27%230b1216%27/%3E%3C/svg%3E)]',
       parts: {
         wrapper: 'flex items-center gap-2',
         label: 'text-sm text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_34%,var(--rnx-secondary,#46576b))] select-none'
@@ -268,7 +268,7 @@ export const tailwindTheme = {
       // The input is a visually hidden native checkbox (peer). Track and thumb
       // are siblings that react to its state through peer-* variants, so the
       // control submits with a form and stays keyboard accessible.
-      base: 'absolute inset-0 rounded-full bg-[color:color-mix(in_srgb,var(--rnx-surface,#ffffff)_75%,var(--rnx-secondary,#2f5787))] transition-colors duration-150 motion-reduce:transition-none peer-checked:bg-[color:var(--rnx-primary,#4f46e5)] peer-focus-visible:ring-2 peer-focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-surface,#ffffff)_14%,var(--rnx-primary,#4a4def))] peer-focus-visible:ring-offset-2 peer-disabled:opacity-50',
+      base: 'absolute inset-0 rounded-full bg-[color:color-mix(in_srgb,var(--rnx-surface,#ffffff)_75%,var(--rnx-secondary,#2f5787))] transition-colors duration-150 motion-reduce:transition-none peer-checked:bg-[color:var(--rnx-primary,#4f46e5)] peer-focus-visible:ring-2 peer-focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-surface,#ffffff)_14%,var(--rnx-primary,#4a4def))] peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-[color:var(--rnx-surface,#ffffff)] peer-disabled:opacity-50',
       parts: {
         wrapper: 'flex items-center gap-3',
         label: 'text-sm text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_34%,var(--rnx-secondary,#46576b))] select-none',
@@ -282,7 +282,7 @@ export const tailwindTheme = {
     },
 
     slider: {
-      base: 'w-full h-2 bg-[color:var(--rnx-border-color,#e2e8f0)] rounded-full appearance-none cursor-pointer accent-[color:var(--rnx-primary,#4f46e5)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-surface,#ffffff)_14%,var(--rnx-primary,#4a4def))] focus-visible:ring-offset-2',
+      base: 'w-full h-2 bg-[color:var(--rnx-border-color,#e2e8f0)] rounded-full appearance-none cursor-pointer accent-[color:var(--rnx-primary,#4f46e5)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-surface,#ffffff)_14%,var(--rnx-primary,#4a4def))] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--rnx-surface,#ffffff)]',
       states: {
         disabled: 'opacity-50 cursor-not-allowed'
       }
@@ -324,7 +324,7 @@ export const tailwindTheme = {
         header: 'px-5 py-4 border-b border-[color:var(--rnx-border-color,#e2e8f0)]',
         body: 'p-3 overflow-y-auto',
         title: 'text-base font-semibold text-[color:var(--rnx-text-primary,#0f172a)]',
-        overlay: 'fixed inset-0 bg-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_50%,transparent)] z-40'
+        overlay: 'fixed inset-0 bg-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_50%,transparent)] [[data-mode=dark]_&]:bg-[color:rgb(0_0_0/0.6)] [[data-theme=dark]_&]:bg-[color:rgb(0_0_0/0.6)] z-40'
       }
     },
 
@@ -391,7 +391,7 @@ export const tailwindTheme = {
         full: 'max-w-full'
       },
       parts: {
-        overlay: 'fixed inset-0 bg-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_50%,transparent)] transition-opacity motion-reduce:transition-none',
+        overlay: 'fixed inset-0 bg-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_50%,transparent)] [[data-mode=dark]_&]:bg-[color:rgb(0_0_0/0.6)] [[data-theme=dark]_&]:bg-[color:rgb(0_0_0/0.6)] transition-opacity motion-reduce:transition-none',
         dialog: 'relative bg-[color:var(--rnx-surface,#ffffff)] rounded-lg shadow-xl mx-auto my-8 w-full',
         content: 'relative',
         header: 'flex items-start justify-between px-5 py-4 border-b border-[color:var(--rnx-border-color,#e2e8f0)]',
@@ -581,7 +581,7 @@ export const tailwindTheme = {
     },
 
     fab: {
-      base: 'fixed bottom-6 right-6 w-14 h-14 rounded-full bg-[color:var(--rnx-primary,#4f46e5)] text-[color:var(--rnx-text-on-primary,#ffffff)] shadow-lg hover:bg-[color:var(--rnx-primary-hover,#4338ca)] hover:shadow-xl active:bg-[color:var(--rnx-primary-active,#3730a3)] transition-all duration-150 motion-reduce:transition-none flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-surface,#ffffff)_14%,var(--rnx-primary,#4a4def))] focus-visible:ring-offset-2',
+      base: 'fixed bottom-6 right-6 w-14 h-14 rounded-full bg-[color:var(--rnx-primary,#4f46e5)] text-[color:var(--rnx-text-on-primary,#ffffff)] shadow-lg hover:bg-[color:var(--rnx-primary-hover,#4338ca)] hover:shadow-xl active:bg-[color:var(--rnx-primary-active,#3730a3)] transition-all duration-150 motion-reduce:transition-none flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-surface,#ffffff)_14%,var(--rnx-primary,#4a4def))] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--rnx-surface,#ffffff)]',
       sizes: {
         sm: 'w-12 h-12',
         md: 'w-14 h-14',
@@ -660,7 +660,7 @@ export const tailwindTheme = {
         icon: 'mx-auto mb-4 text-[color:color-mix(in_srgb,var(--rnx-surface,#ffffff)_75%,var(--rnx-secondary,#2f5787))]',
         title: 'text-base font-semibold text-[color:var(--rnx-text-primary,#0f172a)] mb-1',
         description: 'text-sm text-[color:var(--rnx-text-secondary,#64748b)] mb-6 max-w-sm mx-auto',
-        action: 'inline-flex items-center justify-center gap-2 h-9 px-4 text-sm font-medium bg-[color:var(--rnx-primary,#4f46e5)] text-[color:var(--rnx-text-on-primary,#ffffff)] rounded-md shadow-sm hover:bg-[color:var(--rnx-primary-hover,#4338ca)] active:bg-[color:var(--rnx-primary-active,#3730a3)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-surface,#ffffff)_14%,var(--rnx-primary,#4a4def))] focus-visible:ring-offset-2'
+        action: 'inline-flex items-center justify-center gap-2 h-9 px-4 text-sm font-medium bg-[color:var(--rnx-primary,#4f46e5)] text-[color:var(--rnx-text-on-primary,#ffffff)] rounded-md shadow-sm hover:bg-[color:var(--rnx-primary-hover,#4338ca)] active:bg-[color:var(--rnx-primary-active,#3730a3)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-surface,#ffffff)_14%,var(--rnx-primary,#4a4def))] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--rnx-surface,#ffffff)]'
       }
     },
 
@@ -670,7 +670,7 @@ export const tailwindTheme = {
         icon: 'inline-block mr-2 text-[color:color-mix(in_srgb,var(--rnx-surface,#ffffff)_19%,var(--rnx-danger,#eb1818))]',
         title: 'text-base font-semibold text-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_17%,var(--rnx-danger-hover,#b51c18))] mb-1',
         message: 'text-sm text-[color:var(--rnx-danger-hover,#b91c1c)]',
-        action: 'mt-4 inline-flex items-center gap-2 h-9 px-4 text-sm font-medium bg-[color:var(--rnx-danger,#dc2626)] text-[color:var(--rnx-text-on-primary,#ffffff)] rounded-md shadow-sm hover:bg-[color:var(--rnx-danger-hover,#b91c1c)] active:bg-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_17%,var(--rnx-danger-hover,#b51c18))] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-surface,#ffffff)_19%,var(--rnx-danger,#eb1818))] focus-visible:ring-offset-2'
+        action: 'mt-4 inline-flex items-center gap-2 h-9 px-4 text-sm font-medium bg-[color:var(--rnx-danger,#dc2626)] text-[color:var(--rnx-text-on-primary,#ffffff)] rounded-md shadow-sm hover:bg-[color:var(--rnx-danger-hover,#b91c1c)] active:bg-[color:color-mix(in_srgb,var(--rnx-text-primary,#0f172a)_17%,var(--rnx-danger-hover,#b51c18))] focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:color-mix(in_srgb,var(--rnx-surface,#ffffff)_19%,var(--rnx-danger,#eb1818))] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--rnx-surface,#ffffff)]'
       }
     },
 
