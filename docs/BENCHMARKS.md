@@ -6,7 +6,7 @@
 
 | Metric | rnxJS | jQuery | Vue 3 | React 18 |
 |--------|-------|--------|-------|----------|
-| **Bundle Size (gzipped)** | **~10KB** | ~30KB | ~16KB | ~42KB |
+| **Bundle Size (gzipped)** | **~47KB** (dist/rnx.global.js, 2.3.0) | ~30KB | ~16KB | ~42KB |
 | **Zero Build Required** | **✅ Yes** | ✅ Yes | ⚠️ Recommended | ❌ Required |
 | **Time to Interactive** | **<100ms** | <100ms | ~150ms | ~200ms |
 | **Built-in Components** | **34** | 0 | 0 | 0 |
@@ -188,15 +188,17 @@ Loading a dashboard with DataTable, Charts, and Forms:
 
 ### Production Builds (minified + gzipped)
 
+rnxJS is measured from the published 2.3.0 file dist/rnx.global.js: 47,294 bytes gzipped (-9), 40,142 bytes brotli. Router and state ship in that one file. Other rows are approximate.
+
 | Framework | Core | + Router | + State | Total |
 |-----------|------|----------|---------|-------|
-| **rnxJS** | **10KB** | **+1KB** | **+0KB** | **~11KB** |
+| **rnxJS** | **47KB** | included | included | **~47KB** |
 | Vue 3 | 16KB | +4KB | +2KB | ~22KB |
 | React 18 | 42KB | +14KB | +5KB | ~61KB |
 | Angular 17 | 60KB | Built-in | Built-in | ~80KB |
 | jQuery | 30KB | N/A | N/A | ~30KB |
 
-### What's Included in rnxJS Core (10KB)
+### What's Included in rnxJS Core (~47KB gzipped)
 
 - ✅ Reactive state management
 - ✅ Two-way data binding
