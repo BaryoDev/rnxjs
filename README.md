@@ -575,7 +575,7 @@ import '@arnelirobles/rnxjs/css/bootstrap-m3-theme.css'; // Optional M3 theme
 
 | Feature                   | rnxJS                              | jQuery   | Vue 3         | React 18   |
 | ------------------------- | ---------------------------------- | -------- | ------------- | ---------- |
-| **Bundle Size (gzipped)** | ~42KB *(includes 46 components)*   | ~30KB    | ~16KB         | ~42KB      |
+| **Bundle Size (gzipped)** | ~47KB *(dist/rnx.global.js, 2.3.0, 46 components)* | ~30KB    | ~16KB         | ~42KB      |
 | **Zero Build Required**   | **✅ Yes**                          | ✅ Yes    | ⚠️ Recommended | ❌ Required |
 | **Built-in Components**   | **46**                             | 0        | 0             | 0          |
 | **Two-Way Binding**       | **✅ Built-in**                     | ❌ Manual | ✅ v-model     | ❌ Manual   |
