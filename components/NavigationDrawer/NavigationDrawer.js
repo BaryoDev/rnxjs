@@ -37,7 +37,7 @@ export function NavigationDrawer({
 } = {}) {
   // Resolve classes from active theme
   const drawerClass = cn(
-    resolveClasses('navigationdrawer'),
+    resolveClasses('navigationdrawer', { open: isOpen }),
     'm3-navigation-drawer',
     isOpen ? 'open' : '',
     className

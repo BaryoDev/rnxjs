@@ -82,10 +82,14 @@ No JavaScript, no build step, no forking:
 ```css
 :root {
   --rnx-primary: #7c3aed;
+  --rnx-primary-rgb: 124, 58, 237;
   --rnx-border-radius: 12px;
   --rnx-font-family: "Inter", system-ui, sans-serif;
 }
 ```
+
+Set `--rnx-primary-rgb` with `--rnx-primary`. Bootstrap's `.bg-primary` and
+`.text-primary` (badges, chips, spinners) read the rgb form.
 
 That is the whole of theming for most projects. Buttons, tables, inputs,
 modals, the focus rings and the page furniture all recolour together.
