@@ -10,6 +10,7 @@ import { escapeAttribute } from '../../utils/security.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 
+const MAX_COUNT = 100;
 const SR_ONLY_STYLE = 'position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;';
 
 /**
@@ -49,6 +50,14 @@ export function Skeleton({
     animation = 'wave',
     className = ''
 } = {}) {
+    const count = (n, fallback) => {
+        const v = Math.floor(Number(n));
+        return Number.isFinite(v) && v >= 0 ? Math.min(v, MAX_COUNT) : fallback;
+    };
+    lines = count(lines, 3);
+    rows = count(rows, 5);
+    cols = count(cols, 4);
+
     // Validate variant
     const validVariants = ['text', 'circle', 'rectangle', 'card', 'table'];
     if (!validVariants.includes(variant)) {
