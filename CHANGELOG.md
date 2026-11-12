@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.1] - 2026-11-12
+
 ### Fixed
 
 - Modal under Tailwind is hidden when closed, centred over a dark-mode-aware scrim when open, closes on Escape or a backdrop click, returns focus to the trigger, and no longer needs Bootstrap JS (it ignores it, so no `Illegal invocation` and no stuck `modal-open` on body).
