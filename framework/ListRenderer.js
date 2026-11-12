@@ -97,12 +97,11 @@ export class ListRenderer {
       let rendered = this.renderedMap.get(key);
 
       if (rendered) {
-        // Update existing item if data changed
-        if (rendered.item !== item || rendered.index !== index) {
-          this.updateElement(rendered.element, item, index);
-          rendered.item = item;
-          rendered.index = index;
-        }
+        // Always refresh the row. The same item object can have changed fields
+        // (state.users[0].name = 'B'), so comparing identity would miss it.
+        this.updateElement(rendered.element, item, index);
+        rendered.item = item;
+        rendered.index = index;
 
         // Move if position changed
         if (rendered.element.previousSibling !== prevElement) {

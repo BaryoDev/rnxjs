@@ -105,6 +105,18 @@ export function VirtualList(options = {}) {
     let startIndex = 0;
     let endIndex = 0;
 
+    let host = null; // set once the component exists
+
+    // Viewport height in px. A height such as calc(...) or 50vh does not parse,
+    // so fall back to the measured container, then to visibleCount rows.
+    const getViewportHeight = () => {
+        const parsed = /^\s*\d+(\.\d+)?(px)?\s*$/.test(String(containerHeight)) ? parseFloat(containerHeight) : NaN;
+        if (Number.isFinite(parsed)) return parsed;
+        const measured = host?.refs?.container?.clientHeight;
+        if (measured > 0) return measured;
+        return visibleCount * itemHeight;
+    };
+
     /**
      * Calculate which items should be visible
      */
@@ -112,7 +124,7 @@ export function VirtualList(options = {}) {
         startIndex = Math.max(0, Math.floor(scrollTop / itemHeight) - bufferSize);
         endIndex = Math.min(
             currentItems.length,
-            Math.ceil((scrollTop + parseInt(containerHeight)) / itemHeight) + bufferSize
+            Math.ceil((scrollTop + getViewportHeight()) / itemHeight) + bufferSize
         );
     };
 
@@ -225,6 +237,7 @@ export function VirtualList(options = {}) {
         startIndex: 0,
         endIndex: 0
     });
+    host = component;
 
     // Set up scroll handler (removed with stored reference in cleanup)
     component.useEffect((el) => {

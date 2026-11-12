@@ -11,7 +11,7 @@ export function createReactiveState(initialState = {}) {
     }
 
     const subscribers = new Map();
-    const proxyCache = new WeakMap(); // Cache proxies to avoid recreating them
+    const proxyCache = new WeakMap(); // target -> Map(path -> proxy); a proxy carries its path, so the cache is keyed by both
     const unsubscribeFunctions = new Set(); // Track all unsubscribe functions for cleanup
 
     // RACE CONDITION FIX: visitedObjects should be per-traversal, not global
@@ -176,27 +176,28 @@ export function createReactiveState(initialState = {}) {
      * Create reactive proxy for nested objects and arrays
      * @param {Object} target - Object to make reactive
      * @param {string} basePath - Current path prefix
-     * @param {WeakSet} visited - Per-traversal visited objects (RACE CONDITION FIX)
+     * @param {Array} ancestors - Objects on the path from the root, used to detect cycles
      * @returns {Proxy} - Reactive proxy
      */
-    function createReactiveProxy(target, basePath = '', visited = new WeakSet()) {
+    function createReactiveProxy(target, basePath = '', ancestors = []) {
         // Handle non-object values
         if (typeof target !== 'object' || target === null) {
             return target;
         }
 
-        // Check if we've already created a proxy for this object (performance optimization)
-        if (proxyCache.has(target)) {
-            return proxyCache.get(target);
+        // Reuse the proxy for this object at this path. The path is baked into the proxy,
+        // so an object that moved (reverse, splice) gets a new proxy at its new path.
+        let byPath = proxyCache.get(target);
+        if (byPath && byPath.has(basePath)) {
+            return byPath.get(basePath);
         }
 
-        // RACE CONDITION FIX: Use per-traversal visited set to prevent circular reference infinite loops
-        // This ensures each traversal has its own tracking, preventing false positives
-        if (visited.has(target)) {
+        // An object that contains itself would nest proxies without end
+        if (ancestors.includes(target)) {
             console.warn(`[rnxJS] Circular reference detected at path "${basePath}". Skipping proxy creation.`);
             return target;
         }
-        visited.add(target);
+        const chain = [...ancestors, target];
 
         // Special handling for arrays
         const isArray = Array.isArray(target);
@@ -225,8 +226,7 @@ export function createReactiveState(initialState = {}) {
 
                 // Return nested proxy for objects and arrays
                 if (typeof value === 'object' && value !== null) {
-                    // RACE CONDITION FIX: Pass visited set to track circular references per-traversal
-                    return createReactiveProxy(value, currentPath, visited);
+                    return createReactiveProxy(value, currentPath, chain);
                 }
 
                 return value;
@@ -249,11 +249,28 @@ export function createReactiveState(initialState = {}) {
                 }
 
                 return true;
+            },
+
+            deleteProperty(obj, prop) {
+                if (typeof prop !== 'string') {
+                    return Reflect.deleteProperty(obj, prop);
+                }
+
+                const existed = Object.prototype.hasOwnProperty.call(obj, prop);
+                const deleted = Reflect.deleteProperty(obj, prop);
+                if (deleted && existed) {
+                    queueNotification(basePath ? `${basePath}.${prop}` : prop, undefined);
+                }
+                return deleted;
             }
         };
 
         const proxy = new Proxy(target, handler);
-        proxyCache.set(target, proxy);
+        if (!byPath) {
+            byPath = new Map();
+            proxyCache.set(target, byPath);
+        }
+        byPath.set(basePath, proxy);
 
         return proxy;
     }

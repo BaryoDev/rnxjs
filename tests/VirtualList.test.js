@@ -409,3 +409,47 @@ describe('VirtualList Component', () => {
         });
     });
 });
+
+describe('VirtualList review fixes', () => {
+    const makeItems = (count) => Array.from({ length: count }, (_, i) => ({ id: i, title: `Item ${i}` }));
+    let host;
+
+    beforeEach(() => {
+        host = document.createElement('div');
+        document.body.appendChild(host);
+    });
+    afterEach(() => host.remove());
+
+    it('re-windows on scroll when a reactive state is given', async () => {
+        const state = createReactiveState({ items: makeItems(500) });
+        const list = VirtualList({
+            items: state.items,
+            state,
+            itemHeight: 50,
+            visibleCount: 10,
+            bufferSize: 2,
+            renderItem: (item) => `<div>${item.title}</div>`
+        });
+        host.appendChild(list);
+        await new Promise(r => setTimeout(r, 30));
+
+        const first = () => list.querySelector('.rnx-virtual-list-item').getAttribute('data-index');
+        expect(first()).toBe('0');
+
+        list.refs.container.scrollTop = 2000;
+        list.refs.container.dispatchEvent(new Event('scroll'));
+        expect(first()).toBe('38');
+    });
+
+    it('renders items for a height that does not parse as a number', () => {
+        const list = VirtualList({
+            items: makeItems(100),
+            itemHeight: 50,
+            visibleCount: 10,
+            height: 'calc(100vh - 80px)',
+            renderItem: (item) => `<div>${item.title}</div>`
+        });
+        host.appendChild(list);
+        expect(list.querySelectorAll('.rnx-virtual-list-item').length).toBeGreaterThan(0);
+    });
+});

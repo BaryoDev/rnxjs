@@ -108,7 +108,7 @@ export function DataTable({
         const query = filterQuery.toLowerCase();
         return data.filter(row =>
             columns.some(col =>
-                String(row[col.key] || '').toLowerCase().includes(query)
+                String(row[col.key] ?? '').toLowerCase().includes(query)
             )
         );
     };
@@ -263,12 +263,17 @@ export function DataTable({
 
         return `
             <tbody class="${bodyClass}">
-                ${displayData.map((row, idx) => `
+                ${displayData.map((row, idx) => {
+                    // Selection is keyed by position in the full rows array, so it
+                    // survives paging, sorting and filtering
+                    const src = rows.indexOf(row);
+                    return `
                     <tr
-                        class="${cn(rowClass, 'datatable-row', selectedRows.has(idx) ? 'table-active' : '')}"
+                        class="${cn(rowClass, 'datatable-row', selectedRows.has(src) ? 'table-active' : '')}"
                         data-row-index="${idx}"
+                        data-source-index="${src}"
                         data-row-id="${escapeHtml(String(row.id ?? idx))}"
-                        ${selectedRows.has(idx) ? 'aria-selected="true"' : ''}
+                        ${selectedRows.has(src) ? 'aria-selected="true"' : ''}
                     >
                         ${selectable ? `
                             <td class="${cn(tdClass, 'datatable-checkbox')}">
@@ -276,18 +281,20 @@ export function DataTable({
                                     type="checkbox"
                                     class="${cn(checkboxClass, 'datatable-row-checkbox')}"
                                     data-row-index="${idx}"
+                                    data-source-index="${src}"
                                     aria-label="Select row"
-                                    ${selectedRows.has(idx) ? 'checked' : ''}
+                                    ${selectedRows.has(src) ? 'checked' : ''}
                                 />
                             </td>
                         ` : ''}
                         ${columns.map(col => `
                             <td class="${tdClass}" data-column="${escapeHtml(col.key)}">
-                                ${escapeHtml(String(row[col.key] || ''))}
+                                ${escapeHtml(String(row[col.key] ?? ''))}
                             </td>
                         `).join('')}
                     </tr>
-                `).join('')}
+                `;
+                }).join('')}
             </tbody>
         `;
     };
@@ -487,12 +494,13 @@ export function DataTable({
             if (selectAllCheckbox) {
                 selectAllCheckbox.addEventListener('change', (e) => {
                     const isChecked = e.target.checked;
-                    rowCheckboxes.forEach((checkbox, idx) => {
+                    rowCheckboxes.forEach((checkbox) => {
+                        const src = parseInt(checkbox.dataset.sourceIndex, 10);
                         checkbox.checked = isChecked;
                         if (isChecked) {
-                            selectedRows.add(idx);
+                            selectedRows.add(src);
                         } else {
-                            selectedRows.delete(idx);
+                            selectedRows.delete(src);
                         }
                     });
                     component.setState({
@@ -504,12 +512,13 @@ export function DataTable({
                 });
             }
 
-            rowCheckboxes.forEach((checkbox, idx) => {
+            rowCheckboxes.forEach((checkbox) => {
+                const src = parseInt(checkbox.dataset.sourceIndex, 10);
                 checkbox.addEventListener('change', (e) => {
                     if (e.target.checked) {
-                        selectedRows.add(idx);
+                        selectedRows.add(src);
                     } else {
-                        selectedRows.delete(idx);
+                        selectedRows.delete(src);
                     }
                     component.setState({
                         selectedRows: Array.from(selectedRows)

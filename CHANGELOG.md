@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `data-for` rows update when a field of an existing item changes in place (`state.users[0].name = 'B'`).
+- Reactive state keeps a proxy per object and path, so after `reverse`, `sort` or `splice` a moved item notifies its new path. `delete state.user.name` now notifies subscribers.
+- A component can call `useEffect` more than once. Each effect runs and each cleanup is called. VirtualList with `state` no longer loses its scroll handler, and a `height` such as `calc(...)` no longer renders nothing.
+- DataTable shows `0` and `false` in cells and finds them when filtering. Selection is keyed by the row's position in the full `rows` array, so it holds across pages, sorting and filtering. `getSelectedRows()` and `onSelectionChange` report those positions.
+
 ## [2.3.1] - 2026-11-12
 
 ### Fixed

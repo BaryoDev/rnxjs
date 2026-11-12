@@ -43,8 +43,7 @@ export function createReactiveState<T extends Record<string, any>>(
     }
 
     const subscribers = new Map<string, Set<SubscriberCallback>>();
-    const proxyCache = new WeakMap<object, any>(); // Cache proxies to avoid recreating them
-    const visitedObjects = new WeakSet<object>(); // Prevent circular reference infinite loops
+    const proxyCache = new WeakMap<object, Map<string, any>>(); // target -> Map(path -> proxy); a proxy carries its path, so the cache is keyed by both
     const unsubscribeFunctions = new Set<UnsubscribeFunction>(); // Track all unsubscribe functions for cleanup
 
     // Update batching state
@@ -204,23 +203,25 @@ export function createReactiveState<T extends Record<string, any>>(
      * @param basePath - Current path prefix
      * @returns Reactive proxy
      */
-    function createReactiveProxy(target: any, basePath: string = ''): any {
+    function createReactiveProxy(target: any, basePath: string = '', ancestors: any[] = []): any {
         // Handle non-object values
         if (typeof target !== 'object' || target === null) {
             return target;
         }
 
-        // Check if we've already created a proxy for this object (performance optimization)
-        if (proxyCache.has(target)) {
-            return proxyCache.get(target);
+        // Reuse the proxy for this object at this path. The path is baked into the proxy,
+        // so an object that moved (reverse, splice) gets a new proxy at its new path.
+        let byPath = proxyCache.get(target);
+        if (byPath && byPath.has(basePath)) {
+            return byPath.get(basePath);
         }
 
-        // Prevent circular reference infinite loops
-        if (visitedObjects.has(target)) {
+        // An object that contains itself would nest proxies without end
+        if (ancestors.includes(target)) {
             console.warn(`[rnxJS] Circular reference detected at path "${basePath}". Skipping proxy creation.`);
             return target;
         }
-        visitedObjects.add(target);
+        const chain = [...ancestors, target];
 
         // Special handling for arrays
         const isArray = Array.isArray(target);
@@ -249,7 +250,7 @@ export function createReactiveState<T extends Record<string, any>>(
 
                 // Return nested proxy for objects and arrays
                 if (typeof value === 'object' && value !== null) {
-                    return createReactiveProxy(value, currentPath);
+                    return createReactiveProxy(value, currentPath, chain);
                 }
 
                 return value;
@@ -272,11 +273,28 @@ export function createReactiveState<T extends Record<string, any>>(
                 }
 
                 return true;
+            },
+
+            deleteProperty(obj: any, prop: string | symbol): boolean {
+                if (typeof prop !== 'string') {
+                    return Reflect.deleteProperty(obj, prop);
+                }
+
+                const existed = Object.prototype.hasOwnProperty.call(obj, prop);
+                const deleted = Reflect.deleteProperty(obj, prop);
+                if (deleted && existed) {
+                    queueNotification(basePath ? `${basePath}.${prop}` : prop, undefined);
+                }
+                return deleted;
             }
         };
 
         const proxy = new Proxy(target, handler);
-        proxyCache.set(target, proxy);
+        if (!byPath) {
+            byPath = new Map();
+            proxyCache.set(target, byPath);
+        }
+        byPath.set(basePath, proxy);
 
         return proxy;
     }
