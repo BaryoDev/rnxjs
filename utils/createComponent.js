@@ -2,10 +2,18 @@ export function createComponent(templateFn, initialState = {}, styles = '') {
   let component;
   const el = document.createElement('div');
   let currentState = { ...initialState };
-  let effectFn = null;
-  let effectCleanup = null;
+  let effectFns = [];
+  let effectCleanups = [];
   let unmountCleanup = null;
   const children = currentState.children || null;
+
+  function runCleanup(cleanup) {
+    try {
+      cleanup();
+    } catch (error) {
+      console.error('[rnxJS] Error in useEffect cleanup:', error);
+    }
+  }
 
   function render() {
     try {
@@ -45,20 +53,20 @@ export function createComponent(templateFn, initialState = {}, styles = '') {
       });
 
       setTimeout(() => {
-        if (effectFn) {
-          try {
-            // Run cleanup from previous effect if exists
-            if (effectCleanup && typeof effectCleanup === 'function') {
-              effectCleanup();
+        if (effectFns.length) {
+          // Run cleanups from the previous run, then every registered effect
+          effectCleanups.forEach(runCleanup);
+          effectCleanups = [];
+          effectFns.forEach(fn => {
+            try {
+              const cleanup = fn(component);
+              if (cleanup && typeof cleanup === 'function') {
+                effectCleanups.push(cleanup);
+              }
+            } catch (error) {
+              console.error('[rnxJS] Error in useEffect:', error);
             }
-            // Run effect and store cleanup function if returned
-            const cleanup = effectFn(component);
-            if (cleanup && typeof cleanup === 'function') {
-              effectCleanup = cleanup;
-            }
-          } catch (error) {
-            console.error('[rnxJS] Error in useEffect:', error);
-          }
+          });
         }
       }, 0);
 
@@ -136,7 +144,7 @@ export function createComponent(templateFn, initialState = {}, styles = '') {
       console.warn('[rnxJS] useEffect: argument must be a function');
       return;
     }
-    effectFn = fn;
+    effectFns.push(fn);
   };
 
   const onUnmount = (fn) => {
@@ -159,9 +167,7 @@ export function createComponent(templateFn, initialState = {}, styles = '') {
   const destroy = () => {
     try {
       // Run effect cleanup
-      if (effectCleanup && typeof effectCleanup === 'function') {
-        effectCleanup();
-      }
+      effectCleanups.forEach(runCleanup);
       // Run unmount cleanup
       if (unmountCleanup && typeof unmountCleanup === 'function') {
         unmountCleanup();
@@ -172,9 +178,9 @@ export function createComponent(templateFn, initialState = {}, styles = '') {
         component._mutationObserver = null;
       }
       // Clear references
-      effectCleanup = null;
+      effectCleanups = [];
       unmountCleanup = null;
-      effectFn = null;
+      effectFns = [];
       if (component.refs) {
         component.refs = {};
       }

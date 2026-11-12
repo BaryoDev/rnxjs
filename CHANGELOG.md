@@ -17,9 +17,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `data-for` rows update when a field of an existing item changes in place (`state.users[0].name = 'B'`).
+- Reactive state keeps a proxy per object and path, so after `reverse`, `sort` or `splice` a moved item notifies its new path. `delete state.user.name` now notifies subscribers.
+- A component can call `useEffect` more than once. Each effect runs and each cleanup is called. VirtualList with `state` no longer loses its scroll handler, and a `height` such as `calc(...)` no longer renders nothing.
+- DataTable shows `0` and `false` in cells and finds them when filtering.
 - Router: the hash query (`#/users/7?tab=x`) no longer leaks into params and is exposed as `rnxRouter.query()`. Params are URI-decoded, a trailing slash matches the same route, and a numeric param name such as `:1` is skipped with a warning instead of throwing. `rnxRouter.destroy()` removes the listener, and a second install replaces the first.
 - `import { escapeHtml } from '@arnelirobles/rnxjs/utils/security'` resolves. It was documented but missing from `exports`.
 - Publish workflow fails unless the release commit is on `main`, and pins npm to `npm@11` instead of `latest`. `ci.yml` gets `permissions: contents: read`.
+
+### Changed
+
+- DataTable selection is keyed by the row's position in the full `rows` array, so it holds across pages, sorting and filtering. `getSelectedRows()` and `onSelectionChange` report those positions, not page-local indexes (identical for an unsorted first page).
 
 ## [2.3.1] - 2026-11-12
 
