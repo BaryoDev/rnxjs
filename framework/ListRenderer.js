@@ -172,7 +172,7 @@ export class ListRenderer {
       const path = el.getAttribute('data-bind');
       const value = this.resolveBinding(path, item, index);
       if (value !== undefined) {
-        el.textContent = value;
+        if (el.textContent !== String(value)) el.textContent = value;
       }
     });
 
@@ -183,7 +183,7 @@ export class ListRenderer {
       if (value !== undefined) {
         // For primitive items, show the value directly
         if (typeof item !== 'object' || item === null) {
-          element.textContent = value;
+          if (element.textContent !== String(value)) element.textContent = value;
         }
       }
     }

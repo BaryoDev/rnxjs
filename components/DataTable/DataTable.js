@@ -249,6 +249,7 @@ export function DataTable({
         }
 
         const displayData = getDisplayData();
+        const sourceIndex = new Map(rows.map((r, i) => [r, i]));
         if (displayData.length === 0) {
             return `
                 <tbody class="${bodyClass}">
@@ -266,7 +267,7 @@ export function DataTable({
                 ${displayData.map((row, idx) => {
                     // Selection is keyed by position in the full rows array, so it
                     // survives paging, sorting and filtering
-                    const src = rows.indexOf(row);
+                    const src = sourceIndex.get(row);
                     return `
                     <tr
                         class="${cn(rowClass, 'datatable-row', selectedRows.has(src) ? 'table-active' : '')}"
