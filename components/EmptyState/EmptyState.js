@@ -6,7 +6,7 @@
  */
 
 import { createComponent } from '../../utils/createComponent.js';
-import { escapeHtml } from '../../utils/security.js';
+import { escapeHtml, escapeAttr } from '../../utils/security.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 import { resolveIcon } from '../../utils/icon.js';
@@ -68,18 +68,18 @@ export function EmptyState({
         );
 
         return `
-            <div class="${containerClass}" data-ref="container">
+            <div class="${escapeAttr(containerClass)}" data-ref="container">
                 ${icon ? `
-                    <div class="${iconClass}" aria-hidden="true">
+                    <div class="${escapeAttr(iconClass)}" aria-hidden="true">
                         <i class="${escapeHtml(resolveIcon(icon))}" style="font-size: 3rem;"></i>
                     </div>
                 ` : ''}
-                <h4 class="${titleClass}">${escapeHtml(title)}</h4>
+                <h4 class="${escapeAttr(titleClass)}">${escapeHtml(title)}</h4>
                 ${message ? `
-                    <p class="${descriptionClass}">${escapeHtml(message)}</p>
+                    <p class="${escapeAttr(descriptionClass)}">${escapeHtml(message)}</p>
                 ` : ''}
                 ${actionLabel ? `
-                    <button type="button" class="${buttonClass}" data-ref="actionBtn">
+                    <button type="button" class="${escapeAttr(buttonClass)}" data-ref="actionBtn">
                         ${escapeHtml(actionLabel)}
                     </button>
                 ` : ''}

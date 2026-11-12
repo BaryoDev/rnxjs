@@ -8,7 +8,7 @@
 import { createComponent } from '../../utils/createComponent.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
-import { escapeHtml, sanitizeUrl } from '../../utils/security.js';
+import { escapeHtml, sanitizeUrl, escapeAttr } from '../../utils/security.js';
 
 /**
  * Create a breadcrumb navigation component
@@ -58,15 +58,15 @@ export function Breadcrumb({
     const template = () => {
         return `
             <nav aria-label="breadcrumb">
-                <ol class="${breadcrumbClass}">
+                <ol class="${escapeAttr(breadcrumbClass)}">
                     ${items.map((item) => `
-                        <li class="${item.active ? activeClass : itemClass}"${item.active ? ' aria-current="page"' : ''}>
+                        <li class="${escapeAttr(item.active ? activeClass : itemClass)}"${item.active ? ' aria-current="page"' : ''}>
                             ${item.active
                                 ? `<span>${escapeHtml(item.label)}</span>`
                                 : `<a href="${escapeHtml(sanitizeUrl(item.href) || '#')}">${escapeHtml(item.label)}</a>`
                             }
                         </li>
-                    `).join(`<li class="${separatorClass}" aria-hidden="true">${escapeHtml(separator)}</li>`)}
+                    `).join(`<li class="${escapeAttr(separatorClass)}" aria-hidden="true">${escapeHtml(separator)}</li>`)}
                 </ol>
             </nav>
         `;

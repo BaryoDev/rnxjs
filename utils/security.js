@@ -44,6 +44,23 @@ export function escapeHtml(str) {
   return str.replace(/[&<>"'`=/]/g, char => HTML_ENTITIES[char]);
 }
 
+const ATTR_ENTITIES = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;' };
+
+/**
+ * Escape a value for a double or single quoted HTML attribute.
+ * Only & < > " ' are escaped, so class names such as w-1/2 or
+ * bg-[url(data:image/svg+xml,...)] stay readable.
+ *
+ * @param {*} str - Value to escape
+ * @returns {string}
+ */
+export function escapeAttr(str) {
+  if (str === null || str === undefined) {
+    return '';
+  }
+  return String(str).replace(/[&<>"']/g, char => ATTR_ENTITIES[char]);
+}
+
 /**
  * Escape string for use in HTML attributes
  * More aggressive escaping for attribute context
@@ -192,6 +209,18 @@ export function sanitizeText(str) {
 }
 
 /**
+ * Normalise a URL attribute value the way a browser does before it reads the
+ * scheme: remove ASCII tab, newline, carriage return and other control
+ * characters anywhere, then trim whitespace.
+ *
+ * @param {string} value - Attribute value (entities already decoded by the parser)
+ * @returns {string}
+ */
+function normalizeUrlValue(value) {
+  return String(value).replace(/[\u0000-\u001f\u007f-\u009f]/g, '').trim();
+}
+
+/**
  * Sanitize a URL to prevent javascript: and data: attacks
  *
  * @param {string} url - URL to sanitize
@@ -206,7 +235,8 @@ export function sanitizeUrl(url) {
     return null;
   }
 
-  const trimmed = url.trim().toLowerCase();
+  // Browsers drop tabs, newlines and other control characters while parsing a URL
+  const trimmed = normalizeUrlValue(url).toLowerCase();
 
   // Block dangerous protocols
   const dangerousProtocols = [
@@ -271,12 +301,63 @@ export function sanitizeObject(obj) {
 }
 
 /**
+ * Scan a regex source for a quantified group that itself contains an
+ * unbounded quantifier, such as (a+)+, (a*)*, (a+){2,} or ((a+)b)+.
+ * Escapes and character classes are skipped so ordinary patterns pass.
+ *
+ * @param {string} source - Regex source
+ * @returns {boolean} - True if a nested unbounded quantifier is found
+ */
+function hasNestedQuantifier(source) {
+  const stack = [];
+  let inClass = false;
+  let current = false; // does the current group contain an unbounded quantifier
+
+  const unboundedAt = (i) => {
+    const c = source[i];
+    if (c === '+' || c === '*') return true;
+    if (c === '{') {
+      const m = /^\{\d+,\d*\}/.exec(source.slice(i));
+      return !!m && /,\s*\}$/.test(m[0]);
+    }
+    return false;
+  };
+  const quantifiedAt = (i) => unboundedAt(i) || (source[i] === '{' && /^\{\d+(,\d+)?\}/.test(source.slice(i)));
+
+  for (let i = 0; i < source.length; i++) {
+    const c = source[i];
+    if (c === '\\') { i++; continue; }
+    if (inClass) {
+      if (c === ']') inClass = false;
+      continue;
+    }
+    if (c === '[') { inClass = true; continue; }
+    if (c === '(') {
+      stack.push(current);
+      current = false;
+      continue;
+    }
+    if (c === ')') {
+      const innerHas = current;
+      current = stack.length ? stack.pop() : false;
+      if (innerHas && quantifiedAt(i + 1)) {
+        return true;
+      }
+      if (innerHas) current = true;
+      continue;
+    }
+    if (unboundedAt(i)) current = true;
+  }
+  return false;
+}
+
+/**
  * Check if a regex pattern is safe to execute (prevent ReDoS attacks)
  *
  * Detects patterns that can cause catastrophic backtracking:
  * - Nested quantifiers (e.g., (a+)+ or (a*)*)
- * - Multiple bounded repeats (e.g., (a{1,10}){2,20})
- * - Deeply nested groups with quantifiers
+ * The check reads the pattern source, so ordinary patterns such as
+ * ^[a-z]+$ or \\d{3} pass. It is deliberately conservative.
  *
  * @param {string} pattern - Regex pattern to validate
  * @returns {boolean} - True if pattern is safe, false if potentially dangerous
@@ -290,25 +371,9 @@ export function isSafeRegex(pattern) {
     return false;
   }
 
-  // Patterns that indicate potential ReDoS vulnerabilities
-  const unsafePatterns = [
-    /(\+\*|\*\+|\*\*|\+\+)/,              // Nested quantifiers: +*, *+, **, ++
-    /(\{\d+,\d+\}){2,}/,                   // Multiple bounded repeats: {n,m}{x,y}
-    /(\([^)]*[\+\*]){3,}/,                 // 3+ nested groups with quantifiers
-    /(\(.*\+.*\)){2,}/,                    // Nested groups with +
-    /(\(.*\*.*\)){2,}/,                    // Nested groups with *
-    /(\([^)]*\+[^)]*\)\+)/,                // (group+)+ pattern
-    /(\([^)]*\*[^)]*\)\*)/,                // (group*)* pattern
-    /(.+)+/,                               // Literal .+ followed by +
-    /(.*)+/,                               // Literal .* followed by +
-  ];
-
-  // Check for dangerous patterns
-  for (const dangerous of unsafePatterns) {
-    if (dangerous.test(pattern)) {
-      console.warn(`[rnxJS] Unsafe regex pattern detected: ${pattern}`);
-      return false;
-    }
+  if (hasNestedQuantifier(pattern)) {
+    console.warn(`[rnxJS] Unsafe regex pattern detected: ${pattern}`);
+    return false;
   }
 
   // Check pattern length (very long patterns can also be problematic)
@@ -319,6 +384,11 @@ export function isSafeRegex(pattern) {
 
   return true;
 }
+
+// Attributes that carry a URL and get the scheme check
+const URL_ATTRIBUTES = new Set([
+  'href', 'src', 'action', 'formaction', 'xlink:href', 'poster', 'background', 'data', 'ping',
+]);
 
 /**
  * Sanitize HTML content to prevent XSS attacks
@@ -367,28 +437,36 @@ export function sanitizeHtml(html) {
       }
     });
 
-    // Sanitize href and src attributes
-    if (el.hasAttribute('href')) {
-      const href = sanitizeUrl(el.getAttribute('href'));
-      if (href) {
-        el.setAttribute('href', href);
-      } else {
-        el.removeAttribute('href');
-      }
-    }
-
-    if (el.hasAttribute('src')) {
-      const src = sanitizeUrl(el.getAttribute('src'));
-      if (src) {
-        el.setAttribute('src', src);
-      } else {
-        el.removeAttribute('src');
-      }
-    }
-
-    // Remove javascript: protocol from other attributes
     Array.from(el.attributes).forEach(attr => {
-      if (attr.value && attr.value.toLowerCase().includes('javascript:')) {
+      const name = attr.name.toLowerCase();
+
+      if (name === 'srcset') {
+        // Each entry is "url descriptor"; keep only entries with a safe url
+        const kept = attr.value
+          .split(',')
+          .map(entry => entry.trim())
+          .filter(entry => entry && sanitizeUrl(entry.split(/\s+/)[0]));
+        if (kept.length) {
+          el.setAttribute(attr.name, kept.join(', '));
+        } else {
+          el.removeAttribute(attr.name);
+        }
+        return;
+      }
+
+      if (URL_ATTRIBUTES.has(name)) {
+        // Check and keep the normalised value so what is stored is what was checked
+        const url = sanitizeUrl(attr.value);
+        if (url) {
+          el.setAttribute(attr.name, normalizeUrlValue(url));
+        } else {
+          el.removeAttribute(attr.name);
+        }
+        return;
+      }
+
+      // Remove javascript: protocol from other attributes
+      if (attr.value && normalizeUrlValue(attr.value).toLowerCase().includes('javascript:')) {
         el.removeAttribute(attr.name);
       }
     });

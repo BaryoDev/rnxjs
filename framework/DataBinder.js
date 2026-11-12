@@ -30,6 +30,12 @@ function getNestedValue(obj, path) {
     }
 }
 
+const UNSAFE_PATH_KEYS = new Set(['__proto__', 'prototype', 'constructor']);
+
+function isUnsafePathKey(key) {
+    return UNSAFE_PATH_KEYS.has(key);
+}
+
 /**
  * Set nested property value in object
  * Creates intermediate objects if they don't exist
@@ -40,6 +46,10 @@ function getNestedValue(obj, path) {
 function setNestedValue(obj, path, value) {
     try {
         const keys = path.split('.');
+        if (keys.some(isUnsafePathKey)) {
+            console.warn(`[rnxJS] Blocked unsafe path "${path}"`);
+            return;
+        }
         const lastKey = keys.pop();
 
         // Create intermediate objects
@@ -99,7 +109,9 @@ function validateField(value, rules) {
     const ruleList = rules.split('|');
 
     for (const rule of ruleList) {
-        const [name, param] = rule.split(':');
+        const sep = rule.indexOf(':');
+        const name = sep === -1 ? rule : rule.slice(0, sep);
+        const param = sep === -1 ? undefined : rule.slice(sep + 1);
 
         if (name === 'required') {
             if (value === null || value === undefined || value === '') {
@@ -247,7 +259,8 @@ export function bindData(rootElement = document, state = null) {
         }
 
         // Validate path format (basic check)
-        if (!/^[a-zA-Z_$][a-zA-Z0-9_$]*(\.[a-zA-Z_$][a-zA-Z0-9_$]*)*$/.test(path)) {
+        if (!/^[a-zA-Z_$][a-zA-Z0-9_$]*(\.[a-zA-Z_$][a-zA-Z0-9_$]*)*$/.test(path) ||
+            path.split('.').some(isUnsafePathKey)) {
             console.warn(`[rnxJS] Invalid data-bind path "${path}" on element:`, element);
             return;
         }

@@ -1,5 +1,5 @@
 import { createComponent } from '../../utils/createComponent.js';
-import { escapeHtml, sanitizeHtml } from '../../utils/security.js';
+import { escapeHtml, sanitizeHtml, escapeAttr } from '../../utils/security.js';
 import themeProvider, { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 
@@ -56,28 +56,28 @@ export function Accordion({ id = 'accordion', items = [], multiple = false, onTo
     const headingId = `${accordionId}-heading-${i}`;
     const panelId = `${accordionId}-collapse-${i}`;
     return `
-      <div class="${itemClass}">
-        <h3 class="${headerClass}" style="margin: 0;">
+      <div class="${escapeAttr(itemClass)}">
+        <h3 class="${escapeAttr(headerClass)}" style="margin: 0;">
           <button type="button"
-                  class="${cn(buttonClass, open ? '' : collapsedTokens.join(' '))}"
+                  class="${escapeAttr(cn(buttonClass, open ? '' : collapsedTokens.join(' ')))}"
                   id="${escapeHtml(headingId)}"
                   data-accordion-index="${i}"
                   aria-expanded="${open ? 'true' : 'false'}"
                   aria-controls="${escapeHtml(panelId)}">${escapeHtml(item.title || `Item ${i + 1}`)}</button>
         </h3>
         <div id="${escapeHtml(panelId)}"
-             class="${cn(collapseTokens.join(' '), (open ? showTokens : hideTokens).join(' '))}"
+             class="${escapeAttr(cn(collapseTokens.join(' '), (open ? showTokens : hideTokens).join(' ')))}"
              role="region"
              aria-labelledby="${escapeHtml(headingId)}"
              ${open ? '' : 'hidden'}>
-          <div class="${bodyClass}">${sanitizeHtml(item.content || '')}</div>
+          <div class="${escapeAttr(bodyClass)}">${sanitizeHtml(item.content || '')}</div>
         </div>
       </div>
     `;
   }).join('');
 
   const template = () => `
-    <div class="${accordionClass}" id="${escapeHtml(accordionId)}" ${parsedItems.length ? '' : 'data-slot'}>${parsedItems.length ? renderItems() : ''}</div>
+    <div class="${escapeAttr(accordionClass)}" id="${escapeHtml(accordionId)}" ${parsedItems.length ? '' : 'data-slot'}>${parsedItems.length ? renderItems() : ''}</div>
   `;
 
   const component = createComponent(template, { id: accordionId, children, className });

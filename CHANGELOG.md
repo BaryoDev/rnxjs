@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+
+- `data-rule="pattern:..."` validates again. `isSafeRegex` rejected every pattern because its list held `/(.+)+/` and `/(.*)+/` as regexes. It now scans the pattern source for a quantified group that holds an unbounded quantifier, such as `(a+)+`. This is conservative: a pattern like `([a-z]+\.)+[a-z]+` is also rejected. A pattern may contain `:`.
+- `sanitizeHtml` and `sanitizeUrl` strip tabs, newlines and control characters before reading the scheme, and the scheme check now covers `action`, `formaction`, `xlink:href`, `poster`, `background`, `data`, `ping` and each `srcset` entry, not only `href` and `src`.
+- Component templates escape every interpolated attribute value with the new `escapeAttr` (only `& < > " '`, so class names with `/` or `=` are unchanged), so a Tab `title` or `id`, or a `className`, with a quote can no longer add an attribute.
+- `data-bind` rejects `__proto__`, `prototype` and `constructor` path segments. The storage plugin does the same and restores only the paths it watches.
+- Removed the unused `components/Accordion/AccordionItem.js`, which was never exported.
+
 ### Fixed
 
 - Router: the hash query (`#/users/7?tab=x`) no longer leaks into params and is exposed as `rnxRouter.query()`. Params are URI-decoded, a trailing slash matches the same route, and a numeric param name such as `:1` is skipped with a warning instead of throwing. `rnxRouter.destroy()` removes the listener, and a second install replaces the first.

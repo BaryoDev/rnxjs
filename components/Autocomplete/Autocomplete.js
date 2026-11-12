@@ -7,7 +7,7 @@
  */
 
 import { createComponent } from '../../utils/createComponent.js';
-import { escapeHtml } from '../../utils/security.js';
+import { escapeHtml, escapeAttr } from '../../utils/security.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { srOnlyAttr } from '../../utils/srOnly.js';
 import { cn } from '../../utils/classNames.js';
@@ -236,13 +236,13 @@ export function Autocomplete({
         const isItemSelected = (item) => multiple ? selectedItems.includes(item) : selectedItems === item;
 
         return `
-            <div class="${wrapperClass}" data-ref="wrapper">
-                ${label ? `<label class="${labelClass}" for="${escapeHtml(finalId)}">${escapeHtml(label)}</label>` : ''}
+            <div class="${escapeAttr(wrapperClass)}" data-ref="wrapper">
+                ${label ? `<label class="${escapeAttr(labelClass)}" for="${escapeHtml(finalId)}">${escapeHtml(label)}</label>` : ''}
                 <div class="autocomplete-field" style="position: relative;">
                     <input
                         type="text"
                         id="${escapeHtml(finalId)}"
-                        class="${inputClass}"
+                        class="${escapeAttr(inputClass)}"
                         role="combobox"
                         aria-expanded="${expanded ? 'true' : 'false'}"
                         aria-autocomplete="list"
@@ -255,22 +255,22 @@ export function Autocomplete({
                     />
                     ${isLoading ? `
                         <div class="autocomplete-loading">
-                            <div class="${spinnerClass}" role="status">
+                            <div class="${escapeAttr(spinnerClass)}" role="status">
                                 <span ${srOnlyAttr()}>Loading...</span>
                             </div>
                         </div>
                     ` : ''}
                     ${expanded ? `
-                        <div class="${dropdownClass}" data-ref="dropdown">
+                        <div class="${escapeAttr(dropdownClass)}" data-ref="dropdown">
                             <ul class="autocomplete-list" id="${escapeHtml(listboxId)}" role="listbox" ${multiple ? 'aria-multiselectable="true"' : ''} style="list-style: none; margin: 0; padding: 0;">
                                 ${filteredItems.map((item, index) => `
                                     <li id="${escapeHtml(optionId(index))}"
                                         role="option"
-                                        aria-selected="${isItemSelected(item) ? 'true' : 'false'}"
-                                        class="${itemClass} ${index === highlightedIndex ? 'active' : ''} ${multiple && selectedItems.includes(item) ? 'selected' : ''}"
+                                        aria-selected="${escapeAttr(isItemSelected(item) ? 'true' : 'false')}"
+                                        class="${escapeAttr(itemClass)} ${escapeAttr(index === highlightedIndex ? 'active' : '')} ${escapeAttr(multiple && selectedItems.includes(item) ? 'selected' : '')}"
                                         data-index="${index}">
                                         ${multiple ? `
-                                            <input type="checkbox" class="${checkboxClass}" style="margin-right: 0.5rem;" tabindex="-1"
+                                            <input type="checkbox" class="${escapeAttr(checkboxClass)}" style="margin-right: 0.5rem;" tabindex="-1"
                                                 ${selectedItems.includes(item) ? 'checked' : ''}
                                                 data-index="${index}" />
                                         ` : ''}
@@ -281,7 +281,7 @@ export function Autocomplete({
                         </div>
                     ` : ''}
                     ${isOpen && filteredItems.length === 0 && inputValue.length >= minChars && !isLoading ? `
-                        <div class="${cn(resolvePartClasses('autocomplete', 'item'), 'autocomplete-empty')}" role="status">
+                        <div class="${escapeAttr(cn(resolvePartClasses('autocomplete', 'item'), 'autocomplete-empty'))}" role="status">
                             No results found
                         </div>
                     ` : ''}
@@ -289,7 +289,7 @@ export function Autocomplete({
                 ${multiple && selectedItems.length > 0 ? `
                     <div class="autocomplete-tags" style="margin-top: 0.5rem;">
                         ${selectedItems.map((item, index) => `
-                            <span class="${tagClass}">
+                            <span class="${escapeAttr(tagClass)}">
                                 ${escapeHtml(renderItem(item))}
                                 <button type="button" class="autocomplete-remove"
                                     data-index="${index}" aria-label="Remove ${escapeHtml(renderItem(item))}">&times;</button>

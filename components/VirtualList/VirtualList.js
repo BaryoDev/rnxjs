@@ -7,7 +7,7 @@
  */
 
 import { createComponent } from '../../utils/createComponent.js';
-import { escapeHtml, escapeAttribute } from '../../utils/security.js';
+import { escapeHtml, escapeAttribute, escapeAttr } from '../../utils/security.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 
@@ -157,7 +157,7 @@ export function VirtualList(options = {}) {
 
             itemsHtml.push(`
                 <div
-                    class="${itemPartClass}"
+                    class="${escapeAttr(itemPartClass)}"
                     data-index="${i}"
                     role="listitem"
                     aria-setsize="${currentItems.length}"
@@ -195,7 +195,7 @@ export function VirtualList(options = {}) {
 
         return `
             <div
-                class="${containerClass}"
+                class="${escapeAttr(containerClass)}"
                 data-ref="container"
                 style="
                     height: ${escapeAttribute(containerHeight)};
@@ -204,7 +204,7 @@ export function VirtualList(options = {}) {
                 "
             >
                 <div
-                    class="${contentClass}"
+                    class="${escapeAttr(contentClass)}"
                     data-ref="content"
                     role="list"
                     style="

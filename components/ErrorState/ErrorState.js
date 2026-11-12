@@ -6,7 +6,7 @@
  */
 
 import { createComponent } from '../../utils/createComponent.js';
-import { escapeHtml } from '../../utils/security.js';
+import { escapeHtml, escapeAttr } from '../../utils/security.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 import { resolveIcon } from '../../utils/icon.js';
@@ -95,22 +95,22 @@ export function ErrorState({
         const errorMsg = getErrorMessage();
 
         return `
-            <div class="${containerClass}" role="alert" data-ref="container">
+            <div class="${escapeAttr(containerClass)}" role="alert" data-ref="container">
                 <div class="error-state-icon" aria-hidden="true">
                     <i class="${escapeHtml(iconClass)}" style="font-size: 3rem;"></i>
                 </div>
-                <h4 class="${titleClass}">${escapeHtml(title)}</h4>
+                <h4 class="${escapeAttr(titleClass)}">${escapeHtml(title)}</h4>
                 ${message ? `
-                    <p class="${messageClass}">${escapeHtml(message)}</p>
+                    <p class="${escapeAttr(messageClass)}">${escapeHtml(message)}</p>
                 ` : ''}
 
                 ${showDetails && errorMsg ? `
                     <div class="error-state-details-wrapper">
-                        <button type="button" class="${toggleClass}" data-ref="toggleBtn" aria-expanded="${detailsVisible}">
+                        <button type="button" class="${escapeAttr(toggleClass)}" data-ref="toggleBtn" aria-expanded="${escapeAttr(detailsVisible)}">
                             ${detailsVisible ? 'Hide' : 'Show'} Details
                         </button>
                         ${detailsVisible ? `
-                            <pre class="${detailsClass}"
+                            <pre class="${escapeAttr(detailsClass)}"
                                  style="max-width: 600px; margin: 1rem auto; text-align: left; max-height: 300px; overflow-y: auto;">
                                 <code>${escapeHtml(errorMsg)}</code>
                             </pre>
@@ -119,7 +119,7 @@ export function ErrorState({
                 ` : ''}
 
                 ${actionLabel ? `
-                    <button type="button" class="${buttonClass}" data-ref="actionBtn">
+                    <button type="button" class="${escapeAttr(buttonClass)}" data-ref="actionBtn">
                         ${escapeHtml(actionLabel)}
                     </button>
                 ` : ''}

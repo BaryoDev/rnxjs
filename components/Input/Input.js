@@ -1,7 +1,7 @@
 import { createComponent } from '../../utils/createComponent.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
-import { escapeHtml } from '../../utils/security.js';
+import { escapeHtml, escapeAttr } from '../../utils/security.js';
 import { resolveIcon } from '../../utils/icon.js';
 
 let inputUid = 0;
@@ -99,11 +99,11 @@ export function Input({
   const errorClass = resolvePartClasses('input', 'error') || resolvePartClasses('formgroup', 'error');
 
   const template = () => `
-    <div class="${wrapperClass}">
-      ${fieldClass ? `<div class="${fieldClass}">` : ''}
-      ${icon ? `<span class="${iconClass}" aria-hidden="true"><i class="${escapeHtml(resolveIcon(icon))}"></i></span>` : ''}
+    <div class="${escapeAttr(wrapperClass)}">
+      ${fieldClass ? `<div class="${escapeAttr(fieldClass)}">` : ''}
+      ${icon ? `<span class="${escapeAttr(iconClass)}" aria-hidden="true"><i class="${escapeHtml(resolveIcon(icon))}"></i></span>` : ''}
       <input
-        class="${inputClass}"
+        class="${escapeAttr(inputClass)}"
         id="${escapeHtml(finalId)}"
         type="${escapeHtml(type)}"
         name="${escapeHtml(name)}"
@@ -119,9 +119,9 @@ export function Input({
         ${attrs}
       >
       ${fieldClass ? '</div>' : ''}
-      ${label ? `<label for="${escapeHtml(finalId)}" class="${labelClass}">${escapeHtml(label)}</label>` : ''}
-      ${help ? `<div id="${escapeHtml(helpId)}" class="${helpClass}">${escapeHtml(help)}</div>` : ''}
-      ${error ? `<div id="${escapeHtml(errorId)}" class="${errorClass}">${escapeHtml(error)}</div>` : ''}
+      ${label ? `<label for="${escapeHtml(finalId)}" class="${escapeAttr(labelClass)}">${escapeHtml(label)}</label>` : ''}
+      ${help ? `<div id="${escapeHtml(helpId)}" class="${escapeAttr(helpClass)}">${escapeHtml(help)}</div>` : ''}
+      ${error ? `<div id="${escapeHtml(errorId)}" class="${escapeAttr(errorClass)}">${escapeHtml(error)}</div>` : ''}
     </div>
   `;
 

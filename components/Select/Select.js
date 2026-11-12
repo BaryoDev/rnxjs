@@ -1,7 +1,7 @@
 import { createComponent } from '../../utils/createComponent.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
-import { escapeHtml } from '../../utils/security.js';
+import { escapeHtml, escapeAttr } from '../../utils/security.js';
 
 let selectUid = 0;
 
@@ -96,9 +96,9 @@ export function Select({
   const errorClass = resolvePartClasses('input', 'error') || resolvePartClasses('formgroup', 'error');
 
   const template = () => `
-    <div class="${wrapperClass}">
+    <div class="${escapeAttr(wrapperClass)}">
       <select
-        class="${selectClass}"
+        class="${escapeAttr(selectClass)}"
         id="${escapeHtml(finalId)}"
         name="${escapeHtml(name)}"
         ${isRequired ? 'required aria-required="true"' : ''}
@@ -116,9 +116,9 @@ export function Select({
           </option>
         `).join('')}
       </select>
-      ${label ? `<label for="${escapeHtml(finalId)}" class="${labelClass}">${escapeHtml(label)}</label>` : ''}
-      ${help ? `<div id="${escapeHtml(helpId)}" class="${helpClass}">${escapeHtml(help)}</div>` : ''}
-      ${error ? `<div id="${escapeHtml(errorId)}" class="${errorClass}">${escapeHtml(error)}</div>` : ''}
+      ${label ? `<label for="${escapeHtml(finalId)}" class="${escapeAttr(labelClass)}">${escapeHtml(label)}</label>` : ''}
+      ${help ? `<div id="${escapeHtml(helpId)}" class="${escapeAttr(helpClass)}">${escapeHtml(help)}</div>` : ''}
+      ${error ? `<div id="${escapeHtml(errorId)}" class="${escapeAttr(errorClass)}">${escapeHtml(error)}</div>` : ''}
     </div>
   `;
 
