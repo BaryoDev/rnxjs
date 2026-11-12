@@ -11,7 +11,7 @@
 | **Components** | None built-in | 34 pre-built components |
 | **Data Binding** | Manual | Declarative `data-bind` |
 | **Form Validation** | Plugin required | Built-in |
-| **Bundle Size** | ~30KB | ~10KB |
+| **Bundle Size** | ~30KB | ~47KB gzipped (dist/rnx.global.js, 2.3.0) |
 | **Modern Features** | Limited | Full ES6+ support |
 
 ## Quick Comparison

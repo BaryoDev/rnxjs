@@ -82,10 +82,14 @@ No JavaScript, no build step, no forking:
 ```css
 :root {
   --rnx-primary: #7c3aed;
+  --rnx-primary-rgb: 124, 58, 237;
   --rnx-border-radius: 12px;
   --rnx-font-family: "Inter", system-ui, sans-serif;
 }
 ```
+
+Set `--rnx-primary-rgb` with `--rnx-primary`. Bootstrap's `.bg-primary` and
+`.text-primary` (badges, chips, spinners) read the rgb form.
 
 That is the whole of theming for most projects. Buttons, tables, inputs,
 modals, the focus rings and the page furniture all recolour together.
@@ -575,7 +579,7 @@ import '@arnelirobles/rnxjs/css/bootstrap-m3-theme.css'; // Optional M3 theme
 
 | Feature                   | rnxJS                              | jQuery   | Vue 3         | React 18   |
 | ------------------------- | ---------------------------------- | -------- | ------------- | ---------- |
-| **Bundle Size (gzipped)** | ~42KB *(includes 46 components)*   | ~30KB    | ~16KB         | ~42KB      |
+| **Bundle Size (gzipped)** | ~47KB *(dist/rnx.global.js, 2.3.0, 46 components)* | ~30KB    | ~16KB         | ~42KB      |
 | **Zero Build Required**   | **✅ Yes**                          | ✅ Yes    | ⚠️ Recommended | ❌ Required |
 | **Built-in Components**   | **46**                             | 0        | 0             | 0          |
 | **Two-Way Binding**       | **✅ Built-in**                     | ❌ Manual | ✅ v-model     | ❌ Manual   |

@@ -45,8 +45,10 @@ export function Toast({
   const closeClass = resolvePartClasses('toast', 'close') || 'btn-close';
   const titleClass = resolvePartClasses('toast', 'title');
 
+  const shouldAutohide = autohide === true || autohide === 'true';
+
   const template = () => `
-    <div class="${escapeHtml(toastClass)}" role="status" aria-live="polite" aria-atomic="true" data-bs-delay="${escapeHtml(delay)}">
+    <div class="${escapeHtml(toastClass)}" role="status" aria-live="polite" aria-atomic="true" data-bs-autohide="${shouldAutohide}" data-bs-delay="${escapeHtml(delay)}">
       <div class="${escapeHtml(headerClass)}">
         <strong class="${escapeHtml(titleClass)}">${escapeHtml(header)}</strong>
         <button type="button" class="${escapeHtml(closeClass)}" data-ref="close" data-bs-dismiss="toast" aria-label="Close" data-rnx-ignore="true"></button>
@@ -79,7 +81,6 @@ export function Toast({
     // Fallback when Bootstrap JS is not present (Tailwind, custom themes)
     const closeBtn = el.refs && el.refs.close;
     const dismiss = () => el.remove();
-    const shouldAutohide = autohide === true || autohide === 'true';
     const timer = shouldAutohide ? setTimeout(dismiss, Number(delay) || 5000) : null;
 
     if (closeBtn) {
