@@ -16,6 +16,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # A release can be created against any branch or commit. Only a commit
+      # that is already on main gets published.
+      - name: Release commit is on main
+        run: |
+          git fetch --no-tags origin main
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/main || { echo "::error::release commit $GITHUB_SHA is not on main"; exit 1; }
 
       - uses: actions/setup-node@v4
         with:
@@ -24,10 +33,11 @@ jobs:
           registry-url: https://registry.npmjs.org/
 
       # setup-node ships npm 10.x, and OIDC publishing needs 11.5.1 or newer.
+      # Pinned to the 11 major so a new major cannot change this step unseen.
       # Without this the publish fails on a version nobody thinks to check.
       - name: Upgrade npm for trusted publishing
         run: |
-          npm install -g npm@latest
+          npm install -g npm@11
           npm --version
 
       - run: npm ci
