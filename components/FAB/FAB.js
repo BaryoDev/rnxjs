@@ -1,5 +1,5 @@
 import { createComponent } from '../../utils/createComponent.js';
-import { escapeHtml } from '../../utils/security.js';
+import { escapeHtml, escapeAttr } from '../../utils/security.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 import { resolveIcon } from '../../utils/icon.js';
@@ -35,9 +35,9 @@ export function FAB({ icon = 'add', label = '', variant = 'standard', onclick = 
   const accessibleName = label ? '' : (ariaLabel || icon);
 
   const template = ({ icon, label }) => `
-    <button type="button" class="${fabClass}" data-ref="btn" data-rnx-ignore="true"${accessibleName ? ` aria-label="${escapeHtml(accessibleName)}"` : ''}>
+    <button type="button" class="${escapeAttr(fabClass)}" data-ref="btn" data-rnx-ignore="true"${accessibleName ? ` aria-label="${escapeHtml(accessibleName)}"` : ''}>
       <i class="${escapeHtml(resolveIcon(icon))}" aria-hidden="true"></i>
-      ${label ? `<span class="${labelClass}">${escapeHtml(label)}</span>` : ''}
+      ${label ? `<span class="${escapeAttr(labelClass)}">${escapeHtml(label)}</span>` : ''}
     </button>
   `;
 

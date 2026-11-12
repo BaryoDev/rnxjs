@@ -1,5 +1,5 @@
 import { createComponent } from '../../utils/createComponent.js';
-import { escapeHtml } from '../../utils/security.js';
+import { escapeHtml, escapeAttr } from '../../utils/security.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 
@@ -61,13 +61,13 @@ export function Slider({
     const wrapperClass = cn('rnx-slider', className);
 
     const template = ({ value }) => `
-    <div class="${wrapperClass}">
-      ${label ? `<label for="${escapeHtml(finalId)}" class="${labelClass}">${escapeHtml(label)}</label>` : ''}
-      <input type="range" class="${inputClass}"
+    <div class="${escapeAttr(wrapperClass)}">
+      ${label ? `<label for="${escapeHtml(finalId)}" class="${escapeAttr(labelClass)}">${escapeHtml(label)}</label>` : ''}
+      <input type="range" class="${escapeAttr(inputClass)}"
              id="${escapeHtml(finalId)}"
              ${name ? `name="${escapeHtml(name)}"` : ''}
-             min="${minVal}" max="${maxVal}" step="${stepVal}" value="${numOr(value, 0)}"
-             aria-valuemin="${minVal}" aria-valuemax="${maxVal}" aria-valuenow="${numOr(value, 0)}"
+             min="${escapeAttr(minVal)}" max="${escapeAttr(maxVal)}" step="${escapeAttr(stepVal)}" value="${escapeAttr(numOr(value, 0))}"
+             aria-valuemin="${escapeAttr(minVal)}" aria-valuemax="${escapeAttr(maxVal)}" aria-valuenow="${escapeAttr(numOr(value, 0))}"
              ${isDisabled ? 'disabled' : ''}
              data-ref="range"
              data-rnx-ignore="true"

@@ -2,6 +2,7 @@ import { createComponent } from '../../utils/createComponent.js';
 import { resolveClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 
+import { escapeAttr } from '../../utils/security.js';
 /**
  * Container Component - CSS Framework Agnostic
  *
@@ -44,7 +45,7 @@ export function Container({
   );
 
   const template = () => `
-    <div class="${containerClass}" data-slot></div>
+    <div class="${escapeAttr(containerClass)}" data-slot></div>
   `;
 
   return createComponent(template, { fluid, size, children, className });

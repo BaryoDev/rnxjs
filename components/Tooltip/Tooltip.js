@@ -1,5 +1,5 @@
 import { createComponent } from '../../utils/createComponent.js';
-import { escapeHtml } from '../../utils/security.js';
+import { escapeHtml, escapeAttr } from '../../utils/security.js';
 import themeProvider, { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 
@@ -56,7 +56,7 @@ export function Tooltip({
         const popupClass = cn(popupPart, states[placement] || states.top || '');
         const popupId = `rnx-tooltip-${++tooltipIdCounter}`;
         const popupTemplate = () => `
-            <span class="${triggerClass}" data-slot><span role="tooltip" id="${popupId}" class="${popupClass}">${escapeHtml(title)}</span></span>
+            <span class="${escapeAttr(triggerClass)}" data-slot><span role="tooltip" id="${popupId}" class="${escapeAttr(popupClass)}">${escapeHtml(title)}</span></span>
         `;
         const popupComponent = createComponent(popupTemplate, { title, placement, children, className });
         popupComponent.useEffect((el) => {
@@ -86,7 +86,7 @@ export function Tooltip({
     const tooltipClass = cn(resolveClasses('tooltip'), className);
 
     const template = () => `
-        <span class="${tooltipClass}" data-bs-toggle="tooltip" data-bs-placement="${escapeHtml(placement)}" title="${escapeHtml(title)}" data-slot></span>
+        <span class="${escapeAttr(tooltipClass)}" data-bs-toggle="tooltip" data-bs-placement="${escapeHtml(placement)}" title="${escapeHtml(title)}" data-slot></span>
     `;
 
     return createComponent(template, { title, placement, children, className });

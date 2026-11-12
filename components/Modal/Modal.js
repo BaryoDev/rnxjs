@@ -1,7 +1,7 @@
 import { createComponent } from '../../utils/createComponent.js';
 import { bs } from '../../utils/bootstrap.js';
 import { createFocusTrap, announce } from '../../utils/a11y.js';
-import { sanitizeHtml, escapeHtml } from '../../utils/security.js';
+import { sanitizeHtml, escapeHtml, escapeAttr } from '../../utils/security.js';
 import themeProvider, { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 
@@ -180,21 +180,21 @@ export function Modal({ id = '', title = '', dismissable = true, children = [], 
   const footerClass = resolvePartClasses('modal', 'footer') || 'modal-footer';
 
   const template = () => `
-    <div class="${modalClass}" id="${escapeHtml(modalId)}" tabindex="-1" role="dialog" aria-modal="true"${title ? ` aria-labelledby="${escapeHtml(modalId)}-label"` : ''} aria-hidden="true" data-ref="modalRoot">
-      <div class="${dialogClass}" role="document" data-ref="dialog">
-        <div class="${contentClass}">
+    <div class="${escapeAttr(modalClass)}" id="${escapeHtml(modalId)}" tabindex="-1" role="dialog" aria-modal="true"${title ? ` aria-labelledby="${escapeHtml(modalId)}-label"` : ''} aria-hidden="true" data-ref="modalRoot">
+      <div class="${escapeAttr(dialogClass)}" role="document" data-ref="dialog">
+        <div class="${escapeAttr(contentClass)}">
 
           ${title ? `
-          <div class="${headerClass}">
-            <h5 class="${titleClass}" id="${escapeHtml(modalId)}-label">${escapeHtml(title)}</h5>
-            ${dismissable ? `<button type="button" class="${closeClass}" data-bs-dismiss="modal" aria-label="Close">${closeGlyph}</button>` : ''}
+          <div class="${escapeAttr(headerClass)}">
+            <h5 class="${escapeAttr(titleClass)}" id="${escapeHtml(modalId)}-label">${escapeHtml(title)}</h5>
+            ${dismissable ? `<button type="button" class="${escapeAttr(closeClass)}" data-bs-dismiss="modal" aria-label="Close">${closeGlyph}</button>` : ''}
           </div>
           ` : ''}
 
-          <div class="${bodyClass}" data-slot></div>
+          <div class="${escapeAttr(bodyClass)}" data-slot></div>
 
           ${footerContent ? `
-          <div class="${footerClass}">
+          <div class="${escapeAttr(footerClass)}">
             ${footerContent}
           </div>
           ` : ''}

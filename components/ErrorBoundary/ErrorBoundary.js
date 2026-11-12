@@ -7,7 +7,7 @@
 
 import { createComponent } from '../../utils/createComponent.js';
 import { errorTracking } from '../../utils/errorTracking.js';
-import { escapeHtml } from '../../utils/security.js';
+import { escapeHtml, escapeAttr } from '../../utils/security.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 
@@ -70,12 +70,12 @@ export function ErrorBoundary(options = {}) {
         );
 
         return `
-            <div class="${containerClass}" role="alert">
-                <h3 class="${titleClass}">This section failed to load</h3>
-                <p class="${messageClass}">Reload the page to try again. If the problem continues, contact support.</p>
+            <div class="${escapeAttr(containerClass)}" role="alert">
+                <h3 class="${escapeAttr(titleClass)}">This section failed to load</h3>
+                <p class="${escapeAttr(messageClass)}">Reload the page to try again. If the problem continues, contact support.</p>
                 <details style="cursor: pointer;">
                     <summary>Error details</summary>
-                    <pre class="${stackClass}" style="overflow-x: auto;">${escapeHtml(error?.message || 'Unknown error')}\n\n${escapeHtml(error?.stack || '')}</pre>
+                    <pre class="${escapeAttr(stackClass)}" style="overflow-x: auto;">${escapeHtml(error?.message || 'Unknown error')}\n\n${escapeHtml(error?.stack || '')}</pre>
                 </details>
             </div>
         `;

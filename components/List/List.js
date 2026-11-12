@@ -1,5 +1,5 @@
 import { createComponent } from '../../utils/createComponent.js';
-import { escapeHtml } from '../../utils/security.js';
+import { escapeHtml, escapeAttr } from '../../utils/security.js';
 import themeProvider, { resolveClasses, resolvePartClasses, resolveUtility } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 import { resolveIcon } from '../../utils/icon.js';
@@ -45,30 +45,30 @@ export function List({ items = [], className = '' } = {}) {
   const trailingClass = resolvePartClasses('list', 'trailing') || 'list-item-trailing';
 
   const template = ({ items }) => `
-    <ul class="${listClass}" style="list-style: none; margin: 0; padding: 0;">
+    <ul class="${escapeAttr(listClass)}" style="list-style: none; margin: 0; padding: 0;">
       ${items.map((item, idx) => {
         const clickable = Boolean(item.onclick) && !item.disabled;
         return `
-        <li class="${cn(itemClass, clickable ? itemActionClass : '', item.active ? activeClass : '', item.disabled ? disabledClass : '')}"
+        <li class="${escapeAttr(cn(itemClass, clickable ? itemActionClass : '', item.active ? activeClass : '', item.disabled ? disabledClass : ''))}"
             data-index="${idx}"
             data-ref="item-${idx}"
             ${item.disabled ? 'aria-disabled="true"' : ''}
             ${clickable ? 'tabindex="0"' : ''}
-            style="display: flex; align-items: center; gap: 0.75rem; cursor: ${clickable ? 'pointer' : 'default'};">
+            style="display: flex; align-items: center; gap: 0.75rem; cursor: ${escapeAttr(clickable ? 'pointer' : 'default')};">
 
            ${item.leadingIcon ? `
-             <span class="${leadingClass}" aria-hidden="true">
+             <span class="${escapeAttr(leadingClass)}" aria-hidden="true">
                <i class="${escapeHtml(resolveIcon(item.leadingIcon))}"></i>
              </span>
            ` : ''}
 
-           <span class="${contentClass}" style="display: flex; flex-direction: column; flex: 1 1 auto;">
-             <span class="${headlineClass}">${escapeHtml(item.headline || '')}</span>
-             ${item.supportingText ? `<small class="${supportingClass}">${escapeHtml(item.supportingText)}</small>` : ''}
+           <span class="${escapeAttr(contentClass)}" style="display: flex; flex-direction: column; flex: 1 1 auto;">
+             <span class="${escapeAttr(headlineClass)}">${escapeHtml(item.headline || '')}</span>
+             ${item.supportingText ? `<small class="${escapeAttr(supportingClass)}">${escapeHtml(item.supportingText)}</small>` : ''}
            </span>
 
            ${item.trailingIcon ? `
-             <span class="${trailingClass}" aria-hidden="true">
+             <span class="${escapeAttr(trailingClass)}" aria-hidden="true">
                <i class="${escapeHtml(resolveIcon(item.trailingIcon))}"></i>
              </span>
            ` : ''}

@@ -1,7 +1,7 @@
 import { createComponent } from '../../utils/createComponent.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
-import { escapeHtml } from '../../utils/security.js';
+import { escapeHtml, escapeAttr } from '../../utils/security.js';
 
 /**
  * Card Component - CSS Framework Agnostic
@@ -51,14 +51,14 @@ export function Card({
   const subtitleClass = resolvePartClasses('card', 'subtitle');
 
   const template = () => `
-    <div class="${cardClass}">
+    <div class="${escapeAttr(cardClass)}">
       ${title || subtitle ? `
-        <div class="${headerClass}">
-          ${title ? `<h5 class="${titleClass}">${escapeHtml(title)}</h5>` : ''}
-          ${subtitle ? `<small class="${subtitleClass}">${escapeHtml(subtitle)}</small>` : ''}
+        <div class="${escapeAttr(headerClass)}">
+          ${title ? `<h5 class="${escapeAttr(titleClass)}">${escapeHtml(title)}</h5>` : ''}
+          ${subtitle ? `<small class="${escapeAttr(subtitleClass)}">${escapeHtml(subtitle)}</small>` : ''}
         </div>` : ''}
-      <div class="${bodyClass}" data-slot></div>
-      ${footer ? `<div class="${footerClass}">${escapeHtml(footer)}</div>` : ''}
+      <div class="${escapeAttr(bodyClass)}" data-slot></div>
+      ${footer ? `<div class="${escapeAttr(footerClass)}">${escapeHtml(footer)}</div>` : ''}
     </div>
   `;
 

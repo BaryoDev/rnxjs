@@ -1,5 +1,5 @@
 import { createComponent } from '../../utils/createComponent.js';
-import { escapeHtml } from '../../utils/security.js';
+import { escapeHtml, escapeAttr } from '../../utils/security.js';
 import { resolveClasses, resolvePartClasses, resolveUtility } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 import { resolveIcon } from '../../utils/icon.js';
@@ -52,14 +52,14 @@ export function Chips({ items = [], type = 'filter', onselect, onremove, classNa
         if (isInteractive) {
             attrs.push('role="button"', 'tabindex="0"');
             if (type === 'filter') {
-                attrs.push(`aria-pressed="${item.selected ? 'true' : 'false'}"`);
+                attrs.push(`aria-pressed="${escapeAttr(item.selected ? 'true' : 'false')}"`);
             }
         }
         return attrs.join(' ');
     };
 
     const template = ({ items, type }) => `
-    <div class="${escapeHtml(containerClass)}" role="${isInteractive ? 'group' : 'presentation'}">
+    <div class="${escapeHtml(containerClass)}" role="${escapeAttr(isInteractive ? 'group' : 'presentation')}">
       ${parsedItems.map((item, idx) => `
        <span class="${escapeHtml(cn(
            resolveClasses('chips', { variant: item.variant || 'primary', removable: isRemovable }),

@@ -1,7 +1,7 @@
 import { createComponent } from '../../utils/createComponent.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
-import { escapeHtml, sanitizeUrl } from '../../utils/security.js';
+import { escapeHtml, sanitizeUrl, escapeAttr } from '../../utils/security.js';
 
 let sidebarUid = 0;
 
@@ -76,7 +76,7 @@ export const Sidebar = (props = {}) => {
         const textStyle = `display: ${isOpen ? 'inline' : 'none'};`;
 
         const renderIcon = (icon) => icon
-            ? `<span class="${iconClass}" aria-hidden="true">${escapeHtml(icon)}</span>`
+            ? `<span class="${escapeAttr(iconClass)}" aria-hidden="true">${escapeHtml(icon)}</span>`
             : '';
 
         const renderItem = (item, index) => {
@@ -85,26 +85,26 @@ export const Sidebar = (props = {}) => {
             if (item.children && item.children.length > 0) {
                 const submenuId = `${navId}-sub-${index}`;
                 return `
-                    <li class="${cn(itemClass, parentClass, isActive ? 'active' : '')}">
+                    <li class="${escapeAttr(cn(itemClass, parentClass, isActive ? 'active' : ''))}">
                         <div class="sidebar-parent-toggle">
-                            <button type="button" class="${linkClass}" aria-expanded="false" aria-controls="${submenuId}">
+                            <button type="button" class="${escapeAttr(linkClass)}" aria-expanded="false" aria-controls="${submenuId}">
                                 ${renderIcon(item.icon)}
-                                <span class="${itemTextClass}" style="${textStyle}">${escapeHtml(item.label)}</span>
-                                <span class="${arrowClass}" style="${textStyle}" aria-hidden="true">
+                                <span class="${escapeAttr(itemTextClass)}" style="${escapeAttr(textStyle)}">${escapeHtml(item.label)}</span>
+                                <span class="${escapeAttr(arrowClass)}" style="${escapeAttr(textStyle)}" aria-hidden="true">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <polyline points="6 9 12 15 18 9"></polyline>
                                     </svg>
                                 </span>
                             </button>
                         </div>
-                        <ul id="${submenuId}" class="${submenuClass}" style="display: none; max-height: none;">
+                        <ul id="${submenuId}" class="${escapeAttr(submenuClass)}" style="display: none; max-height: none;">
                             ${item.children.map(child => {
                                 const childActive = child.active || (child.id && child.id === currentActiveItem);
                                 return `
-                                    <li class="${cn(subitemClass, childActive ? 'active' : '')}">
-                                        <a href="${escapeHtml(sanitizeUrl(child.href) || '#')}" class="${subitemLinkClass}" data-item-id="${escapeHtml(child.id || '')}"${childActive ? ' aria-current="page"' : ''}>
+                                    <li class="${escapeAttr(cn(subitemClass, childActive ? 'active' : ''))}">
+                                        <a href="${escapeHtml(sanitizeUrl(child.href) || '#')}" class="${escapeAttr(subitemLinkClass)}" data-item-id="${escapeHtml(child.id || '')}"${childActive ? ' aria-current="page"' : ''}>
                                             ${renderIcon(child.icon)}
-                                            <span class="${itemTextClass}" style="${textStyle}">${escapeHtml(child.label)}</span>
+                                            <span class="${escapeAttr(itemTextClass)}" style="${escapeAttr(textStyle)}">${escapeHtml(child.label)}</span>
                                         </a>
                                     </li>
                                 `;
@@ -115,22 +115,22 @@ export const Sidebar = (props = {}) => {
             }
 
             return `
-                <li class="${cn(itemClass, isActive ? 'active' : '')}">
-                    <a href="${escapeHtml(sanitizeUrl(item.href) || '#')}" class="${linkClass}" data-item-id="${escapeHtml(item.id || '')}"${isActive ? ' aria-current="page"' : ''}>
+                <li class="${escapeAttr(cn(itemClass, isActive ? 'active' : ''))}">
+                    <a href="${escapeHtml(sanitizeUrl(item.href) || '#')}" class="${escapeAttr(linkClass)}" data-item-id="${escapeHtml(item.id || '')}"${isActive ? ' aria-current="page"' : ''}>
                         ${renderIcon(item.icon)}
-                        <span class="${itemTextClass}" style="${textStyle}">${escapeHtml(item.label)}</span>
+                        <span class="${escapeAttr(itemTextClass)}" style="${escapeAttr(textStyle)}">${escapeHtml(item.label)}</span>
                     </a>
                 </li>
             `;
         };
 
         return `
-            <div class="${sidebarClass}" data-ref="sidebar" style="width: ${escapeHtml(isOpen ? width : collapsedWidth)}; transition: width 0.3s ease;">
-                <div class="${headerClass}">
-                    <div class="${brandClass}">
-                        <span class="sidebar-brand-text" style="${textStyle}">Menu</span>
+            <div class="${escapeAttr(sidebarClass)}" data-ref="sidebar" style="width: ${escapeHtml(isOpen ? width : collapsedWidth)}; transition: width 0.3s ease;">
+                <div class="${escapeAttr(headerClass)}">
+                    <div class="${escapeAttr(brandClass)}">
+                        <span class="sidebar-brand-text" style="${escapeAttr(textStyle)}">Menu</span>
                     </div>
-                    <button type="button" class="${toggleClass}" aria-label="Toggle sidebar" aria-expanded="${isOpen}" aria-controls="${navId}">
+                    <button type="button" class="${escapeAttr(toggleClass)}" aria-label="Toggle sidebar" aria-expanded="${isOpen}" aria-controls="${navId}">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <line x1="3" y1="6" x2="21" y2="6"></line>
                             <line x1="3" y1="12" x2="21" y2="12"></line>
@@ -138,8 +138,8 @@ export const Sidebar = (props = {}) => {
                         </svg>
                     </button>
                 </div>
-                <nav id="${navId}" class="${navClass}" aria-label="Sidebar">
-                    <ul class="${menuClass}">
+                <nav id="${navId}" class="${escapeAttr(navClass)}" aria-label="Sidebar">
+                    <ul class="${escapeAttr(menuClass)}">
                         ${items.map((item, index) => renderItem(item, index)).join('')}
                     </ul>
                 </nav>

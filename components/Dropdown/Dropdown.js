@@ -1,5 +1,5 @@
 import { createComponent } from '../../utils/createComponent.js';
-import { escapeHtml, sanitizeUrl } from '../../utils/security.js';
+import { escapeHtml, sanitizeUrl, escapeAttr } from '../../utils/security.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 
@@ -60,33 +60,33 @@ export const Dropdown = (props = {}) => {
 
     const renderItem = (item, index) => {
         if (item.divider) {
-            return `<li class="${dividerClass}" role="separator"></li>`;
+            return `<li class="${escapeAttr(dividerClass)}" role="separator"></li>`;
         }
 
         return `
-            <li class="${cn(itemWrapperClass, item.disabled ? 'disabled' : '', item.active ? 'active' : '')}" role="none" data-index="${index}">
-                <a href="${escapeHtml(sanitizeUrl(item.href) || '#')}" class="${cn(linkClass, item.disabled ? 'disabled' : '', item.active ? 'active' : '')}" role="menuitem" tabindex="-1"${item.disabled ? ' aria-disabled="true"' : ''} data-item-id="${escapeHtml(item.id || '')}">
-                    ${item.icon ? `<span class="${itemIconClass}" aria-hidden="true">${escapeHtml(item.icon)}</span>` : ''}
-                    <span class="${itemTextClass}">${escapeHtml(item.label)}</span>
-                    ${item.badge ? `<span class="${badgeClass}">${escapeHtml(item.badge)}</span>` : ''}
+            <li class="${escapeAttr(cn(itemWrapperClass, item.disabled ? 'disabled' : '', item.active ? 'active' : ''))}" role="none" data-index="${index}">
+                <a href="${escapeHtml(sanitizeUrl(item.href) || '#')}" class="${escapeAttr(cn(linkClass, item.disabled ? 'disabled' : '', item.active ? 'active' : ''))}" role="menuitem" tabindex="-1"${item.disabled ? ' aria-disabled="true"' : ''} data-item-id="${escapeHtml(item.id || '')}">
+                    ${item.icon ? `<span class="${escapeAttr(itemIconClass)}" aria-hidden="true">${escapeHtml(item.icon)}</span>` : ''}
+                    <span class="${escapeAttr(itemTextClass)}">${escapeHtml(item.label)}</span>
+                    ${item.badge ? `<span class="${escapeAttr(badgeClass)}">${escapeHtml(item.badge)}</span>` : ''}
                 </a>
             </li>
         `;
     };
 
     const template = () => `
-        <div class="${dropdownClass}" data-ref="dropdown">
-            <button type="button" class="${triggerClass}" aria-haspopup="menu" aria-expanded="false"${disabled ? ' disabled' : ''}>
-                ${icon ? `<span class="${iconWrapperClass}">${escapeHtml(icon)}</span>` : ''}
-                <span class="${labelClass}">${escapeHtml(label)}</span>
-                <span class="${arrowClass}" aria-hidden="true">
+        <div class="${escapeAttr(dropdownClass)}" data-ref="dropdown">
+            <button type="button" class="${escapeAttr(triggerClass)}" aria-haspopup="menu" aria-expanded="false"${disabled ? ' disabled' : ''}>
+                ${icon ? `<span class="${escapeAttr(iconWrapperClass)}">${escapeHtml(icon)}</span>` : ''}
+                <span class="${escapeAttr(labelClass)}">${escapeHtml(label)}</span>
+                <span class="${escapeAttr(arrowClass)}" aria-hidden="true">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
                 </span>
             </button>
-            <div class="${menuClass}" data-ref="dropdown-menu" role="menu" style="display: none;">
-                <ul class="${listClass}" role="none" style="list-style: none; margin: 0; padding: 0;">
+            <div class="${escapeAttr(menuClass)}" data-ref="dropdown-menu" role="menu" style="display: none;">
+                <ul class="${escapeAttr(listClass)}" role="none" style="list-style: none; margin: 0; padding: 0;">
                     ${items.map(renderItem).join('')}
                 </ul>
             </div>
