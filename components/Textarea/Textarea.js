@@ -1,7 +1,7 @@
 import { createComponent } from '../../utils/createComponent.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
-import { escapeHtml } from '../../utils/security.js';
+import { escapeHtml, escapeAttr } from '../../utils/security.js';
 
 let textareaUid = 0;
 
@@ -89,10 +89,10 @@ export function Textarea({
 
   const field = `
     <textarea
-      class="${escapeHtml(textareaClass)}"
+      class="${escapeAttr(textareaClass)}"
       id="${escapeHtml(finalId)}"
       name="${escapeHtml(name)}"
-      rows="${escapeHtml(Number(rows) || 4)}"
+      rows="${escapeAttr(Number(rows) || 4)}"
       placeholder="${escapeHtml(placeholder)}"
       ${isRequired ? 'required aria-required="true"' : ''}
       ${isDisabled ? 'disabled' : ''}
@@ -108,10 +108,10 @@ export function Textarea({
   // Keep the bare textarea as root when no label/help/error (backward compatible)
   const template = () => (label || help || error) ? `
     <div>
-      ${label ? `<label for="${escapeHtml(finalId)}" class="${escapeHtml(labelClass)}">${escapeHtml(label)}</label>` : ''}
+      ${label ? `<label for="${escapeHtml(finalId)}" class="${escapeAttr(labelClass)}">${escapeHtml(label)}</label>` : ''}
       ${field}
-      ${help ? `<div id="${escapeHtml(helpId)}" class="${escapeHtml(helpClass)}">${escapeHtml(help)}</div>` : ''}
-      ${error ? `<div id="${escapeHtml(errorId)}" class="${escapeHtml(errorClass)}">${escapeHtml(error)}</div>` : ''}
+      ${help ? `<div id="${escapeHtml(helpId)}" class="${escapeAttr(helpClass)}">${escapeHtml(help)}</div>` : ''}
+      ${error ? `<div id="${escapeHtml(errorId)}" class="${escapeAttr(errorClass)}">${escapeHtml(error)}</div>` : ''}
     </div>
   ` : field;
 

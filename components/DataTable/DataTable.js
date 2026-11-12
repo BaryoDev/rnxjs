@@ -6,7 +6,7 @@
  */
 
 import { createComponent } from '../../utils/createComponent.js';
-import { escapeHtml } from '../../utils/security.js';
+import { escapeHtml, escapeAttr } from '../../utils/security.js';
 import { srOnlyAttr } from '../../utils/srOnly.js';
 import themeProvider, { resolveClasses, resolvePartClasses, resolveUtility } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
@@ -170,26 +170,26 @@ export function DataTable({
         const checkboxClass = resolveClasses('checkbox');
 
         return `
-            <thead class="${escapeHtml(headClass)}">
+            <thead class="${escapeAttr(headClass)}">
                 <tr>
                     ${selectable ? `
-                        <th scope="col" class="${escapeHtml(cn(thClass, 'datatable-checkbox'))}" style="width: 40px;">
-                            <input type="checkbox" class="${escapeHtml(checkboxClass)}" data-ref="selectAll" aria-label="Select all rows" />
+                        <th scope="col" class="${escapeAttr(cn(thClass, 'datatable-checkbox'))}" style="width: 40px;">
+                            <input type="checkbox" class="${escapeAttr(checkboxClass)}" data-ref="selectAll" aria-label="Select all rows" />
                         </th>
                     ` : ''}
                     ${columns.map(col => {
                         const isSortable = sortable && Boolean(col.sortable);
                         const isSorted = sortColumn === col.key;
                         const ariaSort = isSortable
-                            ? ` aria-sort="${escapeHtml(isSorted ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none')}"`
+                            ? ` aria-sort="${escapeAttr(isSorted ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none')}"`
                             : '';
                         return `
                         <th
                             scope="col"
-                            class="${escapeHtml(cn(thClass, 'datatable-header', isSortable ? 'sortable' : '', isSorted ? `sorted-${sortDirection}` : ''))}"
+                            class="${escapeAttr(cn(thClass, 'datatable-header', isSortable ? 'sortable' : '', isSorted ? `sorted-${sortDirection}` : ''))}"
                             data-column="${escapeHtml(col.key)}"
                             ${isSortable ? 'tabindex="0"' : ''}${ariaSort}
-                            style="${escapeHtml(col.width ? `width: ${col.width};` : '')}"
+                            style="${escapeAttr(col.width ? `width: ${col.width};` : '')}"
                         >
                             <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
                                 <span>${escapeHtml(col.label)}</span>
@@ -223,10 +223,10 @@ export function DataTable({
 
         if (loading) {
             return `
-                <tbody class="${escapeHtml(bodyClass)}">
+                <tbody class="${escapeAttr(bodyClass)}">
                     <tr>
-                        <td colspan="${escapeHtml(colSpan)}" style="${escapeHtml(centered)}">
-                            <div class="${escapeHtml(cn(resolveClasses('spinner', { variant: 'border', size: 'sm' })))}" role="status">
+                        <td colspan="${escapeAttr(colSpan)}" style="${escapeAttr(centered)}">
+                            <div class="${escapeAttr(cn(resolveClasses('spinner', { variant: 'border', size: 'sm' })))}" role="status">
                                 <span ${srOnlyAttr()}>Loading...</span>
                             </div>
                         </td>
@@ -237,9 +237,9 @@ export function DataTable({
 
         if (error) {
             return `
-                <tbody class="${escapeHtml(bodyClass)}">
+                <tbody class="${escapeAttr(bodyClass)}">
                     <tr>
-                        <td colspan="${escapeHtml(colSpan)}" class="${escapeHtml(resolveUtility('text', 'danger'))}" style="${escapeHtml(centered)}" role="alert">
+                        <td colspan="${escapeAttr(colSpan)}" class="${escapeAttr(resolveUtility('text', 'danger'))}" style="${escapeAttr(centered)}" role="alert">
                             <i class="${escapeHtml(resolveIcon('exclamation-triangle'))}" aria-hidden="true"></i>
                             ${escapeHtml(error)}
                         </td>
@@ -251,9 +251,9 @@ export function DataTable({
         const displayData = getDisplayData();
         if (displayData.length === 0) {
             return `
-                <tbody class="${escapeHtml(bodyClass)}">
+                <tbody class="${escapeAttr(bodyClass)}">
                     <tr>
-                        <td colspan="${escapeHtml(colSpan)}" class="${escapeHtml(resolveUtility('text', 'muted'))}" style="${escapeHtml(centered)}">
+                        <td colspan="${escapeAttr(colSpan)}" class="${escapeAttr(resolveUtility('text', 'muted'))}" style="${escapeAttr(centered)}">
                             ${escapeHtml(emptyMessage)}
                         </td>
                     </tr>
@@ -262,19 +262,19 @@ export function DataTable({
         }
 
         return `
-            <tbody class="${escapeHtml(bodyClass)}">
+            <tbody class="${escapeAttr(bodyClass)}">
                 ${displayData.map((row, idx) => `
                     <tr
-                        class="${escapeHtml(cn(rowClass, 'datatable-row', selectedRows.has(idx) ? 'table-active' : ''))}"
+                        class="${escapeAttr(cn(rowClass, 'datatable-row', selectedRows.has(idx) ? 'table-active' : ''))}"
                         data-row-index="${idx}"
                         data-row-id="${escapeHtml(String(row.id ?? idx))}"
                         ${selectedRows.has(idx) ? 'aria-selected="true"' : ''}
                     >
                         ${selectable ? `
-                            <td class="${escapeHtml(cn(tdClass, 'datatable-checkbox'))}">
+                            <td class="${escapeAttr(cn(tdClass, 'datatable-checkbox'))}">
                                 <input
                                     type="checkbox"
-                                    class="${escapeHtml(cn(checkboxClass, 'datatable-row-checkbox'))}"
+                                    class="${escapeAttr(cn(checkboxClass, 'datatable-row-checkbox'))}"
                                     data-row-index="${idx}"
                                     aria-label="Select row"
                                     ${selectedRows.has(idx) ? 'checked' : ''}
@@ -282,7 +282,7 @@ export function DataTable({
                             </td>
                         ` : ''}
                         ${columns.map(col => `
-                            <td class="${escapeHtml(tdClass)}" data-column="${escapeHtml(col.key)}">
+                            <td class="${escapeAttr(tdClass)}" data-column="${escapeHtml(col.key)}">
                                 ${escapeHtml(String(row[col.key] || ''))}
                             </td>
                         `).join('')}
@@ -311,24 +311,24 @@ export function DataTable({
 
         return `
             <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-top: 1rem;">
-                <small class="${escapeHtml(resolveUtility('text', 'muted'))}">
+                <small class="${escapeAttr(resolveUtility('text', 'muted'))}">
                     Showing ${(currentPage - 1) * pageSize + 1}-${Math.min(currentPage * pageSize, totalRows)}
                     of ${totalRows} results
                 </small>
                 <nav aria-label="Table pagination">
-                    <ul class="${escapeHtml(listClass)}" style="margin-bottom: 0; list-style: none;">
-                        <li class="${escapeHtml(cn(itemClass, currentPage === 1 ? disabledState : ''))}">
-                            <button type="button" class="${escapeHtml(cn(linkClass, 'datatable-prev-page'))}" aria-label="Previous page" ${currentPage === 1 ? 'disabled aria-disabled="true"' : ''}>
+                    <ul class="${escapeAttr(listClass)}" style="margin-bottom: 0; list-style: none;">
+                        <li class="${escapeAttr(cn(itemClass, currentPage === 1 ? disabledState : ''))}">
+                            <button type="button" class="${escapeAttr(cn(linkClass, 'datatable-prev-page'))}" aria-label="Previous page" ${currentPage === 1 ? 'disabled aria-disabled="true"' : ''}>
                                 <i class="${escapeHtml(resolveIcon('chevron-left'))}" aria-hidden="true"></i>
                             </button>
                         </li>
-                        <li class="${escapeHtml(cn(itemClass, activeState))}" aria-current="page">
-                            <span class="${escapeHtml(cn(linkClass, activeState))}">
+                        <li class="${escapeAttr(cn(itemClass, activeState))}" aria-current="page">
+                            <span class="${escapeAttr(cn(linkClass, activeState))}">
                                 Page ${currentPage} of ${totalPages}
                             </span>
                         </li>
-                        <li class="${escapeHtml(cn(itemClass, currentPage >= totalPages ? disabledState : ''))}">
-                            <button type="button" class="${escapeHtml(cn(linkClass, 'datatable-next-page'))}" aria-label="Next page" ${currentPage >= totalPages ? 'disabled aria-disabled="true"' : ''}>
+                        <li class="${escapeAttr(cn(itemClass, currentPage >= totalPages ? disabledState : ''))}">
+                            <button type="button" class="${escapeAttr(cn(linkClass, 'datatable-next-page'))}" aria-label="Next page" ${currentPage >= totalPages ? 'disabled aria-disabled="true"' : ''}>
                                 <i class="${escapeHtml(resolveIcon('chevron-right'))}" aria-hidden="true"></i>
                             </button>
                         </li>
@@ -350,7 +350,7 @@ export function DataTable({
             <div style="margin-bottom: 1rem;">
                 <input
                     type="text"
-                    class="${escapeHtml(cn(resolveClasses('input', { size: 'sm' }), 'datatable-search'))}"
+                    class="${escapeAttr(cn(resolveClasses('input', { size: 'sm' }), 'datatable-search'))}"
                     placeholder="Search all columns..."
                     aria-label="Filter table"
                     value="${escapeHtml(filterQuery)}"
@@ -373,10 +373,10 @@ export function DataTable({
         const tableClass = cn(resolveClasses('datatable'), 'datatable');
 
         return `
-            <div class="${escapeHtml(containerClass)}">
+            <div class="${escapeAttr(containerClass)}">
                 ${renderFilterBar()}
-                <div class="${escapeHtml(tableWrapperClass)}" role="region" aria-label="${escapeHtml(ariaLabel)}" tabindex="0">
-                    <table class="${escapeHtml(tableClass)}">
+                <div class="${escapeAttr(tableWrapperClass)}" role="region" aria-label="${escapeHtml(ariaLabel)}" tabindex="0">
+                    <table class="${escapeAttr(tableClass)}">
                         ${renderHeader()}
                         ${renderBody()}
                     </table>

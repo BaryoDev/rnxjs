@@ -1,4 +1,5 @@
 import { describe, it, expect, afterEach } from 'vitest';
+import { escapeAttr } from '../../utils/security.js';
 import { Tab } from '../../components/Tabs/Tab.js';
 import { Card } from '../../components/Card/Card.js';
 import { Container } from '../../components/Container/Container.js';
@@ -64,4 +65,16 @@ describe('attribute escaping in component templates', () => {
             expect(hasHandler(root)).toBe(false);
         });
     }
+});
+
+describe('escapeAttr', () => {
+    it('escapes quotes, angle brackets and ampersands only', () => {
+        expect(escapeAttr('a"b\'c<d>&')).toBe('a&quot;b&#x27;c&lt;d&gt;&amp;');
+    });
+
+    it('leaves slashes and equals signs alone', () => {
+        const cls = 'w-1/2 bg-[url(data:image/svg+xml,%3Csvg%3E)] [&>svg]:w-4';
+        expect(escapeAttr(cls)).toBe('w-1/2 bg-[url(data:image/svg+xml,%3Csvg%3E)] [&amp;&gt;svg]:w-4');
+        expect(escapeAttr(null)).toBe('');
+    });
 });

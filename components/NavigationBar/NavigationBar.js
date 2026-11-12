@@ -1,7 +1,7 @@
 import { createComponent } from '../../utils/createComponent.js';
 import { resolveClasses, resolvePartClasses, resolveUtility } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
-import { escapeHtml } from '../../utils/security.js';
+import { escapeHtml, escapeAttr } from '../../utils/security.js';
 import { resolveIcon } from '../../utils/icon.js';
 
 /**
@@ -49,10 +49,10 @@ export function NavigationBar({
   const linkClass = resolvePartClasses('navigationbar', 'link');
 
   const template = ({ activeIndex, items }) => `
-    <nav class="${escapeHtml(navbarClass)}" aria-label="${escapeHtml(ariaLabel)}">
+    <nav class="${escapeAttr(navbarClass)}" aria-label="${escapeHtml(ariaLabel)}">
       ${items.map((item, idx) => `
         <button type="button"
-                class="${escapeHtml(cn(linkClass, 'navigation-bar-item', idx === activeIndex ? 'active' : ''))}"
+                class="${escapeAttr(cn(linkClass, 'navigation-bar-item', idx === activeIndex ? 'active' : ''))}"
                 data-index="${idx}"
                 data-rnx-ignore="true"
                 data-ref="nav-${idx}"

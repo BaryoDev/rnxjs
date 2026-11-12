@@ -8,7 +8,7 @@
 import { createComponent } from '../../utils/createComponent.js';
 import { resolveClasses, resolvePartClasses, resolveUtility } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
-import { escapeHtml } from '../../utils/security.js';
+import { escapeHtml, escapeAttr } from '../../utils/security.js';
 
 /**
  * Create a progress bar component
@@ -76,7 +76,7 @@ export function ProgressBar({
      */
     const template = () => {
         return `
-            <div class="progress-wrapper ${escapeHtml(className)}" data-ref="wrapper">
+            <div class="progress-wrapper ${escapeAttr(className)}" data-ref="wrapper">
                 ${label ? `
                     <div class="progress-label mb-2 flex justify-between">
                         <span class="label-text">${escapeHtml(label)}</span>
@@ -86,13 +86,13 @@ export function ProgressBar({
                     </div>
                 ` : ''}
 
-                <div class="${escapeHtml(progressClass)}" style="height: ${escapeHtml(height)};">
-                    <div class="${escapeHtml(barClass)}"
+                <div class="${escapeAttr(progressClass)}" style="height: ${escapeHtml(height)};">
+                    <div class="${escapeAttr(barClass)}"
                          role="progressbar"
-                         aria-valuenow="${escapeHtml(currentValue)}"
+                         aria-valuenow="${escapeAttr(currentValue)}"
                          aria-valuemin="0"
                          aria-valuemax="100"
-                         ${!indeterminate ? `style="width: ${escapeHtml(currentValue)}%"` : ''}
+                         ${!indeterminate ? `style="width: ${escapeAttr(currentValue)}%"` : ''}
                     >
                         ${(showValue || showLabel) && !striped && !indeterminate ? `
                             <span class="progress-text">${currentValue}%</span>

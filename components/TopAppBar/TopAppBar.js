@@ -1,7 +1,7 @@
 import { createComponent } from '../../utils/createComponent.js';
 import { resolveClasses, resolvePartClasses, resolveUtility } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
-import { escapeHtml } from '../../utils/security.js';
+import { escapeHtml, escapeAttr } from '../../utils/security.js';
 import { resolveIcon } from '../../utils/icon.js';
 
 /**
@@ -52,16 +52,16 @@ export function TopAppBar({
   const iconButtonClass = resolveClasses('button', { variant: 'text', size: 'sm' });
 
   const template = () => `
-    <header class="${escapeHtml(appBarClass)}">
+    <header class="${escapeAttr(appBarClass)}">
        ${leadingIcon ? `
-         <button type="button" class="${escapeHtml(iconButtonClass)}" data-ref="leading" data-rnx-ignore="true" aria-label="${escapeHtml(leadingLabel)}">
+         <button type="button" class="${escapeAttr(iconButtonClass)}" data-ref="leading" data-rnx-ignore="true" aria-label="${escapeHtml(leadingLabel)}">
            <i class="${escapeHtml(resolveIcon(leadingIcon))}" style="font-size: 24px;" aria-hidden="true"></i>
          </button>
        ` : ''}
-       <h5 class="${escapeHtml(cn(brandClass, resolvePartClasses('topappbar', 'title')))}" style="flex: 1 1 auto;">${escapeHtml(title)}</h5>
+       <h5 class="${escapeAttr(cn(brandClass, resolvePartClasses('topappbar', 'title')))}" style="flex: 1 1 auto;">${escapeHtml(title)}</h5>
        ${trailingIcon ? `
-         <div class="${escapeHtml(navClass)}">
-           <button type="button" class="${escapeHtml(iconButtonClass)}" data-ref="trailing" data-rnx-ignore="true" aria-label="${escapeHtml(trailingLabel)}">
+         <div class="${escapeAttr(navClass)}">
+           <button type="button" class="${escapeAttr(iconButtonClass)}" data-ref="trailing" data-rnx-ignore="true" aria-label="${escapeHtml(trailingLabel)}">
              <i class="${escapeHtml(resolveIcon(trailingIcon))}" style="font-size: 24px;" aria-hidden="true"></i>
            </button>
          </div>

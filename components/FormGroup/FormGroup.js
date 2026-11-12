@@ -1,5 +1,5 @@
 import { createComponent } from '../../utils/createComponent.js';
-import { escapeHtml } from '../../utils/security.js';
+import { escapeHtml, escapeAttr } from '../../utils/security.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 
@@ -34,11 +34,11 @@ export function FormGroup({ label = '', forId = '', help = '', error = '', child
   const errorClass = resolvePartClasses('formgroup', 'error');
 
   const template = () => `
-    <div class="${escapeHtml(groupClass)}">
-      ${label ? `<label class="${escapeHtml(labelClass)}" data-ref="label" ${forId ? `for="${escapeHtml(forId)}"` : ''}>${escapeHtml(label)}</label>` : ''}
+    <div class="${escapeAttr(groupClass)}">
+      ${label ? `<label class="${escapeAttr(labelClass)}" data-ref="label" ${forId ? `for="${escapeHtml(forId)}"` : ''}>${escapeHtml(label)}</label>` : ''}
       <div data-slot></div>
-      ${help ? `<div id="${escapeHtml(helpId)}" class="${escapeHtml(helpClass)}">${escapeHtml(help)}</div>` : ''}
-      ${error ? `<div id="${escapeHtml(errorId)}" class="${escapeHtml(errorClass)}">${escapeHtml(error)}</div>` : ''}
+      ${help ? `<div id="${escapeHtml(helpId)}" class="${escapeAttr(helpClass)}">${escapeHtml(help)}</div>` : ''}
+      ${error ? `<div id="${escapeHtml(errorId)}" class="${escapeAttr(errorClass)}">${escapeHtml(error)}</div>` : ''}
     </div>
   `;
 

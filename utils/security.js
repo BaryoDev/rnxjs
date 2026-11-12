@@ -44,6 +44,23 @@ export function escapeHtml(str) {
   return str.replace(/[&<>"'`=/]/g, char => HTML_ENTITIES[char]);
 }
 
+const ATTR_ENTITIES = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;' };
+
+/**
+ * Escape a value for a double or single quoted HTML attribute.
+ * Only & < > " ' are escaped, so class names such as w-1/2 or
+ * bg-[url(data:image/svg+xml,...)] stay readable.
+ *
+ * @param {*} str - Value to escape
+ * @returns {string}
+ */
+export function escapeAttr(str) {
+  if (str === null || str === undefined) {
+    return '';
+  }
+  return String(str).replace(/[&<>"']/g, char => ATTR_ENTITIES[char]);
+}
+
 /**
  * Escape string for use in HTML attributes
  * More aggressive escaping for attribute context

@@ -6,7 +6,7 @@
  */
 
 import { createComponent } from '../../utils/createComponent.js';
-import { escapeHtml } from '../../utils/security.js';
+import { escapeHtml, escapeAttr } from '../../utils/security.js';
 import { resolveClasses, resolvePartClasses, resolveUtility } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 import { resolveIcon } from '../../utils/icon.js';
@@ -89,32 +89,32 @@ export function StatCard({
             : '';
 
         return `
-            <div class="${escapeHtml(cardClass)}" data-ref="card"${onclick ? ' role="button" tabindex="0"' : ''}>
-                <div class="${escapeHtml(bodyClass)}">
-                    <div class="${escapeHtml(layoutClass)}">
+            <div class="${escapeAttr(cardClass)}" data-ref="card"${onclick ? ' role="button" tabindex="0"' : ''}>
+                <div class="${escapeAttr(bodyClass)}">
+                    <div class="${escapeAttr(layoutClass)}">
                         <div style="flex: 1 1 auto;">
-                            <p class="${escapeHtml(titleClass)}">
+                            <p class="${escapeAttr(titleClass)}">
                                 ${escapeHtml(label)}
                             </p>
-                            <h3 class="${escapeHtml(valueClass)}" data-ref="value">
+                            <h3 class="${escapeAttr(valueClass)}" data-ref="value">
                                 ${escapeHtml(String(value))}
                             </h3>
                             ${change ? `
-                                <small class="${escapeHtml(cn(trendClass, trendColor))}" style="display: inline-block;">
+                                <small class="${escapeAttr(cn(trendClass, trendColor))}" style="display: inline-block;">
                                     <i class="${escapeHtml(resolveIcon(trendIcon))}" aria-hidden="true"></i>
                                     ${escapeHtml(String(Math.abs(change.value)))}%
                                 </small>
                             ` : ''}
                         </div>
                         ${icon ? `
-                            <div class="${escapeHtml(cn('stat-icon', resolvePartClasses('statcard', 'icon'), resolveUtility('text', variant)))}" data-ref="icon" aria-hidden="true">
+                            <div class="${escapeAttr(cn('stat-icon', resolvePartClasses('statcard', 'icon'), resolveUtility('text', variant)))}" data-ref="icon" aria-hidden="true">
                                 <i class="${escapeHtml(resolveIcon(icon))}" style="font-size: 2rem; opacity: 0.7;"></i>
                             </div>
                         ` : ''}
                     </div>
                     ${footer ? `
-                        <div class="${escapeHtml(resolvePartClasses('statcard', 'footer'))}">
-                            <small class="${escapeHtml(resolveUtility('text', 'muted'))}">${escapeHtml(footer)}</small>
+                        <div class="${escapeAttr(resolvePartClasses('statcard', 'footer'))}">
+                            <small class="${escapeAttr(resolveUtility('text', 'muted'))}">${escapeHtml(footer)}</small>
                         </div>
                     ` : ''}
                 </div>

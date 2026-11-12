@@ -1,7 +1,7 @@
 import { createComponent } from '../../utils/createComponent.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
-import { escapeHtml } from '../../utils/security.js';
+import { escapeHtml, escapeAttr } from '../../utils/security.js';
 
 let checkboxUid = 0;
 
@@ -82,9 +82,9 @@ export function Checkbox({
   const errorClass = resolvePartClasses('input', 'error') || resolvePartClasses('formgroup', 'error');
 
   const field = `
-    <div class="${escapeHtml(wrapperClass)}">
+    <div class="${escapeAttr(wrapperClass)}">
       <input
-        class="${escapeHtml(checkboxClass)}"
+        class="${escapeAttr(checkboxClass)}"
         type="checkbox"
         id="${escapeHtml(finalId)}"
         name="${escapeHtml(name)}"
@@ -98,7 +98,7 @@ export function Checkbox({
         data-rnx-ignore="true"
         ${attrs}
       />
-      <label class="${escapeHtml(labelClass)}" for="${escapeHtml(finalId)}">
+      <label class="${escapeAttr(labelClass)}" for="${escapeHtml(finalId)}">
         ${escapeHtml(label)}
       </label>
     </div>
@@ -108,8 +108,8 @@ export function Checkbox({
   const template = () => (help || error) ? `
     <div>
       ${field}
-      ${help ? `<div id="${escapeHtml(helpId)}" class="${escapeHtml(helpClass)}">${escapeHtml(help)}</div>` : ''}
-      ${error ? `<div id="${escapeHtml(errorId)}" class="${escapeHtml(errorClass)}">${escapeHtml(error)}</div>` : ''}
+      ${help ? `<div id="${escapeHtml(helpId)}" class="${escapeAttr(helpClass)}">${escapeHtml(help)}</div>` : ''}
+      ${error ? `<div id="${escapeHtml(errorId)}" class="${escapeAttr(errorClass)}">${escapeHtml(error)}</div>` : ''}
     </div>
   ` : field;
 

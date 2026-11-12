@@ -2,7 +2,7 @@ import { createComponent } from '../../utils/createComponent.js';
 import { resolveClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 
-import { escapeHtml } from '../../utils/security.js';
+import { escapeAttr } from '../../utils/security.js';
 /**
  * Column Component - CSS Framework Agnostic
  *
@@ -45,7 +45,7 @@ export function Column({
   );
 
   const template = () => `
-    <div class="${escapeHtml(columnClass)}" data-slot></div>
+    <div class="${escapeAttr(columnClass)}" data-slot></div>
   `;
 
   return createComponent(template, { size, children, alignSelf, className });

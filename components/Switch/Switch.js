@@ -1,7 +1,7 @@
 import { createComponent } from '../../utils/createComponent.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
-import { escapeHtml } from '../../utils/security.js';
+import { escapeHtml, escapeAttr } from '../../utils/security.js';
 
 let switchUid = 0;
 
@@ -91,7 +91,7 @@ export function Switch({
 
   const inputHtml = `
       <input
-        class="${escapeHtml(inputClass)}"
+        class="${escapeAttr(inputClass)}"
         type="checkbox"
         role="switch"
         aria-checked="${isChecked ? 'true' : 'false'}"
@@ -107,16 +107,16 @@ export function Switch({
       >`;
 
   const control = hasThumb
-    ? `<label class="${escapeHtml(controlClass)}" for="${escapeHtml(finalId)}">${inputHtml}
-      <span class="${escapeHtml(trackClass)}" aria-hidden="true"></span>
-      <span class="${escapeHtml(thumbClass)}" aria-hidden="true" data-part="thumb"></span>
+    ? `<label class="${escapeAttr(controlClass)}" for="${escapeHtml(finalId)}">${inputHtml}
+      <span class="${escapeAttr(trackClass)}" aria-hidden="true"></span>
+      <span class="${escapeAttr(thumbClass)}" aria-hidden="true" data-part="thumb"></span>
     </label>`
     : inputHtml;
 
   const template = () => `
-    <div class="${escapeHtml(wrapperClass)}">
+    <div class="${escapeAttr(wrapperClass)}">
       ${control}
-      ${label ? `<label class="${escapeHtml(labelClass)}" for="${escapeHtml(finalId)}">${escapeHtml(label)}</label>` : ''}
+      ${label ? `<label class="${escapeAttr(labelClass)}" for="${escapeHtml(finalId)}">${escapeHtml(label)}</label>` : ''}
     </div>
   `;
 

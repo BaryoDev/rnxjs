@@ -1,7 +1,7 @@
 import { createComponent } from '../../utils/createComponent.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
-import { escapeHtml, sanitizeUrl } from '../../utils/security.js';
+import { escapeHtml, sanitizeUrl, escapeAttr } from '../../utils/security.js';
 import { resolveIcon } from '../../utils/icon.js';
 
 /**
@@ -50,14 +50,14 @@ export function NavigationDrawer({
 
   const template = ({ isOpen, links }) => `
     <div>
-       <div class="${escapeHtml(drawerClass)}" data-ref="drawer" role="dialog" aria-modal="true" aria-label="${escapeHtml(title)}" tabindex="-1"${isOpen ? '' : ' aria-hidden="true"'}>
-          <div class="${escapeHtml(headerClass || 'p-3 mb-3')}">
-             <h5 class="${escapeHtml(titleClass || 'm-0')}">${escapeHtml(title)}</h5>
+       <div class="${escapeAttr(drawerClass)}" data-ref="drawer" role="dialog" aria-modal="true" aria-label="${escapeHtml(title)}" tabindex="-1"${isOpen ? '' : ' aria-hidden="true"'}>
+          <div class="${escapeAttr(headerClass || 'p-3 mb-3')}">
+             <h5 class="${escapeAttr(titleClass || 'm-0')}">${escapeHtml(title)}</h5>
           </div>
-          <nav class="${escapeHtml(bodyClass || 'nav flex-column')}" aria-label="Drawer">
+          <nav class="${escapeAttr(bodyClass || 'nav flex-column')}" aria-label="Drawer">
              ${links.map((link, idx) => `
                <a href="${escapeHtml(sanitizeUrl(link.href) || '#')}"
-                  class="${escapeHtml(cn('m3-drawer-link', link.active ? 'active' : ''))}"
+                  class="${escapeAttr(cn('m3-drawer-link', link.active ? 'active' : ''))}"
                   data-index="${idx}"
                   data-ref="link-${idx}"
                   data-rnx-ignore="true"
@@ -69,7 +69,7 @@ export function NavigationDrawer({
              `).join('')}
           </nav>
        </div>
-       ${isOpen ? `<div class="${escapeHtml(overlayClass || 'modal-backdrop fade show')}"${overlayClass ? '' : ' style="z-index: 1040"'} data-ref="backdrop" aria-hidden="true"></div>` : ''}
+       ${isOpen ? `<div class="${escapeAttr(overlayClass || 'modal-backdrop fade show')}"${overlayClass ? '' : ' style="z-index: 1040"'} data-ref="backdrop" aria-hidden="true"></div>` : ''}
     </div>
   `;
 

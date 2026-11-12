@@ -6,7 +6,7 @@
  */
 
 import { createComponent } from '../../utils/createComponent.js';
-import { escapeAttribute, escapeHtml } from '../../utils/security.js';
+import { escapeAttribute, escapeAttr } from '../../utils/security.js';
 import { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 
@@ -76,38 +76,38 @@ export function Skeleton({
         const baseClass = resolveClasses('skeleton');
         const itemClass = resolvePartClasses('skeleton', 'item');
         const animClass = animation && animation !== 'none' ? `skeleton-${escapeAttribute(animation)}` : '';
-        const srOnly = `<span style="${escapeHtml(SR_ONLY_STYLE)}">Loading\u2026</span>`;
+        const srOnly = `<span style="${escapeAttr(SR_ONLY_STYLE)}">Loading\u2026</span>`;
         const a11y = 'role="status" aria-busy="true"';
 
         switch (variant) {
             case 'circle':
                 return `
-                    <div class="${escapeHtml(cn(baseClass, itemClass, 'skeleton skeleton-circle', animClass, className))}"
+                    <div class="${escapeAttr(cn(baseClass, itemClass, 'skeleton skeleton-circle', animClass, className))}"
                          ${a11y}
-                         style="width: ${escapeHtml(safeWidth)}; height: ${escapeHtml(safeHeight)}; border-radius: 50%;">${srOnly}</div>
+                         style="width: ${escapeAttr(safeWidth)}; height: ${escapeAttr(safeHeight)}; border-radius: 50%;">${srOnly}</div>
                 `;
 
             case 'rectangle':
                 return `
-                    <div class="${escapeHtml(cn(baseClass, itemClass, 'skeleton skeleton-rectangle', animClass, className))}"
+                    <div class="${escapeAttr(cn(baseClass, itemClass, 'skeleton skeleton-rectangle', animClass, className))}"
                          ${a11y}
-                         style="width: ${escapeHtml(safeWidth)}; height: ${escapeHtml(safeHeight)};">${srOnly}</div>
+                         style="width: ${escapeAttr(safeWidth)}; height: ${escapeAttr(safeHeight)};">${srOnly}</div>
                 `;
 
             case 'card':
                 return `
-                    <div class="${escapeHtml(cn(resolveClasses('card'), baseClass, 'skeleton-card', className))}" ${a11y}>
+                    <div class="${escapeAttr(cn(resolveClasses('card'), baseClass, 'skeleton-card', className))}" ${a11y}>
                         ${srOnly}
-                        <div class="${escapeHtml(cn(itemClass, 'skeleton skeleton-rectangle', animClass))}" aria-hidden="true"
+                        <div class="${escapeAttr(cn(itemClass, 'skeleton skeleton-rectangle', animClass))}" aria-hidden="true"
                              style="height: 200px; width: 100%;"></div>
-                        <div class="${escapeHtml(cn(resolvePartClasses('card', 'body'), 'skeleton-card-body'))}" aria-hidden="true">
-                            <div class="${escapeHtml(cn(itemClass, 'skeleton skeleton-text', animClass))}"
+                        <div class="${escapeAttr(cn(resolvePartClasses('card', 'body'), 'skeleton-card-body'))}" aria-hidden="true">
+                            <div class="${escapeAttr(cn(itemClass, 'skeleton skeleton-text', animClass))}"
                                  style="width: 60%; height: 24px; margin-bottom: 1rem;"></div>
-                            <div class="${escapeHtml(cn(itemClass, 'skeleton skeleton-text', animClass))}"
+                            <div class="${escapeAttr(cn(itemClass, 'skeleton skeleton-text', animClass))}"
                                  style="width: 100%; height: 16px; margin-bottom: 0.5rem;"></div>
-                            <div class="${escapeHtml(cn(itemClass, 'skeleton skeleton-text', animClass))}"
+                            <div class="${escapeAttr(cn(itemClass, 'skeleton skeleton-text', animClass))}"
                                  style="width: 100%; height: 16px; margin-bottom: 0.5rem;"></div>
-                            <div class="${escapeHtml(cn(itemClass, 'skeleton skeleton-text', animClass))}"
+                            <div class="${escapeAttr(cn(itemClass, 'skeleton skeleton-text', animClass))}"
                                  style="width: 40%; height: 16px;"></div>
                         </div>
                     </div>
@@ -115,14 +115,14 @@ export function Skeleton({
 
             case 'table':
                 return `
-                    <div class="${escapeHtml(cn(baseClass, 'skeleton-table', className))}" ${a11y}>
+                    <div class="${escapeAttr(cn(baseClass, 'skeleton-table', className))}" ${a11y}>
                         ${srOnly}
                         <div class="skeleton-row skeleton-header" aria-hidden="true">
                             ${Array(cols)
                                 .fill(0)
                                 .map(
                                     () =>
-                                        `<div class="${escapeHtml(cn(itemClass, 'skeleton skeleton-cell', animClass))}"
+                                        `<div class="${escapeAttr(cn(itemClass, 'skeleton skeleton-cell', animClass))}"
                                               style="height: 20px;"></div>`
                                 )
                                 .join('')}
@@ -136,7 +136,7 @@ export function Skeleton({
                                             .fill(0)
                                             .map(
                                                 () =>
-                                                    `<div class="${escapeHtml(cn(itemClass, 'skeleton skeleton-cell', animClass))}"
+                                                    `<div class="${escapeAttr(cn(itemClass, 'skeleton skeleton-cell', animClass))}"
                                                           style="height: 20px;"></div>`
                                             )
                                             .join('')}
@@ -149,14 +149,14 @@ export function Skeleton({
             case 'text':
             default:
                 return `
-                    <div class="${escapeHtml(cn(baseClass, 'skeleton-text', className))}" ${a11y}>
+                    <div class="${escapeAttr(cn(baseClass, 'skeleton-text', className))}" ${a11y}>
                         ${srOnly}
                         ${Array(lines)
                             .fill(0)
                             .map(
                                 (_, i) =>
-                                    `<div class="${escapeHtml(cn(itemClass, 'skeleton skeleton-line', animClass))}" aria-hidden="true"
-                                          style="width: ${escapeHtml(i === lines - 1 ? '60%' : '100%')}; height: ${escapeHtml(safeHeight)}; margin-bottom: 0.5rem;"></div>`
+                                    `<div class="${escapeAttr(cn(itemClass, 'skeleton skeleton-line', animClass))}" aria-hidden="true"
+                                          style="width: ${escapeAttr(i === lines - 1 ? '60%' : '100%')}; height: ${escapeAttr(safeHeight)}; margin-bottom: 0.5rem;"></div>`
                             )
                             .join('')}
                     </div>

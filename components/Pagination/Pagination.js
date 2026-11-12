@@ -1,5 +1,5 @@
 import { createComponent } from '../../utils/createComponent.js';
-import { escapeHtml } from '../../utils/security.js';
+import { escapeHtml, escapeAttr } from '../../utils/security.js';
 import themeProvider, { resolveClasses, resolvePartClasses } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 
@@ -58,15 +58,15 @@ export function Pagination({ pages = '[]', onpageclick, label = 'Pagination', cl
   };
 
   const template = () => `
-    <nav class="${escapeHtml(cn('pagination-nav', className))}" aria-label="${escapeHtml(label)}">
-      <ul class="${escapeHtml(listClass)}" style="list-style: none;">
+    <nav class="${escapeAttr(cn('pagination-nav', className))}" aria-label="${escapeHtml(label)}">
+      <ul class="${escapeAttr(listClass)}" style="list-style: none;">
         ${parsedPages.map(p => {
           const isActive = p.active === true || p.active === 'true';
           const isDisabled = p.disabled === true || p.disabled === 'true';
           const itemAriaLabel = autoAriaLabel(p);
           return `
-          <li class="${escapeHtml(cn(itemClass, isActive ? activeClass : '', isDisabled ? disabledClass : ''))}">
-            <a class="${escapeHtml(cn(linkClass, isActive ? activeClass : '', isDisabled ? disabledClass : ''))}"
+          <li class="${escapeAttr(cn(itemClass, isActive ? activeClass : '', isDisabled ? disabledClass : ''))}">
+            <a class="${escapeAttr(cn(linkClass, isActive ? activeClass : '', isDisabled ? disabledClass : ''))}"
                href="#"
                data-page="${escapeHtml(String(p.value ?? ''))}"
                data-rnx-ignore="true"
