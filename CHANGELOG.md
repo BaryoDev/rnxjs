@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Router: the hash query (`#/users/7?tab=x`) no longer leaks into params and is exposed as `rnxRouter.query()`. Params are URI-decoded, a trailing slash matches the same route, and a numeric param name such as `:1` is skipped with a warning instead of throwing. `rnxRouter.destroy()` removes the listener, and a second install replaces the first.
+- `import { escapeHtml } from '@arnelirobles/rnxjs/utils/security'` resolves. It was documented but missing from `exports`.
+- Publish workflow fails unless the release commit is on `main`, and pins npm to `npm@11` instead of `latest`. `ci.yml` gets `permissions: contents: read`.
+
 ## [2.3.1] - 2026-11-12
 
 ### Fixed

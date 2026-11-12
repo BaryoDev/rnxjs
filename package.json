@@ -13,6 +13,7 @@
       "import": "./tailwind.preset.js",
       "require": "./tailwind.preset.cjs"
     },
+    "./utils/security": "./utils/security.js",
     "./dist/*": "./dist/*",
     "./css/bootstrap-m3-theme.css": "./css/bootstrap-m3-theme.css",
     "./css/*": "./css/*",
