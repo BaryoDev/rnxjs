@@ -47,11 +47,11 @@ export function SegmentedButton({ options = [], selected = '', onchange, label =
   const activeClass = themeState('segmentedbutton', 'active') || 'active';
 
   const template = ({ selected }) => `
-    <div class="${groupClass}" role="group"${label ? ` aria-label="${escapeHtml(label)}"` : ''}>
+    <div class="${escapeHtml(groupClass)}" role="group"${label ? ` aria-label="${escapeHtml(label)}"` : ''}>
       ${parsedOptions.map(opt => {
         const isSelected = opt.value === selected;
         return `
-          <button type="button" class="${cn(buttonClass, isSelected ? activeClass : '')}"
+          <button type="button" class="${escapeHtml(cn(buttonClass, isSelected ? activeClass : ''))}"
                   data-value="${escapeHtml(String(opt.value ?? ''))}"
                   data-rnx-ignore="true"
                   data-ref="btn-${escapeHtml(String(opt.value ?? ''))}"

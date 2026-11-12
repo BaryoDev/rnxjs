@@ -180,21 +180,21 @@ export function Modal({ id = '', title = '', dismissable = true, children = [], 
   const footerClass = resolvePartClasses('modal', 'footer') || 'modal-footer';
 
   const template = () => `
-    <div class="${modalClass}" id="${escapeHtml(modalId)}" tabindex="-1" role="dialog" aria-modal="true"${title ? ` aria-labelledby="${escapeHtml(modalId)}-label"` : ''} aria-hidden="true" data-ref="modalRoot">
-      <div class="${dialogClass}" role="document" data-ref="dialog">
-        <div class="${contentClass}">
+    <div class="${escapeHtml(modalClass)}" id="${escapeHtml(modalId)}" tabindex="-1" role="dialog" aria-modal="true"${title ? ` aria-labelledby="${escapeHtml(modalId)}-label"` : ''} aria-hidden="true" data-ref="modalRoot">
+      <div class="${escapeHtml(dialogClass)}" role="document" data-ref="dialog">
+        <div class="${escapeHtml(contentClass)}">
 
           ${title ? `
-          <div class="${headerClass}">
-            <h5 class="${titleClass}" id="${escapeHtml(modalId)}-label">${escapeHtml(title)}</h5>
-            ${dismissable ? `<button type="button" class="${closeClass}" data-bs-dismiss="modal" aria-label="Close">${closeGlyph}</button>` : ''}
+          <div class="${escapeHtml(headerClass)}">
+            <h5 class="${escapeHtml(titleClass)}" id="${escapeHtml(modalId)}-label">${escapeHtml(title)}</h5>
+            ${dismissable ? `<button type="button" class="${escapeHtml(closeClass)}" data-bs-dismiss="modal" aria-label="Close">${closeGlyph}</button>` : ''}
           </div>
           ` : ''}
 
-          <div class="${bodyClass}" data-slot></div>
+          <div class="${escapeHtml(bodyClass)}" data-slot></div>
 
           ${footerContent ? `
-          <div class="${footerClass}">
+          <div class="${escapeHtml(footerClass)}">
             ${footerContent}
           </div>
           ` : ''}

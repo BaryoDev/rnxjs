@@ -89,32 +89,32 @@ export function StatCard({
             : '';
 
         return `
-            <div class="${cardClass}" data-ref="card"${onclick ? ' role="button" tabindex="0"' : ''}>
-                <div class="${bodyClass}">
-                    <div class="${layoutClass}">
+            <div class="${escapeHtml(cardClass)}" data-ref="card"${onclick ? ' role="button" tabindex="0"' : ''}>
+                <div class="${escapeHtml(bodyClass)}">
+                    <div class="${escapeHtml(layoutClass)}">
                         <div style="flex: 1 1 auto;">
-                            <p class="${titleClass}">
+                            <p class="${escapeHtml(titleClass)}">
                                 ${escapeHtml(label)}
                             </p>
-                            <h3 class="${valueClass}" data-ref="value">
+                            <h3 class="${escapeHtml(valueClass)}" data-ref="value">
                                 ${escapeHtml(String(value))}
                             </h3>
                             ${change ? `
-                                <small class="${cn(trendClass, trendColor)}" style="display: inline-block;">
+                                <small class="${escapeHtml(cn(trendClass, trendColor))}" style="display: inline-block;">
                                     <i class="${escapeHtml(resolveIcon(trendIcon))}" aria-hidden="true"></i>
                                     ${escapeHtml(String(Math.abs(change.value)))}%
                                 </small>
                             ` : ''}
                         </div>
                         ${icon ? `
-                            <div class="${cn('stat-icon', resolvePartClasses('statcard', 'icon'), resolveUtility('text', variant))}" data-ref="icon" aria-hidden="true">
+                            <div class="${escapeHtml(cn('stat-icon', resolvePartClasses('statcard', 'icon'), resolveUtility('text', variant)))}" data-ref="icon" aria-hidden="true">
                                 <i class="${escapeHtml(resolveIcon(icon))}" style="font-size: 2rem; opacity: 0.7;"></i>
                             </div>
                         ` : ''}
                     </div>
                     ${footer ? `
-                        <div class="${resolvePartClasses('statcard', 'footer')}">
-                            <small class="${resolveUtility('text', 'muted')}">${escapeHtml(footer)}</small>
+                        <div class="${escapeHtml(resolvePartClasses('statcard', 'footer'))}">
+                            <small class="${escapeHtml(resolveUtility('text', 'muted'))}">${escapeHtml(footer)}</small>
                         </div>
                     ` : ''}
                 </div>

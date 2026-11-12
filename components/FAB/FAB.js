@@ -35,9 +35,9 @@ export function FAB({ icon = 'add', label = '', variant = 'standard', onclick = 
   const accessibleName = label ? '' : (ariaLabel || icon);
 
   const template = ({ icon, label }) => `
-    <button type="button" class="${fabClass}" data-ref="btn" data-rnx-ignore="true"${accessibleName ? ` aria-label="${escapeHtml(accessibleName)}"` : ''}>
+    <button type="button" class="${escapeHtml(fabClass)}" data-ref="btn" data-rnx-ignore="true"${accessibleName ? ` aria-label="${escapeHtml(accessibleName)}"` : ''}>
       <i class="${escapeHtml(resolveIcon(icon))}" aria-hidden="true"></i>
-      ${label ? `<span class="${labelClass}">${escapeHtml(label)}</span>` : ''}
+      ${label ? `<span class="${escapeHtml(labelClass)}">${escapeHtml(label)}</span>` : ''}
     </button>
   `;
 

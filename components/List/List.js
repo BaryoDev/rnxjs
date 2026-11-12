@@ -45,30 +45,30 @@ export function List({ items = [], className = '' } = {}) {
   const trailingClass = resolvePartClasses('list', 'trailing') || 'list-item-trailing';
 
   const template = ({ items }) => `
-    <ul class="${listClass}" style="list-style: none; margin: 0; padding: 0;">
+    <ul class="${escapeHtml(listClass)}" style="list-style: none; margin: 0; padding: 0;">
       ${items.map((item, idx) => {
         const clickable = Boolean(item.onclick) && !item.disabled;
         return `
-        <li class="${cn(itemClass, clickable ? itemActionClass : '', item.active ? activeClass : '', item.disabled ? disabledClass : '')}"
+        <li class="${escapeHtml(cn(itemClass, clickable ? itemActionClass : '', item.active ? activeClass : '', item.disabled ? disabledClass : ''))}"
             data-index="${idx}"
             data-ref="item-${idx}"
             ${item.disabled ? 'aria-disabled="true"' : ''}
             ${clickable ? 'tabindex="0"' : ''}
-            style="display: flex; align-items: center; gap: 0.75rem; cursor: ${clickable ? 'pointer' : 'default'};">
+            style="display: flex; align-items: center; gap: 0.75rem; cursor: ${escapeHtml(clickable ? 'pointer' : 'default')};">
 
            ${item.leadingIcon ? `
-             <span class="${leadingClass}" aria-hidden="true">
+             <span class="${escapeHtml(leadingClass)}" aria-hidden="true">
                <i class="${escapeHtml(resolveIcon(item.leadingIcon))}"></i>
              </span>
            ` : ''}
 
-           <span class="${contentClass}" style="display: flex; flex-direction: column; flex: 1 1 auto;">
-             <span class="${headlineClass}">${escapeHtml(item.headline || '')}</span>
-             ${item.supportingText ? `<small class="${supportingClass}">${escapeHtml(item.supportingText)}</small>` : ''}
+           <span class="${escapeHtml(contentClass)}" style="display: flex; flex-direction: column; flex: 1 1 auto;">
+             <span class="${escapeHtml(headlineClass)}">${escapeHtml(item.headline || '')}</span>
+             ${item.supportingText ? `<small class="${escapeHtml(supportingClass)}">${escapeHtml(item.supportingText)}</small>` : ''}
            </span>
 
            ${item.trailingIcon ? `
-             <span class="${trailingClass}" aria-hidden="true">
+             <span class="${escapeHtml(trailingClass)}" aria-hidden="true">
                <i class="${escapeHtml(resolveIcon(item.trailingIcon))}"></i>
              </span>
            ` : ''}

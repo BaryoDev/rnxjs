@@ -99,11 +99,11 @@ export function Input({
   const errorClass = resolvePartClasses('input', 'error') || resolvePartClasses('formgroup', 'error');
 
   const template = () => `
-    <div class="${wrapperClass}">
-      ${fieldClass ? `<div class="${fieldClass}">` : ''}
-      ${icon ? `<span class="${iconClass}" aria-hidden="true"><i class="${escapeHtml(resolveIcon(icon))}"></i></span>` : ''}
+    <div class="${escapeHtml(wrapperClass)}">
+      ${fieldClass ? `<div class="${escapeHtml(fieldClass)}">` : ''}
+      ${icon ? `<span class="${escapeHtml(iconClass)}" aria-hidden="true"><i class="${escapeHtml(resolveIcon(icon))}"></i></span>` : ''}
       <input
-        class="${inputClass}"
+        class="${escapeHtml(inputClass)}"
         id="${escapeHtml(finalId)}"
         type="${escapeHtml(type)}"
         name="${escapeHtml(name)}"
@@ -119,9 +119,9 @@ export function Input({
         ${attrs}
       >
       ${fieldClass ? '</div>' : ''}
-      ${label ? `<label for="${escapeHtml(finalId)}" class="${labelClass}">${escapeHtml(label)}</label>` : ''}
-      ${help ? `<div id="${escapeHtml(helpId)}" class="${helpClass}">${escapeHtml(help)}</div>` : ''}
-      ${error ? `<div id="${escapeHtml(errorId)}" class="${errorClass}">${escapeHtml(error)}</div>` : ''}
+      ${label ? `<label for="${escapeHtml(finalId)}" class="${escapeHtml(labelClass)}">${escapeHtml(label)}</label>` : ''}
+      ${help ? `<div id="${escapeHtml(helpId)}" class="${escapeHtml(helpClass)}">${escapeHtml(help)}</div>` : ''}
+      ${error ? `<div id="${escapeHtml(errorId)}" class="${escapeHtml(errorClass)}">${escapeHtml(error)}</div>` : ''}
     </div>
   `;
 

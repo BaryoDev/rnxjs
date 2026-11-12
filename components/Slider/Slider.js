@@ -61,13 +61,13 @@ export function Slider({
     const wrapperClass = cn('rnx-slider', className);
 
     const template = ({ value }) => `
-    <div class="${wrapperClass}">
-      ${label ? `<label for="${escapeHtml(finalId)}" class="${labelClass}">${escapeHtml(label)}</label>` : ''}
-      <input type="range" class="${inputClass}"
+    <div class="${escapeHtml(wrapperClass)}">
+      ${label ? `<label for="${escapeHtml(finalId)}" class="${escapeHtml(labelClass)}">${escapeHtml(label)}</label>` : ''}
+      <input type="range" class="${escapeHtml(inputClass)}"
              id="${escapeHtml(finalId)}"
              ${name ? `name="${escapeHtml(name)}"` : ''}
-             min="${minVal}" max="${maxVal}" step="${stepVal}" value="${numOr(value, 0)}"
-             aria-valuemin="${minVal}" aria-valuemax="${maxVal}" aria-valuenow="${numOr(value, 0)}"
+             min="${escapeHtml(minVal)}" max="${escapeHtml(maxVal)}" step="${escapeHtml(stepVal)}" value="${escapeHtml(numOr(value, 0))}"
+             aria-valuemin="${escapeHtml(minVal)}" aria-valuemax="${escapeHtml(maxVal)}" aria-valuenow="${escapeHtml(numOr(value, 0))}"
              ${isDisabled ? 'disabled' : ''}
              data-ref="range"
              data-rnx-ignore="true"

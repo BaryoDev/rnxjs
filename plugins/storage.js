@@ -35,12 +35,16 @@ export function storagePlugin(options = {}) {
     name: 'storage',
 
     install() {
+      const UNSAFE_KEYS = new Set(['__proto__', 'prototype', 'constructor']);
+      const isUnsafeKey = key => UNSAFE_KEYS.has(key);
+
       /**
        * Get nested value from object using dot notation
        * getNestedValue(obj, 'user.profile.name')
        */
       function getNestedValue(obj, path) {
         const keys = path.split('.');
+        if (keys.some(isUnsafeKey)) return undefined;
         let current = obj;
 
         for (const key of keys) {
@@ -57,6 +61,9 @@ export function storagePlugin(options = {}) {
        */
       function setNestedValue(obj, path, value) {
         const keys = path.split('.');
+        if (keys.some(isUnsafeKey)) {
+          throw new Error(`Unsafe path "${path}"`);
+        }
         let current = obj;
 
         for (let i = 0; i < keys.length - 1; i++) {
@@ -88,6 +95,8 @@ export function storagePlugin(options = {}) {
           if (saved) {
             const data = JSON.parse(saved);
             for (const [path, value] of Object.entries(data)) {
+              // Only restore paths this call watches
+              if (!pathsToWatch.includes(path)) continue;
               try {
                 setNestedValue(state, path, value);
               } catch (e) {

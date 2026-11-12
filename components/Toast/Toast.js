@@ -48,7 +48,7 @@ export function Toast({
   const shouldAutohide = autohide === true || autohide === 'true';
 
   const template = () => `
-    <div class="${escapeHtml(toastClass)}" role="status" aria-live="polite" aria-atomic="true" data-bs-autohide="${shouldAutohide}" data-bs-delay="${escapeHtml(delay)}">
+    <div class="${escapeHtml(toastClass)}" role="status" aria-live="polite" aria-atomic="true" data-bs-autohide="${escapeHtml(shouldAutohide)}" data-bs-delay="${escapeHtml(delay)}">
       <div class="${escapeHtml(headerClass)}">
         <strong class="${escapeHtml(titleClass)}">${escapeHtml(header)}</strong>
         <button type="button" class="${escapeHtml(closeClass)}" data-ref="close" data-bs-dismiss="toast" aria-label="Close" data-rnx-ignore="true"></button>

@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+
+- `data-rule="pattern:..."` validates again. `isSafeRegex` rejected every pattern because its list held `/(.+)+/` and `/(.*)+/` as regexes. It now scans the pattern source for a quantified group that holds an unbounded quantifier, such as `(a+)+`. A pattern may contain `:`.
+- `sanitizeHtml` and `sanitizeUrl` strip tabs, newlines and control characters before reading the scheme, and the scheme check now covers `action`, `formaction`, `xlink:href`, `poster`, `background`, `data`, `ping` and each `srcset` entry, not only `href` and `src`.
+- Component templates escape every interpolated attribute value, so a Tab `title` or `id`, or a `className`, with a quote can no longer add an attribute.
+- `data-bind` rejects `__proto__`, `prototype` and `constructor` path segments. The storage plugin does the same and restores only the paths it watches.
+- Removed the unused `components/Accordion/AccordionItem.js`, which was never exported.
+
 ## [2.3.1] - 2026-11-12
 
 ### Fixed

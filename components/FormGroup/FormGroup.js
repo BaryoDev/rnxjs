@@ -34,11 +34,11 @@ export function FormGroup({ label = '', forId = '', help = '', error = '', child
   const errorClass = resolvePartClasses('formgroup', 'error');
 
   const template = () => `
-    <div class="${groupClass}">
-      ${label ? `<label class="${labelClass}" data-ref="label" ${forId ? `for="${escapeHtml(forId)}"` : ''}>${escapeHtml(label)}</label>` : ''}
+    <div class="${escapeHtml(groupClass)}">
+      ${label ? `<label class="${escapeHtml(labelClass)}" data-ref="label" ${forId ? `for="${escapeHtml(forId)}"` : ''}>${escapeHtml(label)}</label>` : ''}
       <div data-slot></div>
-      ${help ? `<div id="${escapeHtml(helpId)}" class="${helpClass}">${escapeHtml(help)}</div>` : ''}
-      ${error ? `<div id="${escapeHtml(errorId)}" class="${errorClass}">${escapeHtml(error)}</div>` : ''}
+      ${help ? `<div id="${escapeHtml(helpId)}" class="${escapeHtml(helpClass)}">${escapeHtml(help)}</div>` : ''}
+      ${error ? `<div id="${escapeHtml(errorId)}" class="${escapeHtml(errorClass)}">${escapeHtml(error)}</div>` : ''}
     </div>
   `;
 

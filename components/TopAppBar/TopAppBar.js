@@ -52,16 +52,16 @@ export function TopAppBar({
   const iconButtonClass = resolveClasses('button', { variant: 'text', size: 'sm' });
 
   const template = () => `
-    <header class="${appBarClass}">
+    <header class="${escapeHtml(appBarClass)}">
        ${leadingIcon ? `
-         <button type="button" class="${iconButtonClass}" data-ref="leading" data-rnx-ignore="true" aria-label="${escapeHtml(leadingLabel)}">
+         <button type="button" class="${escapeHtml(iconButtonClass)}" data-ref="leading" data-rnx-ignore="true" aria-label="${escapeHtml(leadingLabel)}">
            <i class="${escapeHtml(resolveIcon(leadingIcon))}" style="font-size: 24px;" aria-hidden="true"></i>
          </button>
        ` : ''}
-       <h5 class="${cn(brandClass, resolvePartClasses('topappbar', 'title'))}" style="flex: 1 1 auto;">${escapeHtml(title)}</h5>
+       <h5 class="${escapeHtml(cn(brandClass, resolvePartClasses('topappbar', 'title')))}" style="flex: 1 1 auto;">${escapeHtml(title)}</h5>
        ${trailingIcon ? `
-         <div class="${navClass}">
-           <button type="button" class="${iconButtonClass}" data-ref="trailing" data-rnx-ignore="true" aria-label="${escapeHtml(trailingLabel)}">
+         <div class="${escapeHtml(navClass)}">
+           <button type="button" class="${escapeHtml(iconButtonClass)}" data-ref="trailing" data-rnx-ignore="true" aria-label="${escapeHtml(trailingLabel)}">
              <i class="${escapeHtml(resolveIcon(trailingIcon))}" style="font-size: 24px;" aria-hidden="true"></i>
            </button>
          </div>

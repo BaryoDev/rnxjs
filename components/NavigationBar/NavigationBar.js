@@ -49,10 +49,10 @@ export function NavigationBar({
   const linkClass = resolvePartClasses('navigationbar', 'link');
 
   const template = ({ activeIndex, items }) => `
-    <nav class="${navbarClass}" aria-label="${escapeHtml(ariaLabel)}">
+    <nav class="${escapeHtml(navbarClass)}" aria-label="${escapeHtml(ariaLabel)}">
       ${items.map((item, idx) => `
         <button type="button"
-                class="${cn(linkClass, 'navigation-bar-item', idx === activeIndex ? 'active' : '')}"
+                class="${escapeHtml(cn(linkClass, 'navigation-bar-item', idx === activeIndex ? 'active' : ''))}"
                 data-index="${idx}"
                 data-rnx-ignore="true"
                 data-ref="nav-${idx}"

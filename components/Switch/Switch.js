@@ -91,7 +91,7 @@ export function Switch({
 
   const inputHtml = `
       <input
-        class="${inputClass}"
+        class="${escapeHtml(inputClass)}"
         type="checkbox"
         role="switch"
         aria-checked="${isChecked ? 'true' : 'false'}"
@@ -107,16 +107,16 @@ export function Switch({
       >`;
 
   const control = hasThumb
-    ? `<label class="${controlClass}" for="${escapeHtml(finalId)}">${inputHtml}
-      <span class="${trackClass}" aria-hidden="true"></span>
-      <span class="${thumbClass}" aria-hidden="true" data-part="thumb"></span>
+    ? `<label class="${escapeHtml(controlClass)}" for="${escapeHtml(finalId)}">${inputHtml}
+      <span class="${escapeHtml(trackClass)}" aria-hidden="true"></span>
+      <span class="${escapeHtml(thumbClass)}" aria-hidden="true" data-part="thumb"></span>
     </label>`
     : inputHtml;
 
   const template = () => `
-    <div class="${wrapperClass}">
+    <div class="${escapeHtml(wrapperClass)}">
       ${control}
-      ${label ? `<label class="${labelClass}" for="${escapeHtml(finalId)}">${escapeHtml(label)}</label>` : ''}
+      ${label ? `<label class="${escapeHtml(labelClass)}" for="${escapeHtml(finalId)}">${escapeHtml(label)}</label>` : ''}
     </div>
   `;
 

@@ -53,8 +53,8 @@ export function Tabs({
 
   const template = () => `
     <div>
-      <ul class="${tabsClass}" role="tablist" data-ref="nav"></ul>
-      <div class="${contentClass}" data-ref="content"></div>
+      <ul class="${escapeHtml(tabsClass)}" role="tablist" data-ref="nav"></ul>
+      <div class="${escapeHtml(contentClass)}" data-ref="content"></div>
       <div style="display: none;" data-slot></div>
     </div>
   `;
@@ -104,7 +104,7 @@ export function Tabs({
       navItem.className = itemClass;
       navItem.setAttribute('role', 'presentation');
       navItem.innerHTML = `
-        <button class="${cn(linkClass, active ? activeTokens.join(' ') : '', active ? 'active' : '')}" id="${escapeHtml(tabId)}-tab" type="button" role="tab" aria-selected="${active ? 'true' : 'false'}" aria-controls="${escapeHtml(tabId)}" tabindex="${active ? '0' : '-1'}">${escapeHtml(title)}</button>
+        <button class="${escapeHtml(cn(linkClass, active ? activeTokens.join(' ') : '', active ? 'active' : ''))}" id="${escapeHtml(tabId)}-tab" type="button" role="tab" aria-selected="${active ? 'true' : 'false'}" aria-controls="${escapeHtml(tabId)}" tabindex="${escapeHtml(active ? '0' : '-1')}">${escapeHtml(title)}</button>
       `;
       nav.appendChild(navItem);
       const button = navItem.querySelector('button');

@@ -58,15 +58,15 @@ export function Pagination({ pages = '[]', onpageclick, label = 'Pagination', cl
   };
 
   const template = () => `
-    <nav class="${cn('pagination-nav', className)}" aria-label="${escapeHtml(label)}">
-      <ul class="${listClass}" style="list-style: none;">
+    <nav class="${escapeHtml(cn('pagination-nav', className))}" aria-label="${escapeHtml(label)}">
+      <ul class="${escapeHtml(listClass)}" style="list-style: none;">
         ${parsedPages.map(p => {
           const isActive = p.active === true || p.active === 'true';
           const isDisabled = p.disabled === true || p.disabled === 'true';
           const itemAriaLabel = autoAriaLabel(p);
           return `
-          <li class="${cn(itemClass, isActive ? activeClass : '', isDisabled ? disabledClass : '')}">
-            <a class="${cn(linkClass, isActive ? activeClass : '', isDisabled ? disabledClass : '')}"
+          <li class="${escapeHtml(cn(itemClass, isActive ? activeClass : '', isDisabled ? disabledClass : ''))}">
+            <a class="${escapeHtml(cn(linkClass, isActive ? activeClass : '', isDisabled ? disabledClass : ''))}"
                href="#"
                data-page="${escapeHtml(String(p.value ?? ''))}"
                data-rnx-ignore="true"

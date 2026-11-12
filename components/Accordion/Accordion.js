@@ -56,28 +56,28 @@ export function Accordion({ id = 'accordion', items = [], multiple = false, onTo
     const headingId = `${accordionId}-heading-${i}`;
     const panelId = `${accordionId}-collapse-${i}`;
     return `
-      <div class="${itemClass}">
-        <h3 class="${headerClass}" style="margin: 0;">
+      <div class="${escapeHtml(itemClass)}">
+        <h3 class="${escapeHtml(headerClass)}" style="margin: 0;">
           <button type="button"
-                  class="${cn(buttonClass, open ? '' : collapsedTokens.join(' '))}"
+                  class="${escapeHtml(cn(buttonClass, open ? '' : collapsedTokens.join(' ')))}"
                   id="${escapeHtml(headingId)}"
                   data-accordion-index="${i}"
                   aria-expanded="${open ? 'true' : 'false'}"
                   aria-controls="${escapeHtml(panelId)}">${escapeHtml(item.title || `Item ${i + 1}`)}</button>
         </h3>
         <div id="${escapeHtml(panelId)}"
-             class="${cn(collapseTokens.join(' '), (open ? showTokens : hideTokens).join(' '))}"
+             class="${escapeHtml(cn(collapseTokens.join(' '), (open ? showTokens : hideTokens).join(' ')))}"
              role="region"
              aria-labelledby="${escapeHtml(headingId)}"
              ${open ? '' : 'hidden'}>
-          <div class="${bodyClass}">${sanitizeHtml(item.content || '')}</div>
+          <div class="${escapeHtml(bodyClass)}">${sanitizeHtml(item.content || '')}</div>
         </div>
       </div>
     `;
   }).join('');
 
   const template = () => `
-    <div class="${accordionClass}" id="${escapeHtml(accordionId)}" ${parsedItems.length ? '' : 'data-slot'}>${parsedItems.length ? renderItems() : ''}</div>
+    <div class="${escapeHtml(accordionClass)}" id="${escapeHtml(accordionId)}" ${parsedItems.length ? '' : 'data-slot'}>${parsedItems.length ? renderItems() : ''}</div>
   `;
 
   const component = createComponent(template, { id: accordionId, children, className });

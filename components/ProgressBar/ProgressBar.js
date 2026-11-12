@@ -76,7 +76,7 @@ export function ProgressBar({
      */
     const template = () => {
         return `
-            <div class="progress-wrapper ${className}" data-ref="wrapper">
+            <div class="progress-wrapper ${escapeHtml(className)}" data-ref="wrapper">
                 ${label ? `
                     <div class="progress-label mb-2 flex justify-between">
                         <span class="label-text">${escapeHtml(label)}</span>
@@ -86,13 +86,13 @@ export function ProgressBar({
                     </div>
                 ` : ''}
 
-                <div class="${progressClass}" style="height: ${escapeHtml(height)};">
-                    <div class="${barClass}"
+                <div class="${escapeHtml(progressClass)}" style="height: ${escapeHtml(height)};">
+                    <div class="${escapeHtml(barClass)}"
                          role="progressbar"
-                         aria-valuenow="${currentValue}"
+                         aria-valuenow="${escapeHtml(currentValue)}"
                          aria-valuemin="0"
                          aria-valuemax="100"
-                         ${!indeterminate ? `style="width: ${currentValue}%"` : ''}
+                         ${!indeterminate ? `style="width: ${escapeHtml(currentValue)}%"` : ''}
                     >
                         ${(showValue || showLabel) && !striped && !indeterminate ? `
                             <span class="progress-text">${currentValue}%</span>

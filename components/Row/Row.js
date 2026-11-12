@@ -2,6 +2,7 @@ import { createComponent } from '../../utils/createComponent.js';
 import { resolveClasses, themeProvider } from '../../utils/ThemeProvider.js';
 import { cn } from '../../utils/classNames.js';
 
+import { escapeHtml } from '../../utils/security.js';
 /**
  * Row Component - CSS Framework Agnostic
  *
@@ -49,7 +50,7 @@ export function Row({
   );
 
   const template = () => `
-    <div class="${rowClass}" data-slot></div>
+    <div class="${escapeHtml(rowClass)}" data-slot></div>
   `;
 
   return createComponent(template, { children, justify, align, noGutters, className });

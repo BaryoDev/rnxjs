@@ -89,10 +89,10 @@ export function Textarea({
 
   const field = `
     <textarea
-      class="${textareaClass}"
+      class="${escapeHtml(textareaClass)}"
       id="${escapeHtml(finalId)}"
       name="${escapeHtml(name)}"
-      rows="${Number(rows) || 4}"
+      rows="${escapeHtml(Number(rows) || 4)}"
       placeholder="${escapeHtml(placeholder)}"
       ${isRequired ? 'required aria-required="true"' : ''}
       ${isDisabled ? 'disabled' : ''}
@@ -108,10 +108,10 @@ export function Textarea({
   // Keep the bare textarea as root when no label/help/error (backward compatible)
   const template = () => (label || help || error) ? `
     <div>
-      ${label ? `<label for="${escapeHtml(finalId)}" class="${labelClass}">${escapeHtml(label)}</label>` : ''}
+      ${label ? `<label for="${escapeHtml(finalId)}" class="${escapeHtml(labelClass)}">${escapeHtml(label)}</label>` : ''}
       ${field}
-      ${help ? `<div id="${escapeHtml(helpId)}" class="${helpClass}">${escapeHtml(help)}</div>` : ''}
-      ${error ? `<div id="${escapeHtml(errorId)}" class="${errorClass}">${escapeHtml(error)}</div>` : ''}
+      ${help ? `<div id="${escapeHtml(helpId)}" class="${escapeHtml(helpClass)}">${escapeHtml(help)}</div>` : ''}
+      ${error ? `<div id="${escapeHtml(errorId)}" class="${escapeHtml(errorClass)}">${escapeHtml(error)}</div>` : ''}
     </div>
   ` : field;
 

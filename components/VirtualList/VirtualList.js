@@ -157,7 +157,7 @@ export function VirtualList(options = {}) {
 
             itemsHtml.push(`
                 <div
-                    class="${itemPartClass}"
+                    class="${escapeHtml(itemPartClass)}"
                     data-index="${i}"
                     role="listitem"
                     aria-setsize="${currentItems.length}"
@@ -195,7 +195,7 @@ export function VirtualList(options = {}) {
 
         return `
             <div
-                class="${containerClass}"
+                class="${escapeHtml(containerClass)}"
                 data-ref="container"
                 style="
                     height: ${escapeAttribute(containerHeight)};
@@ -204,7 +204,7 @@ export function VirtualList(options = {}) {
                 "
             >
                 <div
-                    class="${contentClass}"
+                    class="${escapeHtml(contentClass)}"
                     data-ref="content"
                     role="list"
                     style="

@@ -165,10 +165,10 @@ export function FileUpload({
         const removeButtonClass = cn('file-upload-item-remove', resolveClasses('button', { variant: 'danger', size: 'sm' }));
 
         return `
-            <div class="${wrapperClass}" data-ref="wrapper">
+            <div class="${escapeHtml(wrapperClass)}" data-ref="wrapper">
                 ${label ? `<label class="form-label">${escapeHtml(label)}</label>` : ''}
 
-                <div class="${zoneClass}" data-ref="dropZone">
+                <div class="${escapeHtml(zoneClass)}" data-ref="dropZone">
                     <div class="file-upload-text">
                         <p class="upload-main">Drag and drop files here</p>
                         <p class="upload-sub">or select files below</p>
@@ -201,7 +201,7 @@ export function FileUpload({
                                     <small class="file-upload-item-size text-muted">${escapeHtml(formatBytes(file.size))}</small>
                                 </div>
                             </div>
-                            <button type="button" class="${removeButtonClass}" data-index="${index}">
+                            <button type="button" class="${escapeHtml(removeButtonClass)}" data-index="${index}">
                                 &times;
                             </button>
                         </div>

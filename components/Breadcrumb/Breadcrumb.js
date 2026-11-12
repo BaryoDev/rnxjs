@@ -58,15 +58,15 @@ export function Breadcrumb({
     const template = () => {
         return `
             <nav aria-label="breadcrumb">
-                <ol class="${breadcrumbClass}">
+                <ol class="${escapeHtml(breadcrumbClass)}">
                     ${items.map((item) => `
-                        <li class="${item.active ? activeClass : itemClass}"${item.active ? ' aria-current="page"' : ''}>
+                        <li class="${escapeHtml(item.active ? activeClass : itemClass)}"${item.active ? ' aria-current="page"' : ''}>
                             ${item.active
                                 ? `<span>${escapeHtml(item.label)}</span>`
                                 : `<a href="${escapeHtml(sanitizeUrl(item.href) || '#')}">${escapeHtml(item.label)}</a>`
                             }
                         </li>
-                    `).join(`<li class="${separatorClass}" aria-hidden="true">${escapeHtml(separator)}</li>`)}
+                    `).join(`<li class="${escapeHtml(separatorClass)}" aria-hidden="true">${escapeHtml(separator)}</li>`)}
                 </ol>
             </nav>
         `;

@@ -42,9 +42,9 @@ export function Search({
   const clearClass = resolvePartClasses('search', 'button');
 
   const template = ({ value }) => `
-    <div class="${wrapperClass}" role="search">
-      <span class="${iconClass}" aria-hidden="true">${searchIconSvg}</span>
-      <input type="search" class="${inputClass}"
+    <div class="${escapeHtml(wrapperClass)}" role="search">
+      <span class="${escapeHtml(iconClass)}" aria-hidden="true">${searchIconSvg}</span>
+      <input type="search" class="${escapeHtml(inputClass)}"
              id="${escapeHtml(finalId)}"
              ${name ? `name="${escapeHtml(name)}"` : ''}
              placeholder="${escapeHtml(placeholder)}"
@@ -53,7 +53,7 @@ export function Search({
              data-ref="input"
              data-rnx-ignore="true">
       ${value ? `
-        <button type="button" class="${clearClass}" aria-label="Clear search" data-ref="clear" data-rnx-ignore="true">
+        <button type="button" class="${escapeHtml(clearClass)}" aria-label="Clear search" data-ref="clear" data-rnx-ignore="true">
           ${clearIconSvg}
         </button>
       ` : ''}

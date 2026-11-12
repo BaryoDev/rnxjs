@@ -70,12 +70,12 @@ export function ErrorBoundary(options = {}) {
         );
 
         return `
-            <div class="${containerClass}" role="alert">
-                <h3 class="${titleClass}">This section failed to load</h3>
-                <p class="${messageClass}">Reload the page to try again. If the problem continues, contact support.</p>
+            <div class="${escapeHtml(containerClass)}" role="alert">
+                <h3 class="${escapeHtml(titleClass)}">This section failed to load</h3>
+                <p class="${escapeHtml(messageClass)}">Reload the page to try again. If the problem continues, contact support.</p>
                 <details style="cursor: pointer;">
                     <summary>Error details</summary>
-                    <pre class="${stackClass}" style="overflow-x: auto;">${escapeHtml(error?.message || 'Unknown error')}\n\n${escapeHtml(error?.stack || '')}</pre>
+                    <pre class="${escapeHtml(stackClass)}" style="overflow-x: auto;">${escapeHtml(error?.message || 'Unknown error')}\n\n${escapeHtml(error?.stack || '')}</pre>
                 </details>
             </div>
         `;

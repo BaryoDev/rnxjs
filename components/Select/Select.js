@@ -96,9 +96,9 @@ export function Select({
   const errorClass = resolvePartClasses('input', 'error') || resolvePartClasses('formgroup', 'error');
 
   const template = () => `
-    <div class="${wrapperClass}">
+    <div class="${escapeHtml(wrapperClass)}">
       <select
-        class="${selectClass}"
+        class="${escapeHtml(selectClass)}"
         id="${escapeHtml(finalId)}"
         name="${escapeHtml(name)}"
         ${isRequired ? 'required aria-required="true"' : ''}
@@ -116,9 +116,9 @@ export function Select({
           </option>
         `).join('')}
       </select>
-      ${label ? `<label for="${escapeHtml(finalId)}" class="${labelClass}">${escapeHtml(label)}</label>` : ''}
-      ${help ? `<div id="${escapeHtml(helpId)}" class="${helpClass}">${escapeHtml(help)}</div>` : ''}
-      ${error ? `<div id="${escapeHtml(errorId)}" class="${errorClass}">${escapeHtml(error)}</div>` : ''}
+      ${label ? `<label for="${escapeHtml(finalId)}" class="${escapeHtml(labelClass)}">${escapeHtml(label)}</label>` : ''}
+      ${help ? `<div id="${escapeHtml(helpId)}" class="${escapeHtml(helpClass)}">${escapeHtml(help)}</div>` : ''}
+      ${error ? `<div id="${escapeHtml(errorId)}" class="${escapeHtml(errorClass)}">${escapeHtml(error)}</div>` : ''}
     </div>
   `;
 

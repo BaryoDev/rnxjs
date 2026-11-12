@@ -51,14 +51,14 @@ export function Card({
   const subtitleClass = resolvePartClasses('card', 'subtitle');
 
   const template = () => `
-    <div class="${cardClass}">
+    <div class="${escapeHtml(cardClass)}">
       ${title || subtitle ? `
-        <div class="${headerClass}">
-          ${title ? `<h5 class="${titleClass}">${escapeHtml(title)}</h5>` : ''}
-          ${subtitle ? `<small class="${subtitleClass}">${escapeHtml(subtitle)}</small>` : ''}
+        <div class="${escapeHtml(headerClass)}">
+          ${title ? `<h5 class="${escapeHtml(titleClass)}">${escapeHtml(title)}</h5>` : ''}
+          ${subtitle ? `<small class="${escapeHtml(subtitleClass)}">${escapeHtml(subtitle)}</small>` : ''}
         </div>` : ''}
-      <div class="${bodyClass}" data-slot></div>
-      ${footer ? `<div class="${footerClass}">${escapeHtml(footer)}</div>` : ''}
+      <div class="${escapeHtml(bodyClass)}" data-slot></div>
+      ${footer ? `<div class="${escapeHtml(footerClass)}">${escapeHtml(footer)}</div>` : ''}
     </div>
   `;
 

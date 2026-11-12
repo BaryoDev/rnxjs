@@ -132,12 +132,12 @@ export function DatePicker({
 
         let html = `
             <div class="datepicker-calendar">
-                <div class="${headerClass}" style="display: flex; align-items: center; justify-content: space-between;">
-                    <button class="${navBtnClass} datepicker-prev" type="button" aria-label="Previous month">
+                <div class="${escapeHtml(headerClass)}" style="display: flex; align-items: center; justify-content: space-between;">
+                    <button class="${escapeHtml(navBtnClass)} datepicker-prev" type="button" aria-label="Previous month">
                         ${chevronLeftSvg}
                     </button>
                     <span class="datepicker-title" aria-live="polite">${year} - ${String(month + 1).padStart(2, '0')}</span>
-                    <button class="${navBtnClass} datepicker-next" type="button" aria-label="Next month">
+                    <button class="${escapeHtml(navBtnClass)} datepicker-next" type="button" aria-label="Next month">
                         ${chevronRightSvg}
                     </button>
                 </div>
@@ -172,8 +172,8 @@ export function DatePicker({
                         <td style="text-align: center; padding: 1px;">
                             <button
                                 type="button"
-                                class="${cn(dayClass, isToday ? dayTodayClass : '', isSelected ? daySelectedClass : '')} datepicker-day ${disabled ? 'disabled' : ''}"
-                                data-date="${dateStr}"
+                                class="${escapeHtml(cn(dayClass, isToday ? dayTodayClass : '', isSelected ? daySelectedClass : ''))} datepicker-day ${escapeHtml(disabled ? 'disabled' : '')}"
+                                data-date="${escapeHtml(dateStr)}"
                                 ${isSelected ? 'aria-pressed="true"' : ''}
                                 ${disabled ? 'disabled' : ''}
                             >
@@ -209,14 +209,14 @@ export function DatePicker({
         const triggerClass = resolveClasses('button', { variant: 'secondary' });
 
         return `
-            <div class="${wrapperClass}" data-ref="wrapper">
+            <div class="${escapeHtml(wrapperClass)}" data-ref="wrapper">
                 <div class="datepicker-field-group">
-                    ${label ? `<label class="${labelClass}" for="${escapeHtml(finalId)}">${escapeHtml(label)}</label>` : ''}
+                    ${label ? `<label class="${escapeHtml(labelClass)}" for="${escapeHtml(finalId)}">${escapeHtml(label)}</label>` : ''}
                     <div class="datepicker-field" style="display: flex; align-items: center; gap: 0.5rem;">
                         <input
                             type="text"
                             id="${escapeHtml(finalId)}"
-                            class="${inputClass}"
+                            class="${escapeHtml(inputClass)}"
                             value="${escapeHtml(selectedDate)}"
                             placeholder="YYYY-MM-DD"
                             readonly
@@ -224,8 +224,8 @@ export function DatePicker({
                             aria-expanded="${isOpen ? 'true' : 'false'}"
                             data-ref="input"
                         />
-                        <button class="${triggerClass} datepicker-toggle" type="button"
-                            aria-label="${isOpen ? 'Close calendar' : 'Open calendar'}"
+                        <button class="${escapeHtml(triggerClass)} datepicker-toggle" type="button"
+                            aria-label="${escapeHtml(isOpen ? 'Close calendar' : 'Open calendar')}"
                             aria-expanded="${isOpen ? 'true' : 'false'}"
                             data-ref="triggerBtn">
                             ${calendarSvg}
@@ -233,7 +233,7 @@ export function DatePicker({
                     </div>
                 </div>
                 ${isOpen ? `
-                    <div class="${calendarClass}" role="dialog" aria-modal="false" aria-label="Choose date" data-ref="dropdown">
+                    <div class="${escapeHtml(calendarClass)}" role="dialog" aria-modal="false" aria-label="Choose date" data-ref="dropdown">
                         ${renderCalendar()}
                     </div>
                 ` : ''}

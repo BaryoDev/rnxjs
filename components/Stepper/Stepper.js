@@ -50,11 +50,11 @@ export const Stepper = (props = {}) => {
                 : themeState('stepper', 'pending');
 
         return `
-            <div class="${cn((vertical && resolvePartClasses('stepper', 'headerVertical')) || resolvePartClasses('stepper', 'header'), 'stepper-step-header')}">
-                <div class="${cn(circlePart, circleState, 'stepper-step-indicator')}" aria-hidden="true">
+            <div class="${escapeHtml(cn((vertical && resolvePartClasses('stepper', 'headerVertical')) || resolvePartClasses('stepper', 'header'), 'stepper-step-header'))}">
+                <div class="${escapeHtml(cn(circlePart, circleState, 'stepper-step-indicator'))}" aria-hidden="true">
                     ${isCompleted ? '✓' : index + 1}
                 </div>
-                <div class="${cn(labelPart, 'stepper-step-title')}">${escapeHtml(step.title)}</div>
+                <div class="${escapeHtml(cn(labelPart, 'stepper-step-title'))}">${escapeHtml(step.title)}</div>
             </div>
         `;
     };
@@ -63,7 +63,7 @@ export const Stepper = (props = {}) => {
         const stepPart = (vertical && resolvePartClasses('stepper', 'stepVertical')) || resolvePartClasses('stepper', 'step');
         const isActive = index === activeStep;
         const isCompleted = index < activeStep;
-        return `class="${cn(stepPart, 'stepper-step', isActive ? 'active' : '', isCompleted ? 'completed' : '')}" data-step="${index}"${isActive ? ' aria-current="step"' : ''}`;
+        return `class="${escapeHtml(cn(stepPart, 'stepper-step', isActive ? 'active' : '', isCompleted ? 'completed' : ''))}" data-step="${index}"${isActive ? ' aria-current="step"' : ''}`;
     };
 
     const template = () => {
@@ -77,12 +77,12 @@ export const Stepper = (props = {}) => {
 
         if (orientation === 'horizontal') {
             return `
-                <div class="${stepperClass}" data-ref="stepper">
-                    <ol class="${cn(resolvePartClasses('stepper', 'list'), 'stepper-steps')}" style="list-style: none; margin: 0; padding: 0;">
+                <div class="${escapeHtml(stepperClass)}" data-ref="stepper">
+                    <ol class="${escapeHtml(cn(resolvePartClasses('stepper', 'list'), 'stepper-steps'))}" style="list-style: none; margin: 0; padding: 0;">
                         ${steps.map((step, index) => `
                             <li ${stepAttrs(index)}>
                                 ${renderStepHeader(step, index)}
-                                ${index < steps.length - 1 ? `<div class="${cn(connectorPart, 'stepper-connector')}" aria-hidden="true"></div>` : ''}
+                                ${index < steps.length - 1 ? `<div class="${escapeHtml(cn(connectorPart, 'stepper-connector'))}" aria-hidden="true"></div>` : ''}
                             </li>
                         `).join('')}
                     </ol>
@@ -94,15 +94,15 @@ export const Stepper = (props = {}) => {
         }
 
         return `
-            <div class="${stepperClass}" data-ref="stepper">
-                <ol class="${cn(resolvePartClasses('stepper', 'listVertical'), 'stepper-vertical')}" style="list-style: none; margin: 0; padding: 0;">
+            <div class="${escapeHtml(stepperClass)}" data-ref="stepper">
+                <ol class="${escapeHtml(cn(resolvePartClasses('stepper', 'listVertical'), 'stepper-vertical'))}" style="list-style: none; margin: 0; padding: 0;">
                     ${steps.map((step, index) => `
                         <li ${stepAttrs(index, true)}>
                             ${renderStepHeader(step, index, true)}
-                            <div class="${cn(resolvePartClasses('stepper', 'contentVertical'), 'stepper-content')}">
+                            <div class="${escapeHtml(cn(resolvePartClasses('stepper', 'contentVertical'), 'stepper-content'))}">
                                 ${step.content ? sanitizeHtml(step.content) : ''}
                             </div>
-                            ${index < steps.length - 1 ? `<div class="${cn(resolvePartClasses('stepper', 'connectorVertical') || connectorPart, 'stepper-connector-vertical')}" aria-hidden="true"></div>` : ''}
+                            ${index < steps.length - 1 ? `<div class="${escapeHtml(cn(resolvePartClasses('stepper', 'connectorVertical') || connectorPart, 'stepper-connector-vertical'))}" aria-hidden="true"></div>` : ''}
                         </li>
                     `).join('')}
                 </ol>
