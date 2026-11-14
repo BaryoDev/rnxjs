@@ -9,11 +9,14 @@ on:
 # long-lived secret, which looks identical from the outside.
 permissions:
   contents: read
-  id-token: write
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+    environment: npm-release
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v4
         with:
